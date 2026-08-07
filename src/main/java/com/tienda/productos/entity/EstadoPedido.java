@@ -2,13 +2,11 @@ package com.tienda.productos.entity;
 
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 @Entity
 @Table(name = "estado_pedido")
-@Getter
-@Setter
+@Data
 public class EstadoPedido {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
