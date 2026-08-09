@@ -2,13 +2,11 @@ package com.tienda.productos.entity;
 
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 @Entity
 @Table(name = "metodo_pago")
-@Getter
-@Setter
+@Data
 public class MetodoPago {
 
     @Id
