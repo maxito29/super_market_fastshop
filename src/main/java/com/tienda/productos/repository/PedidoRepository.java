@@ -10,5 +10,5 @@ public interface PedidoRepository extends JpaRepository<Pedido, Long> {
 
     Optional<Pedido> findByNumeroPedido(String numeroPedido);
 
-    List<Pedido>findByCliente_NumeroDocuemntoOrderByFechaPedidoDesc(String numeroDocumento);
+    List<Pedido> findByCliente_NumeroDocumentoOrderByFechaPedidoDesc(String numeroDocumento);
 }
