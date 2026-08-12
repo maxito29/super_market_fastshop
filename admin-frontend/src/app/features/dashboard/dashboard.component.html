@@ -1,36 +1,87 @@
 <div class="dashboard">
-  <h1>Hola, {{ authService.usuarioActual()?.nombre }} </h1>
-  <p class="subtitulo">Este es tu panel administrativo del supermercado.</p>
+  <div class="dashboard-header">
+    <h1>Hola, {{ authService.usuarioActual()?.nombre }}</h1>
+    <p class="subtitulo">Resumen general del supermercado</p>
+  </div>
 
-  <div class="cards-grid">
-    <p-card styleClass="stat-card">
-      <div class="stat-content">
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon icon-blue">
         <i class="pi pi-box"></i>
-        <div>
-          <span class="stat-label">Productos</span>
-          <p class="stat-desc">Próximamente</p>
-        </div>
       </div>
-    </p-card>
+      <div class="stat-info">
+        <span class="stat-label">Productos activos</span>
+        <span class="stat-number">{{ resumen()?.totalProductos ?? 0 }}</span>
+      </div>
+    </div>
 
-    <p-card styleClass="stat-card">
-      <div class="stat-content">
+    <div class="stat-card">
+      <div class="stat-icon icon-purple">
         <i class="pi pi-tags"></i>
-        <div>
-          <span class="stat-label">Categorías</span>
-          <p class="stat-desc">Próximamente</p>
-        </div>
       </div>
-    </p-card>
+      <div class="stat-info">
+        <span class="stat-label">Categorías activas</span>
+        <span class="stat-number">{{ resumen()?.totalCategorias ?? 0 }}</span>
+      </div>
+    </div>
 
-    <p-card styleClass="stat-card">
-      <div class="stat-content">
+    <div class="stat-card">
+      <div class="stat-icon icon-teal">
         <i class="pi pi-users"></i>
-        <div>
-          <span class="stat-label">Trabajadores</span>
-          <p class="stat-desc">Próximamente</p>
-        </div>
       </div>
-    </p-card>
+      <div class="stat-info">
+        <span class="stat-label">Trabajadores activos</span>
+        <span class="stat-number">{{ resumen()?.totalTrabajadores ?? 0 }}</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon icon-amber">
+        <i class="pi pi-exclamation-triangle"></i>
+      </div>
+      <div class="stat-info">
+        <span class="stat-label">Stock bajo</span>
+        <span class="stat-number">{{ resumen()?.productosStockBajo ?? 0 }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="charts-row">
+    <div class="chart-card chart-card-small">
+      <div class="chart-card-header">
+        <h2>Productos por categoría</h2>
+        <p>Distribución del catálogo</p>
+      </div>
+      @if (chartDona) {
+        <apx-chart
+          [series]="chartDona.series!"
+          [chart]="chartDona.chart!"
+          [labels]="chartDona.labels!"
+          [colors]="chartDona.colors!"
+          [legend]="chartDona.legend!"
+          [dataLabels]="chartDona.dataLabels!"
+          [tooltip]="chartDona.tooltip!">
+        </apx-chart>
+      }
+    </div>
+
+    <div class="chart-card chart-card-large">
+      <div class="chart-card-header">
+        <h2>Top 5 productos con más stock</h2>
+        <p>Los mejor abastecidos ahora mismo</p>
+      </div>
+      @if (chartTop5) {
+        <apx-chart
+          [series]="chartTop5.series!"
+          [chart]="chartTop5.chart!"
+          [xaxis]="chartTop5.xaxis!"
+          [dataLabels]="chartTop5.dataLabels!"
+          [grid]="chartTop5.grid!"
+          [tooltip]="chartTop5.tooltip!"
+          [plotOptions]="chartTop5.plotOptions!"
+          [colors]="chartTop5.colors!">
+        </apx-chart>
+      }
+    </div>
   </div>
 </div>

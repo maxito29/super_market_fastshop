@@ -1,44 +1,130 @@
-.dashboard {
+.dashboard-header {
+  margin-bottom: 1.75rem;
+
   h1 {
-    margin: 0 0 0.25rem;
-    font-size: 1.6rem;
-    color: #1e293b;
+    margin: 0 0 0.2rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #0f172a;
   }
 
   .subtitulo {
+    margin: 0;
     color: #64748b;
-    margin-bottom: 2rem;
+    font-size: 0.9rem;
   }
 }
 
-.cards-grid {
+.stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1.25rem;
+  gap: 1rem;
+  margin-bottom: 1.75rem;
 }
 
-.stat-content {
+.stat-card {
   display: flex;
   align-items: center;
+  gap: 0.9rem;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 1.1rem 1.25rem;
+  transition: border-color 0.15s ease;
+
+  &:hover {
+    border-color: #cbd5e1;
+  }
+}
+
+.stat-icon {
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.05rem;
+
+  &.icon-blue    { background: #eff6ff; color: #2563eb; }
+  &.icon-purple  { background: #f5f3ff; color: #7c3aed; }
+  &.icon-teal    { background: #f0fdfa; color: #0d9488; }
+  &.icon-amber   { background: #fffbeb; color: #d97706; }
+}
+
+.stat-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.stat-label {
+  font-size: 0.78rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.stat-number {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.chart-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 1.5rem;
+}
+
+.chart-card-header {
+  margin-bottom: 1rem;
+
+  h2 {
+    margin: 0 0 0.15rem;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #0f172a;
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.82rem;
+    color: #64748b;
+  }
+}
+
+.charts-row {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
   gap: 1rem;
 
-  i {
-    font-size: 1.8rem;
-    color: #2563eb;
-    background-color: #eff6ff;
-    padding: 0.9rem;
-    border-radius: 12px;
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
   }
+}
 
-  .stat-label {
+.chart-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 1.5rem;
+}
+
+.chart-card-header {
+  margin-bottom: 1rem;
+
+  h2 {
+    margin: 0 0 0.15rem;
+    font-size: 1.05rem;
     font-weight: 600;
-    color: #1e293b;
-    display: block;
+    color: #0f172a;
   }
 
-  .stat-desc {
-    margin: 0.15rem 0 0;
-    color: #94a3b8;
-    font-size: 0.85rem;
+  p {
+    margin: 0;
+    font-size: 0.82rem;
+    color: #64748b;
   }
 }
