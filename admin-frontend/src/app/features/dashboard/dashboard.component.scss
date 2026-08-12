@@ -1,0 +1,44 @@
+.dashboard {
+  h1 {
+    margin: 0 0 0.25rem;
+    font-size: 1.6rem;
+    color: #1e293b;
+  }
+
+  .subtitulo {
+    color: #64748b;
+    margin-bottom: 2rem;
+  }
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.25rem;
+}
+
+.stat-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  i {
+    font-size: 1.8rem;
+    color: #2563eb;
+    background-color: #eff6ff;
+    padding: 0.9rem;
+    border-radius: 12px;
+  }
+
+  .stat-label {
+    font-weight: 600;
+    color: #1e293b;
+    display: block;
+  }
+
+  .stat-desc {
+    margin: 0.15rem 0 0;
+    color: #94a3b8;
+    font-size: 0.85rem;
+  }
+}

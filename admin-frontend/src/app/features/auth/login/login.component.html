@@ -1,0 +1,51 @@
+<div class="login-page">
+  <div class="curved-shape"></div>
+  <div class="curved-shape2"></div>
+
+  <div class="login-card">
+    <div class="brand">
+      <i class="pi pi-shopping-cart"></i>
+      <h1>Supermercado</h1>
+      <p>Panel Administrativo</p>
+    </div>
+
+    <form [formGroup]="formulario" (ngSubmit)="onSubmit()">
+
+      <div class="input-box">
+        <input type="text" formControlName="username" required />
+        <label>Usuario</label>
+        <i class="pi pi-user"></i>
+      </div>
+
+      <div class="input-box">
+        <input
+          [type]="passwordVisible() ? 'text' : 'password'"
+          formControlName="password"
+          required />
+        <label>Contraseña</label>
+        <i
+          class="pi toggle-password"
+          [class.pi-eye]="passwordVisible()"
+          [class.pi-eye-slash]="!passwordVisible()"
+          (click)="togglePassword()">
+        </i>
+      </div>
+
+      @if (errorMensaje()) {
+        <div class="error-msg">
+          <i class="pi pi-exclamation-circle"></i>
+          <span>{{ errorMensaje() }}</span>
+        </div>
+      }
+
+      <button class="btn" type="submit" [disabled]="cargando()">
+        @if (cargando()) {
+          <i class="pi pi-spin pi-spinner"></i>
+        } @else {
+          Ingresar
+        }
+      </button>
+
+    </form>
+  </div>
+</div>

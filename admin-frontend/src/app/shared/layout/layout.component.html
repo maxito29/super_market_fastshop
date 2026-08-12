@@ -1,0 +1,49 @@
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="brand">
+      <i class="pi pi-shopping-cart"></i>
+      <span>Supermercado</span>
+    </div>
+
+    <nav class="nav-menu">
+      @for (item of menu; track item.ruta) {
+        @if (item.disponible) {
+          <a [routerLink]="item.ruta" routerLinkActive="active" class="nav-item">
+            <i [class]="item.icono"></i>
+            <span>{{ item.etiqueta }}</span>
+          </a>
+        } @else {
+          <div class="nav-item disabled">
+            <i [class]="item.icono"></i>
+            <span>{{ item.etiqueta }}</span>
+            <small>Próximamente</small>
+          </div>
+        }
+      }
+    </nav>
+  </aside>
+
+  <div class="main-area">
+    <header class="topbar">
+      <div class="topbar-user">
+        <p-avatar [label]="iniciales" shape="circle" styleClass="avatar-user"></p-avatar>
+        <div class="user-info">
+          <strong>{{ authService.usuarioActual()?.nombre }}</strong>
+          <small>{{ authService.usuarioActual()?.rol }}</small>
+        </div>
+        <button
+          pButton
+          icon="pi pi-sign-out"
+          class="p-button-text p-button-rounded"
+          pTooltip="Cerrar sesión"
+          tooltipPosition="bottom"
+          (click)="logout()">
+        </button>
+      </div>
+    </header>
+
+    <main class="content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

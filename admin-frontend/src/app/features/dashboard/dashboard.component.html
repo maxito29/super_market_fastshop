@@ -1,0 +1,36 @@
+<div class="dashboard">
+  <h1>Hola, {{ authService.usuarioActual()?.nombre }} </h1>
+  <p class="subtitulo">Este es tu panel administrativo del supermercado.</p>
+
+  <div class="cards-grid">
+    <p-card styleClass="stat-card">
+      <div class="stat-content">
+        <i class="pi pi-box"></i>
+        <div>
+          <span class="stat-label">Productos</span>
+          <p class="stat-desc">Próximamente</p>
+        </div>
+      </div>
+    </p-card>
+
+    <p-card styleClass="stat-card">
+      <div class="stat-content">
+        <i class="pi pi-tags"></i>
+        <div>
+          <span class="stat-label">Categorías</span>
+          <p class="stat-desc">Próximamente</p>
+        </div>
+      </div>
+    </p-card>
+
+    <p-card styleClass="stat-card">
+      <div class="stat-content">
+        <i class="pi pi-users"></i>
+        <div>
+          <span class="stat-label">Trabajadores</span>
+          <p class="stat-desc">Próximamente</p>
+        </div>
+      </div>
+    </p-card>
+  </div>
+</div>
