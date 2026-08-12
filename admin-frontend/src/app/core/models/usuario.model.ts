@@ -9,3 +9,19 @@ export interface LoginResponse {
   nombre: string;
   rol: string;
 }
+
+export interface Usuario {
+  id: number;
+  nombre: string;
+  username: string;
+  rol: string;
+  activo: boolean;
+  fechaCreacion: string;
+}
+
+export interface UsuarioRequest {
+  rolId: number;
+  nombre: string;
+  username: string;
+  password?: string | null;
+}

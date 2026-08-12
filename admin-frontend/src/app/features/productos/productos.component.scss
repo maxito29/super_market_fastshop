@@ -1,0 +1,53 @@
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+
+  h1 {
+    margin: 0 0 0.15rem;
+    font-size: 1.5rem;
+    color: #1e293b;
+  }
+
+  p {
+    margin: 0;
+    color: #64748b;
+  }
+}
+
+.form-dialogo {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  padding-top: 0.5rem;
+
+  .campo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+
+    label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #334155;
+    }
+
+    input {
+      width: 100%;
+    }
+  }
+
+  .fila-doble {
+    display: flex;
+    gap: 1rem;
+
+    .campo {
+      flex: 1;
+    }
+  }
+}
+
+.w-full {
+  width: 100%;
+}

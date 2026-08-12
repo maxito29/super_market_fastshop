@@ -20,11 +20,11 @@ interface ItemMenu {
   styleUrl: './layout.component.scss'
 })
 export class LayoutComponent {
-  menu: ItemMenu[] = [
+menu: ItemMenu[] = [
     { etiqueta: 'Dashboard', icono: 'pi pi-home', ruta: '/dashboard', disponible: true },
-    { etiqueta: 'Productos', icono: 'pi pi-box', ruta: '/productos', disponible: false },
-    { etiqueta: 'Categorías', icono: 'pi pi-tags', ruta: '/categorias', disponible: false },
-    { etiqueta: 'Trabajadores', icono: 'pi pi-users', ruta: '/usuarios', disponible: false },
+    { etiqueta: 'Productos', icono: 'pi pi-box', ruta: '/productos', disponible: true },
+    { etiqueta: 'Categorías', icono: 'pi pi-tags', ruta: '/categorias', disponible: true },
+    { etiqueta: 'Trabajadores', icono: 'pi pi-users', ruta: '/usuarios', disponible: true },
   ];
 
   constructor(public authService: AuthService) {}

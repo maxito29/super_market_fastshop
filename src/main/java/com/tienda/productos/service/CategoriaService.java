@@ -67,4 +67,11 @@ public class CategoriaService {
         return categoriaRepository.findById(id)
                 .orElseThrow(() -> new RecursoNoEncontradoException("Categoría con id " + id + " no encontrada"));
     }
+
+    @Transactional
+    public void reactivar(Long id) {
+        Categoria categoria = buscarEntidad(id);
+        categoria.setActivo(true);
+        categoriaRepository.save(categoria);
+    }
 }

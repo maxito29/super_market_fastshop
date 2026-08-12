@@ -64,4 +64,11 @@ public class ProductoController {
     public void eliminar(@PathVariable Long id) {
         productoService.eliminar(id);
     }
+
+    @PatchMapping("/{id}/reactivar")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Reactiva un producto previamente desactivado")
+    public void reactivar(@PathVariable Long id) {
+        productoService.reactivar(id);
+    }
 }

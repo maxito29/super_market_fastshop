@@ -59,4 +59,11 @@ public class CategoriaController {
     public void eliminar(@PathVariable Long id) {
         categoriaService.eliminar(id);
     }
+
+    @PatchMapping("/{id}/reactivar")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Reactiva una categoría previamente desactivada")
+    public void reactivar(@PathVariable Long id) {
+        categoriaService.reactivar(id);
+    }
 }

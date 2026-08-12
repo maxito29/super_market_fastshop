@@ -109,4 +109,11 @@ public class ProductoService {
         return categoriaRepository.findById(categoriaId)
                 .orElseThrow(() -> new RecursoNoEncontradoException("Categoría con id " + categoriaId + " no encontrada"));
     }
+
+    @Transactional
+    public void reactivar(Long id) {
+        Producto producto = buscarEntidad(id);
+        producto.setActivo(true);
+        productoRepository.save(producto);
+    }
 }

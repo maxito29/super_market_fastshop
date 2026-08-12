@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import Swal from 'sweetalert2';
+import Swal, { SweetAlertIcon } from 'sweetalert2';
 
 @Injectable({ providedIn: 'root' })
 export class NotificacionService {
@@ -19,16 +19,20 @@ export class NotificacionService {
     });
   }
 
-  exito(mensaje: string): void {
-    Swal.fire({
-      toast: true,
-      position: 'top-end',
-      icon: 'success',
-      title: mensaje,
-      showConfirmButton: false,
-      timer: 2500,
-      timerProgressBar: true
-    });
+  notificarCreacion(mensaje: string): void {
+    this.toast(mensaje, 'info');
+  }
+
+  notificarEdicion(mensaje: string): void {
+    this.toast(mensaje, 'warning');
+  }
+
+  notificarEliminacion(mensaje: string): void {
+    this.toast(mensaje, 'error');
+  }
+
+  notificarReactivacion(mensaje: string): void {
+    this.toast(mensaje, 'success');
   }
 
   error(mensaje: string): void {
@@ -52,5 +56,16 @@ export class NotificacionService {
       cancelButtonColor: '#64748b'
     });
     return resultado.isConfirmed;
+  }
+
+  private toast(mensaje: string, icon: SweetAlertIcon): void {
+    Swal.fire({
+      toast: true,
+      position: 'top-end',
+      icon,
+      title: mensaje,
+      showConfirmButton: false,
+      timer: 2500,
+    });
   }
 }

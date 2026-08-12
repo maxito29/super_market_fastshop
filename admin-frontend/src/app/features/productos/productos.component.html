@@ -1,0 +1,137 @@
+<div class="page-header">
+  <div>
+    <h1>Productos</h1>
+    <p>Administra el catálogo de productos del supermercado</p>
+  </div>
+  <button pButton icon="pi pi-plus" label="Nuevo producto" (click)="abrirNuevo()"></button>
+</div>
+
+<p-table
+  [value]="productos()"
+  [loading]="cargando()"
+  [paginator]="true"
+  [rows]="10"
+  styleClass="p-datatable-sm"
+  responsiveLayout="scroll">
+
+  <ng-template pTemplate="header">
+    <tr>
+      <th>Código</th>
+      <th>Nombre</th>
+      <th>Categoría</th>
+      <th>Precio</th>
+      <th>Stock</th>
+      <th>Estado</th>
+      <th style="width: 120px">Acciones</th>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="body" let-producto>
+    <tr>
+      <td>{{ producto.codigo }}</td>
+      <td>{{ producto.nombre }}</td>
+      <td>{{ producto.categoriaNombre }}</td>
+      <td>S/ {{ producto.precio.toFixed(2) }}</td>
+      <td>
+        <p-tag [value]="producto.stock + ' und.'" [severity]="claseStock(producto.stock)"></p-tag>
+      </td>
+      <td>
+        <p-tag
+          [value]="producto.activo ? 'Activo' : 'Inactivo'"
+          [severity]="producto.activo ? 'success' : 'danger'">
+        </p-tag>
+      </td>
+      <td>
+        <button pButton icon="pi pi-pencil" class="p-button-text p-button-rounded" pTooltip="Editar" (click)="abrirEdicion(producto)"></button>
+        @if (producto.activo) {
+          <button pButton icon="pi pi-trash" class="p-button-text p-button-rounded p-button-danger" pTooltip="Desactivar" (click)="eliminar(producto)"></button>
+        } @else {
+          <button pButton icon="pi pi-refresh" class="p-button-text p-button-rounded p-button-success" pTooltip="Reactivar" (click)="reactivar(producto)"></button>
+        }
+      </td>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td colspan="7" style="text-align: center; padding: 2rem;">No hay productos registrados</td>
+    </tr>
+  </ng-template>
+
+</p-table>
+
+<p-dialog
+  [(visible)]="dialogoVisible"
+  [header]="modoEdicion() ? 'Editar producto' : 'Nuevo producto'"
+  [modal]="true"
+  [style]="{ width: '480px' }">
+
+  <form [formGroup]="formulario" class="form-dialogo">
+
+    <div class="campo">
+      <label for="categoria">Categoría</label>
+      <p-dropdown
+        id="categoria"
+        formControlName="categoriaId"
+        [options]="categorias()"
+        optionLabel="nombre"
+        optionValue="id"
+        placeholder="Selecciona una categoría"
+        styleClass="w-full">
+      </p-dropdown>
+    </div>
+
+    <div class="campo">
+      <label for="nombre">Nombre</label>
+      <input pInputText id="nombre" formControlName="nombre" placeholder="Ej: Leche Gloria 1L" />
+    </div>
+
+    <div class="campo">
+      <label for="codigo">Código (opcional)</label>
+      <input pInputText id="codigo" formControlName="codigo" placeholder="Se genera automático si lo dejas vacío" />
+    </div>
+
+    <div class="fila-doble">
+      <div class="campo">
+        <label for="precio">Precio (S/)</label>
+        <p-inputNumber
+          id="precio"
+          formControlName="precio"
+          mode="decimal"
+          [minFractionDigits]="2"
+          [maxFractionDigits]="2"
+          [min]="0"
+          styleClass="w-full">
+        </p-inputNumber>
+      </div>
+
+      <div class="campo">
+        <label for="stock">Stock</label>
+        <p-inputNumber
+          id="stock"
+          formControlName="stock"
+          [min]="0"
+          [showButtons]="true"
+          styleClass="w-full">
+        </p-inputNumber>
+      </div>
+    </div>
+
+    <div class="campo">
+      <label for="descripcion">Descripción (opcional)</label>
+      <input pInputText id="descripcion" formControlName="descripcion" />
+    </div>
+
+    <div class="campo">
+      <label for="imagenUrl">URL de imagen (opcional)</label>
+      <input pInputText id="imagenUrl" formControlName="imagenUrl" placeholder="https://..." />
+    </div>
+
+  </form>
+
+  <ng-template pTemplate="footer">
+    <button pButton label="Cancelar" class="p-button-text" (click)="dialogoVisible.set(false)"></button>
+    <button pButton label="Guardar" [loading]="guardando()" (click)="guardar()"></button>
+  </ng-template>
+
+</p-dialog>
