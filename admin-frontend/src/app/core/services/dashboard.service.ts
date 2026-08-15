@@ -14,4 +14,8 @@ export class DashboardService {
   obtenerResumen(): Observable<DashboardResumen> {
     return this.http.get<DashboardResumen>(`${this.baseUrl}/resumen`);
   }
+
+  enviarAlertaStock(): Observable<any> {
+  return this.http.post(`${this.baseUrl}/alertas/stock`, {});
+}
 }

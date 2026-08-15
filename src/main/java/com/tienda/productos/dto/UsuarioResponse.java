@@ -13,6 +13,7 @@ public class UsuarioResponse {
     private final String rol;
     private final Boolean activo;
     private final LocalDateTime fechaCreacion;
+    private final String email;
 
     public UsuarioResponse(Usuario usuario) {
         this.id = usuario.getId();
@@ -21,5 +22,6 @@ public class UsuarioResponse {
         this.rol = usuario.getRol().getNombre();
         this.activo = usuario.getActivo();
         this.fechaCreacion = usuario.getFechaCreacion();
+        this.email = usuario.getEmail();
     }
 }

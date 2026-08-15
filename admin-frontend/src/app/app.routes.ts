@@ -6,6 +6,8 @@ import { ProductosComponent } from './features/productos/productos.component';
 import { UsuariosComponent } from './features/usuarios/usuarios.component';
 import { LayoutComponent } from './shared/layout/layout.component';
 import { authGuard } from './core/guards/auth.guard';
+import { OlvidePasswordComponent } from './features/auth/olvide-password/olvide-password.component';
+import { RestablecerPasswordComponent } from './features/auth/restablecer-password/restablecer-password.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -19,6 +21,8 @@ export const routes: Routes = [
       { path: 'productos', component: ProductosComponent},
       { path: 'usuarios', component: UsuariosComponent },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      { path: 'olvide-password', component: OlvidePasswordComponent },
+      { path: 'restablecer-password', component: RestablecerPasswordComponent },
     ]
   },
   { path: '**', redirectTo: 'login' }

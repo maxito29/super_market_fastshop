@@ -1,5 +1,8 @@
 .dashboard-header {
   margin-bottom: 1.75rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
 
   h1 {
     margin: 0 0 0.2rem;
@@ -128,3 +131,8 @@
     color: #64748b;
   }
 }
+
+.table-card {
+  margin-top: 1rem;
+}
+

@@ -49,4 +49,12 @@ export class AuthService {
     const guardado = localStorage.getItem(USUARIO_KEY);
     return guardado ? JSON.parse(guardado) : null;
   }
+
+  olvidePassword(email: string): Observable<{ mensaje: string }> {
+    return this.http.post<{ mensaje: string }>(`${API_URL}/auth/olvide-password`, { email });
+  }
+
+  restablecerPassword(token: string, nuevaPassword: string): Observable<{ mensaje: string }> {
+    return this.http.post<{ mensaje: string }>(`${API_URL}/auth/restablecer-password`, { token, nuevaPassword });
+  }
 }

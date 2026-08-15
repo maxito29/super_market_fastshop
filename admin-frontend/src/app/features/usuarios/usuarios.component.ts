@@ -39,10 +39,11 @@ export class UsuariosComponent implements OnInit {
   guardando = signal(false);
   usuarioEditandoId: number | null = null;
 
-  formulario = this.fb.group({
+ formulario = this.fb.group({
     rolId: [null as number | null, Validators.required],
     nombre: ['', Validators.required],
     username: ['', Validators.required],
+    email: ['', Validators.email],
     password: ['']
   });
 
@@ -103,6 +104,7 @@ export class UsuariosComponent implements OnInit {
       rolId: rol?.id ?? null,
       nombre: usuario.nombre,
       username: usuario.username,
+      email: usuario.email ?? '',
       password: ''
     });
 
@@ -123,6 +125,7 @@ export class UsuariosComponent implements OnInit {
       rolId: v.rolId!,
       nombre: v.nombre!,
       username: v.username!,
+      email: v.email || null,
       password: v.password || null
     };
 

@@ -1,0 +1,46 @@
+<div class="chat-widget">
+
+  @if (abierto()) {
+    <div class="chat-panel">
+      <div class="chat-header">
+        <div class="chat-header-info">
+          <i class="pi pi-sparkles"></i>
+          <span>Asistente IA</span>
+        </div>
+        <button class="btn-cerrar" (click)="toggle()">
+          <i class="pi pi-times"></i>
+        </button>
+      </div>
+
+      <div class="chat-mensajes" #scrollContainer>
+        @for (m of mensajes(); track $index) {
+          <div class="mensaje" [class.mensaje-usuario]="m.role === 'user'">
+            {{ m.content }}
+          </div>
+        }
+        @if (cargando()) {
+          <div class="mensaje mensaje-cargando">
+            <i class="pi pi-spin pi-spinner"></i>
+          </div>
+        }
+      </div>
+
+      <div class="chat-input">
+        <input
+          type="text"
+          [(ngModel)]="pregunta"
+          (keyup.enter)="enviar()"
+          placeholder="Pregunta algo..."
+          [disabled]="cargando()" />
+        <button (click)="enviar()" [disabled]="cargando()">
+          <i class="pi pi-send"></i>
+        </button>
+      </div>
+    </div>
+  }
+
+  <button class="chat-boton" (click)="toggle()">
+    <i class="pi" [class.pi-comments]="!abierto()" [class.pi-times]="abierto()"></i>
+  </button>
+
+</div>

@@ -86,6 +86,11 @@
     </div>
 
     <div class="campo">
+      <label for="email">Correo (opcional, para enviarle bienvenida)</label>
+      <input pInputText id="email" formControlName="email" placeholder="trabajador@correo.com" />
+    </div>
+
+    <div class="campo">
       <label for="password">{{ modoEdicion() ? 'Nueva contraseña (opcional)' : 'Contraseña' }}</label>
       <p-password
         id="password"

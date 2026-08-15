@@ -4,6 +4,7 @@ import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
 import { AuthService } from '../../core/services/auth.service';
+import { ChatWidgetComponent } from '../chat-widget/chat-widget.component';
 
 interface ItemMenu {
   etiqueta: string;
@@ -15,7 +16,7 @@ interface ItemMenu {
 @Component({
   selector: 'app-layout',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, AvatarModule, ButtonModule, TooltipModule],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, AvatarModule, ButtonModule, TooltipModule, ChatWidgetComponent],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.scss'
 })

@@ -26,5 +26,5 @@ public interface ProductoRepository extends JpaRepository<Producto, Long> {
 
     java.util.List<com.tienda.productos.entity.Producto> findTop5ByActivoTrueOrderByStockDesc();
 
-
+    java.util.List<com.tienda.productos.entity.Producto> findByActivoTrueAndStockLessThanOrderByStockAsc(Integer stock);
 }

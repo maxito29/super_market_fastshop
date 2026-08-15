@@ -18,6 +18,7 @@ public class UsuarioRequest {
     @NotBlank(message = "El username es obligatorio")
     private String username;
 
-    // Obligatorio al crear. Al actualizar, si se deja vacío se conserva el password actual.
     private String password;
+
+    private String email;
 }

@@ -3,10 +3,12 @@ package com.tienda.productos.service;
 import com.tienda.productos.dto.CategoriaConteoResponse;
 import com.tienda.productos.dto.DashboardResumenResponse;
 import com.tienda.productos.dto.ProductoStockResponse;
+import com.tienda.productos.entity.Producto;
 import com.tienda.productos.repository.CategoriaRepository;
 import com.tienda.productos.repository.ProductoRepository;
 import com.tienda.productos.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +24,10 @@ public class DashboardService {
     private final ProductoRepository productoRepository;
     private final CategoriaRepository categoriaRepository;
     private final UsuarioRepository usuarioRepository;
+    private final BrevoService brevoService;
+
+    @Value("${brevo.destinatario.alertas}")
+    private String destinatarioAlertas;
 
     public DashboardResumenResponse obtenerResumen() {
         long totalProductos = productoRepository.countByActivoTrue();
@@ -43,5 +49,33 @@ public class DashboardService {
                 totalProductos, totalCategorias, totalTrabajadores, productosStockBajo,
                 productosPorCategoria, topProductosStock
         );
+    }
+
+    public int enviarAlertaStockBajo() {
+        List<Producto> productosStockBajo = productoRepository.findByActivoTrueAndStockLessThanOrderByStockAsc(UMBRAL_STOCK_BAJO);
+
+        if (productosStockBajo.isEmpty()) {
+            return 0;
+        }
+
+        StringBuilder html = new StringBuilder();
+        html.append("<h2>Alerta de stock bajo</h2>");
+        html.append("<p>Los siguientes productos tienen menos de ").append(UMBRAL_STOCK_BAJO).append(" unidades:</p>");
+        html.append("<ul>");
+        for (Producto p : productosStockBajo) {
+            html.append("<li><b>").append(p.getNombre()).append("</b> — ")
+                    .append(p.getStock()).append(" unidades (categoria: ")
+                    .append(p.getCategoria().getNombre()).append(")</li>");
+        }
+        html.append("</ul>");
+
+        brevoService.enviarCorreo(
+                destinatarioAlertas,
+                "Administrador",
+                "Alerta: " + productosStockBajo.size() + " productos con stock bajo",
+                html.toString()
+        );
+
+        return productosStockBajo.size();
     }
 }

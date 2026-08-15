@@ -19,6 +19,10 @@ export class NotificacionService {
     });
   }
 
+  exito(mensaje: string): void {
+  this.toast(mensaje, 'success');
+}
+
   notificarCreacion(mensaje: string): void {
     this.toast(mensaje, 'info');
   }

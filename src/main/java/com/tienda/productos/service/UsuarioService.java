@@ -23,6 +23,7 @@ public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final RolRepository rolRepository;
     private final PasswordEncoder passwordEncoder;
+    private final BrevoService brevoService;
 
     public List<UsuarioResponse> listarTodos() {
         return usuarioRepository.findAll().stream().map(UsuarioResponse::new).toList();
@@ -47,10 +48,24 @@ public class UsuarioService {
         usuario.setRol(rol);
         usuario.setNombre(request.getNombre());
         usuario.setUsername(request.getUsername());
+        usuario.setEmail(request.getEmail());
         usuario.setPassword(passwordEncoder.encode(request.getPassword()));
         usuario.setActivo(true);
 
-        return new UsuarioResponse(usuarioRepository.save(usuario));
+        Usuario guardado = usuarioRepository.save(usuario);
+
+        if (guardado.getEmail() != null && !guardado.getEmail().isBlank()) {
+            String html = "<h2>¡Bienvenido al equipo, " + guardado.getNombre() + "!</h2>"
+                    + "<p>Se creó tu cuenta en el sistema del supermercado.</p>"
+                    + "<p><b>Usuario:</b> " + guardado.getUsername() + "</p>"
+                    + "<p><b>Rol:</b> " + guardado.getRol().getNombre() + "</p>"
+                    + "<p>Pide tu contraseña a tu administrador para iniciar sesión.</p>";
+
+            brevoService.enviarCorreo(guardado.getEmail(), guardado.getNombre(),
+                    "Bienvenido al sistema - Supermercado", html);
+        }
+
+        return new UsuarioResponse(guardado);
     }
 
     @Transactional
@@ -67,6 +82,7 @@ public class UsuarioService {
         usuario.setRol(rol);
         usuario.setNombre(request.getNombre());
         usuario.setUsername(request.getUsername());
+        usuario.setEmail(request.getEmail());
         if (request.getPassword() != null && !request.getPassword().isBlank()) {
             usuario.setPassword(passwordEncoder.encode(request.getPassword()));
         }

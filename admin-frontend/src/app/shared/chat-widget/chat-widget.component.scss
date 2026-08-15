@@ -1,0 +1,136 @@
+.chat-widget {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 1000;
+}
+
+.chat-boton {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  background: #16a34a;
+  color: #fff;
+  font-size: 1.4rem;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(22, 163, 74, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+.chat-panel {
+  position: absolute;
+  bottom: 70px;
+  right: 0;
+  width: 340px;
+  height: 440px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.9rem 1rem;
+  background: #16a34a;
+  color: #fff;
+
+  .chat-header-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+
+  .btn-cerrar {
+    background: transparent;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    opacity: 0.85;
+
+    &:hover { opacity: 1; }
+  }
+}
+
+.chat-mensajes {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  background: #f8fafc;
+}
+
+.mensaje {
+  max-width: 85%;
+  padding: 0.6rem 0.85rem;
+  border-radius: 12px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: #1e293b;
+  white-space: pre-line;
+}
+
+.mensaje-usuario {
+  align-self: flex-end;
+  background: #16a34a;
+  border-color: #16a34a;
+  color: #fff;
+}
+
+.mensaje-cargando {
+  align-self: flex-start;
+  color: #64748b;
+}
+
+.chat-input {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border-top: 1px solid #e2e8f0;
+
+  input {
+    flex: 1;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.85rem;
+    outline: none;
+
+    &:focus {
+      border-color: #16a34a;
+    }
+  }
+
+  button {
+    width: 38px;
+    border: none;
+    border-radius: 8px;
+    background: #16a34a;
+    color: #fff;
+    cursor: pointer;
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+}
