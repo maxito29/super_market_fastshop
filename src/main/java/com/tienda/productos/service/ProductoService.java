@@ -21,6 +21,7 @@ public class ProductoService {
 
     private final ProductoRepository productoRepository;
     private final CategoriaRepository categoriaRepository;
+    private final ExcelReporteService excelReporteService;
 
     public List<ProductoResponse> listarActivos() {
         return productoRepository.findByActivoTrue().stream().map(ProductoResponse::new).toList();
@@ -60,7 +61,6 @@ public class ProductoService {
         producto.setCodigo(codigoInicial);
         producto = productoRepository.save(producto);
 
-        // Si no vino codigo, recien aca sabemos el id autogenerado -> lo usamos para el codigo final
         if (generarCodigo) {
             producto.setCodigo("PRD-" + producto.getId());
             producto = productoRepository.save(producto);
@@ -115,5 +115,10 @@ public class ProductoService {
         Producto producto = buscarEntidad(id);
         producto.setActivo(true);
         productoRepository.save(producto);
+    }
+
+    @Transactional(readOnly = true)
+    public byte[] exportarExcel() throws java.io.IOException {
+        return excelReporteService.generarExcelProductos(productoRepository.findAll());
     }
 }

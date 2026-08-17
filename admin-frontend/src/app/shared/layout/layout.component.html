@@ -1,5 +1,5 @@
 <div class="app-shell">
-  <aside class="sidebar">
+  <aside class="sidebar" [class.sidebar-abierto]="sidebarAbierto()">
     <div class="brand">
       <i class="pi pi-shopping-cart"></i>
       <span>Supermercado</span>
@@ -8,7 +8,7 @@
     <nav class="nav-menu">
       @for (item of menu; track item.ruta) {
         @if (item.disponible) {
-          <a [routerLink]="item.ruta" routerLinkActive="active" class="nav-item">
+          <a [routerLink]="item.ruta" routerLinkActive="active" class="nav-item" (click)="cerrarSidebarSiMovil()">
             <i [class]="item.icono"></i>
             <span>{{ item.etiqueta }}</span>
           </a>
@@ -23,8 +23,21 @@
     </nav>
   </aside>
 
+  @if (sidebarAbierto()) {
+    <div class="overlay" (click)="toggleSidebar()"></div>
+  }
+
   <div class="main-area">
     <header class="topbar">
+<button 
+  class="btn-hamburguesa" 
+  [class.active]="esMovil() ? sidebarAbierto() : !sidebarAbierto()" 
+  (click)="toggleSidebar()" 
+  aria-label="Menu">
+  <span></span>
+  <span></span>
+  <span></span>
+</button>
       <div class="topbar-user">
         <p-avatar [label]="iniciales" shape="circle" styleClass="avatar-user"></p-avatar>
         <div class="user-info">
@@ -46,7 +59,6 @@
       <router-outlet></router-outlet>
     </main>
   </div>
-
   <app-chat-widget></app-chat-widget>
-  
 </div>
+

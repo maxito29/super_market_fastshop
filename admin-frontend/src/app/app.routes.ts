@@ -11,6 +11,8 @@ import { RestablecerPasswordComponent } from './features/auth/restablecer-passwo
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
+  { path: 'olvide-password', component: OlvidePasswordComponent },
+  { path: 'restablecer-password', component: RestablecerPasswordComponent },
   {
     path: '',
     component: LayoutComponent,
@@ -18,11 +20,9 @@ export const routes: Routes = [
     children: [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'categorias', component: CategoriasComponent },
-      { path: 'productos', component: ProductosComponent},
+      { path: 'productos', component: ProductosComponent },
       { path: 'usuarios', component: UsuariosComponent },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-      { path: 'olvide-password', component: OlvidePasswordComponent },
-      { path: 'restablecer-password', component: RestablecerPasswordComponent },
     ]
   },
   { path: '**', redirectTo: 'login' }

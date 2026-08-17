@@ -30,4 +30,8 @@ export class UsuarioService {
   reactivar(id: number): Observable<void> {
     return this.http.patch<void>(`${this.baseUrl}/${id}/reactivar`, {});
   }
+
+  exportarExcel(): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/exportar/excel`, { responseType: 'blob' });
+  }
 }

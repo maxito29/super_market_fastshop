@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal, HostListener } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
@@ -21,7 +21,7 @@ interface ItemMenu {
   styleUrl: './layout.component.scss'
 })
 export class LayoutComponent {
-menu: ItemMenu[] = [
+  menu: ItemMenu[] = [
     { etiqueta: 'Dashboard', icono: 'pi pi-home', ruta: '/dashboard', disponible: true },
     { etiqueta: 'Productos', icono: 'pi pi-box', ruta: '/productos', disponible: true },
     { etiqueta: 'Categorías', icono: 'pi pi-tags', ruta: '/categorias', disponible: true },
@@ -37,5 +37,45 @@ menu: ItemMenu[] = [
 
   logout(): void {
     this.authService.logout();
+  }
+
+  sidebarAbierto = signal<boolean>(this.obtenerEstadoInicial());
+
+  private obtenerEstadoInicial(): boolean {
+    if (typeof window !== 'undefined') {
+      if (this.esMovil()) {
+        return false; 
+      }
+      return localStorage.getItem('sidebar_estado') !== 'false';
+    }
+    return true;
+  }
+
+  esMovil(): boolean {
+    return typeof window !== 'undefined' && window.innerWidth <= 900;
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: UIEvent): void {
+    const width = (event.target as Window).innerWidth;
+    if (width <= 900 && this.sidebarAbierto()) {
+      this.sidebarAbierto.set(false);
+    }
+  }
+
+  toggleSidebar(): void {
+    this.sidebarAbierto.update(v => {
+      const nuevoEstado = !v;
+      if (!this.esMovil()) {
+        localStorage.setItem('sidebar_estado', String(nuevoEstado));
+      }
+      return nuevoEstado;
+    });
+  }
+
+  cerrarSidebarSiMovil(): void {
+    if (this.esMovil()) {
+      this.sidebarAbierto.set(false);
+    }
   }
 }

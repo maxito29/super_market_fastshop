@@ -24,6 +24,7 @@ public class UsuarioService {
     private final RolRepository rolRepository;
     private final PasswordEncoder passwordEncoder;
     private final BrevoService brevoService;
+    private final ExcelReporteService excelReporteService;
 
     public List<UsuarioResponse> listarTodos() {
         return usuarioRepository.findAll().stream().map(UsuarioResponse::new).toList();
@@ -112,5 +113,10 @@ public class UsuarioService {
     private Rol buscarRol(Long rolId) {
         return rolRepository.findById(rolId)
                 .orElseThrow(() -> new RecursoNoEncontradoException("Rol con id " + rolId + " no encontrado"));
+    }
+
+    @Transactional(readOnly = true)
+    public byte[] exportarExcel() throws java.io.IOException {
+        return excelReporteService.generarExcelUsuarios(usuarioRepository.findAll());
     }
 }

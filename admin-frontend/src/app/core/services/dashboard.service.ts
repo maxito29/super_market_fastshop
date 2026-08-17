@@ -18,4 +18,8 @@ export class DashboardService {
   enviarAlertaStock(): Observable<any> {
   return this.http.post(`${this.baseUrl}/alertas/stock`, {});
 }
+
+exportarPdf(): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/exportar/pdf`, { responseType: 'blob' });
+  }
 }

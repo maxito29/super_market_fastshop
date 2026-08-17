@@ -1,19 +1,21 @@
-<div class="dashboard">
-<div class="dashboard-header">
-  <div>
-    <h1>Hola, {{ authService.usuarioActual()?.nombre }}</h1>
-    <p class="subtitulo">Resumen general del supermercado</p>
-  </div>
-  <button pButton icon="pi pi-envelope" label="Enviar alerta de stock" class="p-button-outlined" (click)="enviarAlertaStock()"></button>
-</div>
-
-  <div class="stats-grid">
+<div class="dashboard-container">
+  <header class="dashboard-header">
+    <div class="header-texto">
+      <h1>Hola, {{ authService.usuarioActual()?.nombre }}</h1>
+      <p class="subtitulo">Resumen general y estado operacional del supermercado</p>
+    </div>
+    <div class="header-acciones">
+      <button pButton icon="pi pi-file-pdf" label="Exportar PDF" class="p-button-outlined p-button-sm" (click)="exportarPdf()"></button>
+      <button pButton icon="pi pi-envelope" label="Alerta de Stock" class="p-button-outlined p-button-sm p-button-warning" (click)="enviarAlertaStock()"></button>
+    </div>
+  </header>
+  <section class="stats-grid">
     <div class="stat-card">
       <div class="stat-icon icon-blue">
         <i class="pi pi-box"></i>
       </div>
       <div class="stat-info">
-        <span class="stat-label">Productos activos</span>
+        <span class="stat-label">Productos Activos</span>
         <span class="stat-number">{{ resumen()?.totalProductos ?? 0 }}</span>
       </div>
     </div>
@@ -23,7 +25,7 @@
         <i class="pi pi-tags"></i>
       </div>
       <div class="stat-info">
-        <span class="stat-label">Categorías activas</span>
+        <span class="stat-label">Categorías Activas</span>
         <span class="stat-number">{{ resumen()?.totalCategorias ?? 0 }}</span>
       </div>
     </div>
@@ -33,88 +35,93 @@
         <i class="pi pi-users"></i>
       </div>
       <div class="stat-info">
-        <span class="stat-label">Trabajadores activos</span>
+        <span class="stat-label">Trabajadores</span>
         <span class="stat-number">{{ resumen()?.totalTrabajadores ?? 0 }}</span>
       </div>
     </div>
 
-    <div class="stat-card">
+    <div class="stat-card alert-card">
       <div class="stat-icon icon-amber">
         <i class="pi pi-exclamation-triangle"></i>
       </div>
       <div class="stat-info">
-        <span class="stat-label">Stock bajo</span>
+        <span class="stat-label">Stock Bajo</span>
         <span class="stat-number">{{ resumen()?.productosStockBajo ?? 0 }}</span>
       </div>
     </div>
-  </div>
-
-  <div class="charts-row">
-    <div class="chart-card chart-card-small">
+  </section>
+  <section class="charts-row">
+    <div class="chart-card">
       <div class="chart-card-header">
-        <h2>Productos por categoría</h2>
-        <p>Distribución del catálogo</p>
+        <h2>Productos por Categoría</h2>
+        <p>Distribución analítica del catálogo</p>
       </div>
-      @if (chartDona) {
-        <apx-chart
-          [series]="chartDona.series!"
-          [chart]="chartDona.chart!"
-          [labels]="chartDona.labels!"
-          [colors]="chartDona.colors!"
-          [legend]="chartDona.legend!"
-          [dataLabels]="chartDona.dataLabels!"
-          [tooltip]="chartDona.tooltip!">
-        </apx-chart>
-      }
+      <div class="chart-wrapper">
+        @if (chartDona) {
+          <apx-chart
+            [series]="chartDona.series!"
+            [chart]="chartDona.chart!"
+            [labels]="chartDona.labels!"
+            [colors]="chartDona.colors!"
+            [legend]="chartDona.legend!"
+            [dataLabels]="chartDona.dataLabels!"
+            [tooltip]="chartDona.tooltip!"
+            [plotOptions]="chartDona.plotOptions!">
+          </apx-chart>
+        }
+      </div>
     </div>
 
-    <div class="chart-card chart-card-large">
+    <div class="chart-card">
       <div class="chart-card-header">
-        <h2>Top 5 productos con más stock</h2>
-        <p>Los mejor abastecidos ahora mismo</p>
+        <h2>Top 5 Productos con más Stock</h2>
+        <p>Unidades máximas del inventario actual</p>
       </div>
-      @if (chartTop5) {
-        <apx-chart
-          [series]="chartTop5.series!"
-          [chart]="chartTop5.chart!"
-          [xaxis]="chartTop5.xaxis!"
-          [dataLabels]="chartTop5.dataLabels!"
-          [grid]="chartTop5.grid!"
-          [tooltip]="chartTop5.tooltip!"
-          [plotOptions]="chartTop5.plotOptions!"
-          [colors]="chartTop5.colors!">
-        </apx-chart>
-      }
+      <div class="chart-wrapper">
+        @if (chartTop5) {
+          <apx-chart
+            [series]="chartTop5.series!"
+            [chart]="chartTop5.chart!"
+            [xaxis]="chartTop5.xaxis!"
+            [dataLabels]="chartTop5.dataLabels!"
+            [grid]="chartTop5.grid!"
+            [tooltip]="chartTop5.tooltip!"
+            [plotOptions]="chartTop5.plotOptions!"
+            [colors]="chartTop5.colors!">
+          </apx-chart>
+        }
+      </div>
     </div>
-  </div>
-
-  <div class="chart-card table-card">
+  </section>
+  <section class="chart-card table-card">
     <div class="chart-card-header">
-      <h2>Stock actual</h2>
-      <p>Ordenado de menor a mayor stock</p>
+      <h2>Monitor de Inventario Reciente</h2>
+      <p>Vista general ordenada de menor a mayor cantidad de stock</p>
     </div>
 
-    <p-table [value]="productos()" [paginator]="true" [rows]="8" styleClass="p-datatable-sm" responsiveLayout="scroll">
-      <ng-template pTemplate="header">
-        <tr>
-          <th>Código</th>
-          <th>Producto</th>
-          <th>Categoría</th>
-          <th>Precio</th>
-          <th>Stock</th>
-          <th>Estado</th>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="body" let-p>
-        <tr>
-          <td>{{ p.codigo }}</td>
-          <td>{{ p.nombre }}</td>
-          <td>{{ p.categoriaNombre }}</td>
-          <td>S/ {{ p.precio.toFixed(2) }}</td>
-          <td>{{ p.stock }}</td>
-          <td><p-tag [value]="etiquetaStock(p.stock)" [severity]="claseStock(p.stock)"></p-tag></td>
-        </tr>
-      </ng-template>
-    </p-table>
-  </div>
+    <div class="prime-table-responsive">
+      <p-table [value]="productos()" [paginator]="true" [rows]="8" styleClass="p-datatable-striped custom-table" responsiveLayout="scroll">
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 120px;">Código</th>
+            <th>Producto</th>
+            <th>Categoría</th>
+            <th style="text-align: right;">Precio</th>
+            <th style="text-align: center;">Stock</th>
+            <th style="width: 140px; text-align: center;">Estado</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-p>
+          <tr>
+            <td class="font-mono font-bold">{{ p.codigo }}</td>
+            <td class="product-name">{{ p.nombre }}</td>
+            <td><span class="category-badge">{{ p.categoriaNombre }}</span></td>
+            <td style="text-align: right;" class="font-semibold">S/ {{ p.precio.toFixed(2) }}</td>
+            <td style="text-align: center;" class="font-semibold">{{ p.stock }}</td>
+            <td style="text-align: center;"><p-tag [value]="etiquetaStock(p.stock)" [severity]="claseStock(p.stock)" styleClass="custom-tag"></p-tag></td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </section>
 </div>

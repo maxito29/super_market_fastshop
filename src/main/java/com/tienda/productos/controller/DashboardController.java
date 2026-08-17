@@ -31,4 +31,18 @@ public class DashboardController {
         int cantidad = dashboardService.enviarAlertaStockBajo();
         return java.util.Map.of("productosNotificados", cantidad);
     }
+
+    @GetMapping("/exportar/pdf")
+    @Operation(summary = "Descarga un PDF con el resumen ejecutivo del dashboard")
+    public org.springframework.http.ResponseEntity<byte[]> exportarPdf(
+            @org.springframework.security.core.annotation.AuthenticationPrincipal com.tienda.productos.entity.Usuario usuario
+    ) throws com.lowagie.text.DocumentException {
+        byte[] pdf = dashboardService.generarReportePdf(usuario.getNombre());
+
+        org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+        headers.setContentType(org.springframework.http.MediaType.APPLICATION_PDF);
+        headers.setContentDispositionFormData("attachment", "reporte-dashboard.pdf");
+
+        return org.springframework.http.ResponseEntity.ok().headers(headers).body(pdf);
+    }
 }

@@ -1,6 +1,6 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
@@ -21,7 +21,7 @@ import { Rol } from '../../core/models/rol.model';
   selector: 'app-usuarios',
   standalone: true,
   imports: [
-    CommonModule, ReactiveFormsModule,
+    CommonModule, ReactiveFormsModule, FormsModule,
     TableModule, ButtonModule, DialogModule, InputTextModule,
     PasswordModule, DropdownModule, TagModule, TooltipModule
   ],
@@ -33,41 +33,53 @@ export class UsuariosComponent implements OnInit {
   usuarios = signal<Usuario[]>([]);
   roles = signal<Rol[]>([]);
   cargando = signal(true);
-
+  guardando = signal(false);
   dialogoVisible = signal(false);
   modoEdicion = signal(false);
-  guardando = signal(false);
   usuarioEditandoId: number | null = null;
+  formulario!: FormGroup;
 
- formulario = this.fb.group({
-    rolId: [null as number | null, Validators.required],
-    nombre: ['', Validators.required],
-    username: ['', Validators.required],
-    email: ['', Validators.email],
-    password: ['']
+  filtroEstado = signal<'todos' | 'activos' | 'inactivos'>('todos');
+
+  opcionesEstado = [
+    { label: 'Todos', value: 'todos' },
+    { label: 'Activos', value: 'activos' },
+    { label: 'Inactivos', value: 'inactivos' }
+  ];
+
+  usuariosFiltrados = computed(() => {
+    const estado = this.filtroEstado();
+    const lista = this.usuarios();
+    if (estado === 'activos') return lista.filter(u => u.activo);
+    if (estado === 'inactivos') return lista.filter(u => !u.activo);
+    return lista;
   });
 
   constructor(
+    private fb: FormBuilder,
     private usuarioService: UsuarioService,
     private rolService: RolService,
     private notificacionService: NotificacionService,
-    private authService: AuthService,
-    private fb: FormBuilder
-  ) {}
-
-  ngOnInit(): void {
-    this.cargarRoles();
-    this.cargarUsuarios();
+    public authService: AuthService
+  ) {
+    this.crearFormulario();
   }
 
-  cargarRoles(): void {
-    this.rolService.listar().subscribe({
-      next: (data) => this.roles.set(data),
-      error: () => this.notificacionService.error('No se pudieron cargar los roles')
+  ngOnInit(): void {
+    this.cargarDatos();
+  }
+
+  private crearFormulario(): void {
+    this.formulario = this.fb.group({
+      rolId: [null as number | null, Validators.required],
+      nombre: ['', [Validators.required, Validators.minLength(3)]],
+      username: ['', [Validators.required, Validators.minLength(3)]],
+      email: ['', [Validators.email]],
+      password: ['', [Validators.minLength(6)]]
     });
   }
 
-  cargarUsuarios(): void {
+  cargarDatos(): void {
     this.cargando.set(true);
     this.usuarioService.listarTodos().subscribe({
       next: (data) => {
@@ -75,59 +87,61 @@ export class UsuariosComponent implements OnInit {
         this.cargando.set(false);
       },
       error: () => {
+        this.notificacionService.error('No se pudo cargar el listado de personal');
         this.cargando.set(false);
-        this.notificacionService.error('No se pudieron cargar los trabajadores');
       }
+    });
+
+    this.rolService.listar().subscribe({
+      next: (data) => this.roles.set(data)
     });
   }
 
-  esUsuarioActual(usuario: Usuario): boolean {
-    return usuario.username === this.authService.usuarioActual()?.username;
-  }
 
   abrirNuevo(): void {
     this.modoEdicion.set(false);
     this.usuarioEditandoId = null;
-    this.formulario.reset();
+    
     this.formulario.get('password')?.setValidators([Validators.required, Validators.minLength(6)]);
     this.formulario.get('password')?.updateValueAndValidity();
+    
+    this.formulario.reset({ rolId: null, nombre: '', username: '', email: '', password: '' });
     this.dialogoVisible.set(true);
   }
 
-  abrirEdicion(usuario: Usuario): void {
+  abrirEdicion(usuario: any): void { 
     this.modoEdicion.set(true);
     this.usuarioEditandoId = usuario.id;
+    
+    this.formulario.get('password')?.setValidators([Validators.minLength(6)]);
+    this.formulario.get('password')?.updateValueAndValidity();
 
-    const rol = this.roles().find(r => r.nombre === usuario.rol);
+    const idDelRol = usuario.rolId ?? usuario.rol?.id ?? null;
 
     this.formulario.setValue({
-      rolId: rol?.id ?? null,
+      rolId: idDelRol,
       nombre: usuario.nombre,
       username: usuario.username,
       email: usuario.email ?? '',
-      password: ''
+      password: '' 
     });
-
-    this.formulario.get('password')?.clearValidators();
-    this.formulario.get('password')?.updateValueAndValidity();
     this.dialogoVisible.set(true);
   }
+
 
   guardar(): void {
     if (this.formulario.invalid) {
       this.formulario.markAllAsTouched();
+      this.notificacionService.error('Por favor, completa los campos marcados con (*)');
       return;
     }
 
     this.guardando.set(true);
-    const v = this.formulario.value;
-    const datos = {
-      rolId: v.rolId!,
-      nombre: v.nombre!,
-      username: v.username!,
-      email: v.email || null,
-      password: v.password || null
-    };
+    const datos = { ...this.formulario.value };
+    
+    if (this.modoEdicion() && !datos.password) {
+      delete datos.password;
+    }
 
     const editando = this.modoEdicion();
     const peticion = editando
@@ -138,45 +152,59 @@ export class UsuariosComponent implements OnInit {
       next: () => {
         this.guardando.set(false);
         this.dialogoVisible.set(false);
+        this.cargarDatos();
         if (editando) {
-          this.notificacionService.notificarEdicion('Trabajador actualizado');
+          this.notificacionService.notificarEdicion('Datos del trabajador actualizados');
         } else {
-          this.notificacionService.notificarCreacion('Trabajador creado');
+          this.notificacionService.notificarCreacion('Nuevo trabajador registrado con éxito');
         }
-        this.cargarUsuarios();
       },
-      error: (err) => {
-        this.guardando.set(false);
-        this.notificacionService.error(err.error?.mensaje ?? 'Ocurrió un error al guardar');
-      }
+      error: () => this.guardando.set(false)
     });
   }
 
-  async desactivar(usuario: Usuario): Promise<void> {
-    if (this.esUsuarioActual(usuario)) {
-      this.notificacionService.error('No puedes desactivar tu propio usuario');
-      return;
-    }
+  limpiarFormularioAlCerrar(): void {
+    this.formulario.reset({ rolId: null, nombre: '', username: '', email: '', password: '' });
+    this.formulario.markAsPristine();
+    this.formulario.markAsUntouched();
+    this.usuarioEditandoId = null;
+  }
 
+  async desactivar(usuario: Usuario): Promise<void> {
     const confirmado = await this.notificacionService.confirmarEliminacion(usuario.nombre);
     if (!confirmado) return;
 
     this.usuarioService.desactivar(usuario.id).subscribe({
       next: () => {
-        this.notificacionService.notificarEliminacion('Trabajador desactivado');
-        this.cargarUsuarios();
-      },
-      error: () => this.notificacionService.error('No se pudo desactivar al trabajador')
+        this.notificacionService.notificarEliminacion('Cuenta de usuario suspendida');
+        this.cargarDatos();
+      }
     });
   }
 
-  reactivar(usuario: Usuario): void {
+  async reactivar(usuario: Usuario): Promise<void> {
+    const confirmado = await this.notificacionService.confirmarReactivacion(usuario.nombre);
+    if (!confirmado) return;
+
     this.usuarioService.reactivar(usuario.id).subscribe({
       next: () => {
-        this.notificacionService.notificarReactivacion('Trabajador reactivado');
-        this.cargarUsuarios();
+        this.notificacionService.notificarReactivacion('Cuenta de usuario restablecida');
+        this.cargarDatos();
+      }
+    });
+  }
+
+  exportarExcel(): void {
+    this.usuarioService.exportarExcel().subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `reporte-personal-${new Date().toISOString().slice(0,10)}.xlsx`;
+        a.click();
+        window.URL.revokeObjectURL(url);
       },
-      error: () => this.notificacionService.error('No se pudo reactivar al trabajador')
+      error: () => this.notificacionService.error('Error al exportar la lista de personal')
     });
   }
 }

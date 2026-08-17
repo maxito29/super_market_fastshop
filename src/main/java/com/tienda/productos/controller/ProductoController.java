@@ -71,4 +71,17 @@ public class ProductoController {
     public void reactivar(@PathVariable Long id) {
         productoService.reactivar(id);
     }
+
+    @GetMapping("/exportar/excel")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Descarga un Excel (.xlsx) con todos los productos")
+    public org.springframework.http.ResponseEntity<byte[]> exportarExcel() throws java.io.IOException {
+        byte[] excel = productoService.exportarExcel();
+
+        org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+        headers.setContentType(org.springframework.http.MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment", "productos.xlsx");
+
+        return org.springframework.http.ResponseEntity.ok().headers(headers).body(excel);
+    }
 }

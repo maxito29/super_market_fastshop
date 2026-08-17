@@ -43,6 +43,7 @@
   position: relative;
   z-index: 2;
   width: 380px;
+  max-width: calc(100vw - 2rem);
   background: rgba(15, 23, 42, 0.55);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);

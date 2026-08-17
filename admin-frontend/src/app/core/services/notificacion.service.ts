@@ -62,6 +62,21 @@ export class NotificacionService {
     return resultado.isConfirmed;
   }
 
+    async confirmarReactivacion(nombreItem: string): Promise<boolean> {
+    const resultado = await Swal.fire({
+      icon: 'question', 
+      title: '¿Deseas reactivar este producto?',
+      text: `Se volverá a activar "${nombreItem}" en el catálogo.`,
+      showCancelButton: true,
+      confirmButtonText: 'Sí, reactivar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#16a34a', 
+      cancelButtonColor: '#64748b'
+    });
+    return resultado.isConfirmed;
+  }
+
+
   private toast(mensaje: string, icon: SweetAlertIcon): void {
     Swal.fire({
       toast: true,

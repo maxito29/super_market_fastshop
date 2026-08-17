@@ -25,6 +25,7 @@ public class DashboardService {
     private final CategoriaRepository categoriaRepository;
     private final UsuarioRepository usuarioRepository;
     private final BrevoService brevoService;
+    private final PdfReporteService pdfReporteService;
 
     @Value("${brevo.destinatario.alertas}")
     private String destinatarioAlertas;
@@ -77,5 +78,10 @@ public class DashboardService {
         );
 
         return productosStockBajo.size();
+    }
+
+    public byte[] generarReportePdf(String nombreAdmin) throws com.lowagie.text.DocumentException {
+        DashboardResumenResponse resumen = obtenerResumen();
+        return pdfReporteService.generarReporteDashboard(resumen, nombreAdmin);
     }
 }

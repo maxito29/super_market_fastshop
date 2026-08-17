@@ -53,4 +53,16 @@ public class UsuarioController {
     public void reactivar(@PathVariable Long id) {
         usuarioService.reactivar(id);
     }
+
+    @GetMapping("/exportar/excel")
+    @Operation(summary = "Descarga un Excel (.xlsx) con todos los trabajadores")
+    public org.springframework.http.ResponseEntity<byte[]> exportarExcel() throws java.io.IOException {
+        byte[] excel = usuarioService.exportarExcel();
+
+        org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+        headers.setContentType(org.springframework.http.MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment", "trabajadores.xlsx");
+
+        return org.springframework.http.ResponseEntity.ok().headers(headers).body(excel);
+    }
 }

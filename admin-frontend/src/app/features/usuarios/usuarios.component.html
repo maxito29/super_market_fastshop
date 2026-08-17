@@ -1,113 +1,169 @@
-<div class="page-header">
-  <div>
-    <h1>Trabajadores</h1>
-    <p>Administra las cuentas de vendedores, pickers y repartidores</p>
-  </div>
-  <button pButton icon="pi pi-plus" label="Nuevo trabajador" (click)="abrirNuevo()"></button>
+<div class="usuarios-container">
+  <header class="page-header">
+    <div class="header-texto">
+      <h1>Personal y Trabajadores</h1>
+      <p class="subtitulo">Administra las cuentas de vendedores, cajeros, pickers y repartidores</p>
+    </div>
+    <div class="header-acciones">
+      <button pButton icon="pi pi-file-excel" label="Exportar Excel" class="p-button-outlined p-button-sm p-button-success" (click)="exportarExcel()"></button>
+      <button pButton icon="pi pi-plus" label="Nuevo Trabajador" class="p-button-sm" (click)="abrirNuevo()"></button>
+    </div>
+  </header>
+  <section class="tabla-toolbar-card">
+    <div class="tabla-toolbar">
+      <div class="p-input-icon-left buscador">
+        <i class="pi pi-search"></i>
+        <input pInputText type="text" placeholder="Buscar por nombre, usuario, correo o rol..." (input)="dt.filterGlobal($any($event.target).value, 'contains')" />
+      </div>
+
+      <div class="filtro-contenedor">
+        <label class="filtro-label">Estado:</label>
+        <p-dropdown
+          [options]="opcionesEstado"
+          [ngModel]="filtroEstado()"
+          (ngModelChange)="filtroEstado.set($event)"
+          optionLabel="label"
+          optionValue="value"
+          styleClass="filtro-estado custom-dropdown">
+        </p-dropdown>
+      </div>
+    </div>
+  </section>
+  <section class="table-card">
+    <div class="prime-table-responsive">
+      <p-table
+        #dt
+        [value]="usuariosFiltrados()"
+        [globalFilterFields]="['nombre', 'username', 'email', 'rol']"
+        [loading]="cargando()"
+        [paginator]="true"
+        [rows]="10"
+        styleClass="p-datatable-striped custom-table"
+        responsiveLayout="scroll">
+
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Nombre Completo</th>
+            <th>Usuario</th>
+            <th>Email Corporativo</th>
+            <th style="width: 140px; text-align: center;">Rol</th>
+            <th style="text-align: center; width: 130px;">Estado</th>
+            <th style="text-align: center; width: 120px;">Acciones</th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-usuario>
+          <tr>
+            <td class="user-name-cell">{{ usuario.nombre }}</td>
+            <td class="font-mono font-semibold text-slate">{{ usuario.username }}</td>
+            <td>{{ usuario.email || '—' }}</td>
+            <td style="text-align: center;">
+              <p-tag [value]="usuario.rol" severity="info" styleClass="custom-tag-rol"></p-tag>
+            </td>
+            <td style="text-align: center;">
+              <span class="status-dot-label" [class.is-active]="usuario.activo">
+                <span class="dot"></span> {{ usuario.activo ? 'Activo' : 'Inactivo' }}
+              </span>
+            </td>
+            <td style="text-align: center;">
+              <div class="acciones-cell">
+                <button pButton icon="pi pi-pencil" class="p-button-text p-button-rounded p-button-sm action-btn" pTooltip="Editar" tooltipPosition="top" (click)="abrirEdicion(usuario)"></button>
+                @if (usuario.activo) {
+                  <button pButton icon="pi pi-trash" class="p-button-text p-button-rounded p-button-danger p-button-sm action-btn" pTooltip="Desactivar" tooltipPosition="top" (click)="desactivar(usuario)"></button>
+                } @else {
+                  <button pButton icon="pi pi-refresh" class="p-button-text p-button-rounded p-button-success p-button-sm action-btn" pTooltip="Reactivar" tooltipPosition="top" (click)="reactivar(usuario)"></button>
+                }
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="6" class="table-empty-state">
+              <i class="pi pi-users empty-icon"></i>
+              <p>No se encontraron trabajadores registrados</p>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </section>
 </div>
-
-<p-table
-  [value]="usuarios()"
-  [loading]="cargando()"
-  [paginator]="true"
-  [rows]="10"
-  styleClass="p-datatable-sm"
-  responsiveLayout="scroll">
-
-  <ng-template pTemplate="header">
-    <tr>
-      <th>Nombre</th>
-      <th>Usuario</th>
-      <th>Rol</th>
-      <th>Estado</th>
-      <th style="width: 120px">Acciones</th>
-    </tr>
-  </ng-template>
-
-  <ng-template pTemplate="body" let-usuario>
-    <tr>
-      <td>{{ usuario.nombre }}</td>
-      <td>{{ usuario.username }}</td>
-      <td><p-tag [value]="usuario.rol" severity="info"></p-tag></td>
-      <td>
-        <p-tag
-          [value]="usuario.activo ? 'Activo' : 'Inactivo'"
-          [severity]="usuario.activo ? 'success' : 'danger'">
-        </p-tag>
-      </td>
-      <td>
-        <button pButton icon="pi pi-pencil" class="p-button-text p-button-rounded" pTooltip="Editar" (click)="abrirEdicion(usuario)"></button>
-        @if (usuario.activo) {
-          <button pButton icon="pi pi-trash" class="p-button-text p-button-rounded p-button-danger" pTooltip="Desactivar" (click)="desactivar(usuario)"></button>
-        } @else {
-          <button pButton icon="pi pi-refresh" class="p-button-text p-button-rounded p-button-success" pTooltip="Reactivar" (click)="reactivar(usuario)"></button>
-        }
-      </td>
-    </tr>
-  </ng-template>
-
-  <ng-template pTemplate="emptymessage">
-    <tr>
-      <td colspan="5" style="text-align: center; padding: 2rem;">No hay trabajadores registrados</td>
-    </tr>
-  </ng-template>
-
-</p-table>
-
 <p-dialog
   [(visible)]="dialogoVisible"
-  [header]="modoEdicion() ? 'Editar trabajador' : 'Nuevo trabajador'"
+  [header]="modoEdicion() ? 'Editar Trabajador' : 'Registrar Nuevo Trabajador'"
   [modal]="true"
-  [style]="{ width: '420px' }">
+  [style]="{ width: '480px' }"
+  [breakpoints]="{ '640px': '95vw' }"
+  styleClass="custom-dialog"
+  (onHide)="limpiarFormularioAlCerrar()">
 
   <form [formGroup]="formulario" class="form-dialogo">
-
     <div class="campo">
-      <label for="rol">Rol</label>
+      <label for="rol">Rol Asignado <span class="required">*</span></label>
       <p-dropdown
         id="rol"
         formControlName="rolId"
         [options]="roles()"
         optionLabel="nombre"
         optionValue="id"
-        placeholder="Selecciona un rol"
-        styleClass="w-full">
+        placeholder="Selecciona el rol de trabajo"
+        styleClass="w-full custom-dropdown">
       </p-dropdown>
+      @if (formulario.get('rolId')?.touched && formulario.get('rolId')?.invalid) {
+        <small class="error-text">El rol es requerido.</small>
+      }
     </div>
 
     <div class="campo">
-      <label for="nombre">Nombre completo</label>
-      <input pInputText id="nombre" formControlName="nombre" placeholder="Ej: Carlos Ramírez" />
+      <label for="nombre">Nombre Completo <span class="required">*</span></label>
+      <input pInputText id="nombre" formControlName="nombre" placeholder="Ej: Carlos Ramírez Milla" class="custom-input" />
+      @if (formulario.get('nombre')?.touched && formulario.get('nombre')?.invalid) {
+        <small class="error-text">El nombre completo es obligatorio.</small>
+      }
     </div>
 
     <div class="campo">
-      <label for="username">Usuario (para iniciar sesión)</label>
-      <input pInputText id="username" formControlName="username" placeholder="Ej: carlos.picker" />
+      <label for="username">Nombre de Usuario <span class="required">*</span></label>
+      <input pInputText id="username" formControlName="username" placeholder="Ej: carlos.picker" class="custom-input" />
+      @if (formulario.get('username')?.touched && formulario.get('username')?.invalid) {
+        <small class="error-text">El usuario para inicio de sesión es requerido.</small>
+      }
     </div>
 
     <div class="campo">
-      <label for="email">Correo (opcional, para enviarle bienvenida)</label>
-      <input pInputText id="email" formControlName="email" placeholder="trabajador@correo.com" />
+      <label for="email">Correo Electrónico <span class="optional">(Opcional)</span></label>
+      <input pInputText id="email" formControlName="email" placeholder="ejemplo@supermercado.com" class="custom-input" />
+      @if (formulario.get('email')?.touched && formulario.get('email')?.hasError('email')) {
+        <small class="error-text">Ingresa un formato de correo válido.</small>
+      }
     </div>
 
     <div class="campo">
-      <label for="password">{{ modoEdicion() ? 'Nueva contraseña (opcional)' : 'Contraseña' }}</label>
+      <label for="password">
+        Contraseña 
+        @if (modoEdicion()) { <span class="optional">(Opcional para cambiarla)</span> } @else { <span class="required">*</span> }
+      </label>
       <p-password
         id="password"
         formControlName="password"
         [feedback]="false"
         [toggleMask]="true"
-        [placeholder]="modoEdicion() ? 'Dejar vacío para no cambiarla' : 'Mínimo 6 caracteres'"
-        styleClass="w-full"
-        inputStyleClass="w-full">
+        [placeholder]="modoEdicion() ? 'Dejar en blanco para no modificar' : 'Mínimo 6 caracteres'"
+        styleClass="w-full custom-password-wrapper"
+        inputStyleClass="custom-input w-full">
       </p-password>
+      @if (formulario.get('password')?.touched && formulario.get('password')?.invalid) {
+        <small class="error-text">La contraseña debe tener mínimo 6 caracteres.</small>
+      }
     </div>
-
   </form>
 
   <ng-template pTemplate="footer">
-    <button pButton label="Cancelar" class="p-button-text" (click)="dialogoVisible.set(false)"></button>
-    <button pButton label="Guardar" [loading]="guardando()" (click)="guardar()"></button>
+    <div class="dialog-actions-footer">
+      <button pButton label="Cancelar" class="p-button-text p-button-secondary" (click)="dialogoVisible.set(false)"></button>
+      <button pButton label="Guardar" class="p-button-primary" [loading]="guardando()" (click)="guardar()"></button>
+    </div>
   </ng-template>
-
 </p-dialog>
