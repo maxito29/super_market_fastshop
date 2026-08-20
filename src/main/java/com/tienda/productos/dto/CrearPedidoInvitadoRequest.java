@@ -25,8 +25,6 @@ public class CrearPedidoInvitadoRequest {
 
     @NotNull(message = "La modalidad de entrega es obligatoria")
     private ModalidadEntrega modalidadEntrega;
-
-    // Solo obligatorios si modalidadEntrega = DELIVERY
     private String direccion;
     private String distrito;
     private String referencia;
@@ -39,4 +37,9 @@ public class CrearPedidoInvitadoRequest {
     @NotEmpty(message = "El pedido debe tener al menos un producto")
     @Valid
     private List<ItemPedidoRequest> items;
+
+    private com.tienda.productos.entity.TipoComprobante tipoComprobante = com.tienda.productos.entity.TipoComprobante.BOLETA;
+    private String dni;
+    private String ruc;
+    private String razonSocial;
 }
