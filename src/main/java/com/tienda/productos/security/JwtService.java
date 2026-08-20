@@ -65,4 +65,8 @@ public class JwtService {
             return false;
         }
     }
+
+    public String extraerRol(String token) {
+        return extraerClaim(token, claims -> claims.get("rol", String.class));
+    }
 }

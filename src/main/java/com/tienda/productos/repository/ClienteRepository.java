@@ -9,4 +9,6 @@ import java.util.Optional;
 public interface ClienteRepository extends JpaRepository<Cliente, Long> {
     Optional<Cliente> findByTipoDocumentoAndNumeroDocumento
             (TipoDocumento tipoDocumento, String numeroDocumento);
+
+    java.util.Optional<Cliente> findByEmail(String email);
 }

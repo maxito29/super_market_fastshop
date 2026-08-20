@@ -1,10 +1,18 @@
 package com.tienda.productos.dto;
 
-import lombok.Data;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
-public class ItemPedidoRequest
-{
-    private  Long productoId;
-    private  Integer cantidad;
+@Getter
+@Setter
+public class ItemPedidoRequest {
+
+    @NotNull(message = "El producto es obligatorio")
+    private Long productoId;
+
+    @NotNull(message = "La cantidad es obligatoria")
+    @Min(value = 1, message = "La cantidad debe ser al menos 1")
+    private Integer cantidad;
 }
