@@ -1,0 +1,54 @@
+<section class="contenedor pagina">
+  <h1>Tu carrito</h1>
+
+  <div *ngIf="carrito.items().length === 0" class="vacio">
+    <span class="pi pi-shopping-cart"></span>
+    <p>Todavía no agregaste productos.</p>
+    <a routerLink="/">
+      <p-button label="Ver catálogo" icon="pi pi-arrow-left"></p-button>
+    </a>
+  </div>
+
+  <div class="carrito-layout" *ngIf="carrito.items().length > 0">
+    <div class="lista">
+      <div class="fila" *ngFor="let item of carrito.items()">
+        <div class="fila-info">
+          <span class="fila-nombre">{{ item.nombre }}</span>
+          <span class="fila-proveedor">{{ item.proveedorNombre ?? 'Precio de tienda' }}</span>
+        </div>
+
+        <p-inputNumber
+          [ngModel]="item.cantidad"
+          (ngModelChange)="actualizarCantidad(item.productoId, item.ofertaProductoId, $event)"
+          [showButtons]="true"
+          [min]="1"
+          [max]="item.stockDisponible"
+          buttonLayout="horizontal"
+          incrementButtonIcon="pi pi-plus"
+          decrementButtonIcon="pi pi-minus">
+        </p-inputNumber>
+
+        <span class="fila-subtotal">S/ {{ (item.cantidad * item.precioUnitario).toFixed(2) }}</span>
+
+        <button class="quitar" (click)="quitar(item.productoId, item.ofertaProductoId)">
+          <span class="pi pi-trash"></span>
+        </button>
+      </div>
+    </div>
+
+    <aside class="resumen">
+      <h3>Resumen</h3>
+      <div class="resumen-linea">
+        <span>Productos ({{ carrito.totalItems() }})</span>
+        <span>S/ {{ carrito.totalPagar().toFixed(2) }}</span>
+      </div>
+      <div class="resumen-total">
+        <span>Total</span>
+        <span>S/ {{ carrito.totalPagar().toFixed(2) }}</span>
+      </div>
+      <a routerLink="/checkout">
+        <p-button label="Continuar con el pedido" icon="pi pi-arrow-right" iconPos="right" styleClass="w-full"></p-button>
+      </a>
+    </aside>
+  </div>
+</section>

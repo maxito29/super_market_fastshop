@@ -1,0 +1,25 @@
+<header class="encabezado">
+  <div class="contenedor barra">
+    <a routerLink="/" class="marca">
+      <span class="marca-icono pi pi-shopping-basket"></span>
+      <span class="marca-texto">SUPER MARKET FASTSHOP</span>
+    </a>
+
+    <nav class="nav">
+      <a routerLink="/mi-pedido" routerLinkActive="activo">
+        <span class="pi pi-file-search"></span>
+        Consultar pedido
+      </a>
+    </nav>
+
+    <div class="iconos">
+      <a routerLink="/login" routerLinkActive="activo" class="icono-link" title="Ingresar">
+        <span class="pi pi-user"></span>
+      </a>
+      <a routerLink="/carrito" routerLinkActive="activo" class="icono-link" title="Carrito">
+        <span class="pi pi-shopping-cart"></span>
+        <span class="carrito-badge" *ngIf="carrito.totalItems() > 0">{{ carrito.totalItems() }}</span>
+      </a>
+    </div>
+  </div>
+</header>

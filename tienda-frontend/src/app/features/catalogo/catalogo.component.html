@@ -1,0 +1,117 @@
+<section class="hero">
+  <div class="contenedor hero-centro">
+    <p class="hero-eyebrow">Recojo en tienda o delivery</p>
+    <h1>Lo que necesitas para tu semana, al mejor precio</h1>
+    <p class="hero-texto">Compara precios de distintos proveedores por cada producto y elige el que más te convenga.</p>
+  </div>
+</section>
+
+<section class="contenedor filtros">
+  <button
+    class="chip"
+    [class.chip-activo]="categoriaSeleccionada === null"
+    (click)="seleccionarCategoria(null)">
+    Todas
+  </button>
+  <button
+    class="chip"
+    *ngFor="let categoria of categorias"
+    [class.chip-activo]="categoriaSeleccionada === categoria.id"
+    (click)="seleccionarCategoria(categoria.id)">
+    {{ categoria.nombre }}
+  </button>
+</section>
+
+<section class="contenedor grilla">
+  <p-card *ngFor="let producto of productos" styleClass="tarjeta-producto">
+    <div class="producto-imagen" [class.sin-imagen]="!producto.imagenUrl">
+      <img *ngIf="producto.imagenUrl" [src]="producto.imagenUrl" [alt]="producto.nombre" />
+      <span *ngIf="!producto.imagenUrl" class="pi pi-shopping-basket"></span>
+    </div>
+
+    <p class="producto-categoria">{{ producto.categoriaNombre }}</p>
+    <h3 class="producto-nombre">{{ producto.nombre }}</h3>
+    <p class="producto-descripcion">{{ producto.descripcion }}</p>
+
+    <div class="producto-pie">
+      <span class="producto-precio">S/ {{ producto.precio.toFixed(2) }}</span>
+      <p-button
+        label="Comparar y agregar"
+        icon="pi pi-shopping-cart"
+        size="small"
+        (onClick)="abrirComparador(producto)">
+      </p-button>
+    </div>
+  </p-card>
+
+  <p class="vacio" *ngIf="productos.length === 0">No hay productos en esta categoría todavía.</p>
+</section>
+
+<p-dialog
+  [(visible)]="dialogoVisible"
+  [modal]="true"
+  [style]="{ width: '440px' }"
+  [header]="productoEnDialogo?.nombre ?? ''">
+
+  <div *ngIf="cargandoOfertas" class="dialogo-cargando">Buscando proveedores...</div>
+
+  <div *ngIf="!cargandoOfertas" class="dialogo-cuerpo">
+    <p class="dialogo-etiqueta">¿Con qué proveedor lo compras?</p>
+
+    <div class="opcion-proveedor" [class.opcion-elegida]="ofertaElegida === 'base'">
+      <p-radioButton
+        name="proveedor"
+        [value]="'base'"
+        [(ngModel)]="ofertaElegida"
+        inputId="op-base">
+      </p-radioButton>
+      <label for="op-base" class="opcion-info">
+        <span class="opcion-nombre">Precio de tienda</span>
+        <span class="opcion-precio">S/ {{ productoEnDialogo?.precio?.toFixed(2) }}</span>
+      </label>
+    </div>
+
+    <div
+      class="opcion-proveedor"
+      *ngFor="let oferta of ofertasEnDialogo; let i = index"
+      [class.opcion-elegida]="ofertaElegida !== 'base' && ofertaElegida.ofertaId === oferta.ofertaId">
+      <p-radioButton
+        name="proveedor"
+        [value]="oferta"
+        [(ngModel)]="ofertaElegida"
+        [inputId]="'op-' + oferta.ofertaId">
+      </p-radioButton>
+      <label [for]="'op-' + oferta.ofertaId" class="opcion-info">
+        <span class="opcion-nombre">
+          {{ oferta.proveedorNombre }}
+          <p-tag *ngIf="i === 0" severity="warning" value="Más barato"></p-tag>
+        </span>
+        <span class="opcion-precio">S/ {{ oferta.precio.toFixed(2) }}</span>
+      </label>
+    </div>
+
+    <p class="dialogo-etiqueta cantidad-label">Cantidad</p>
+    <p-inputNumber
+      [(ngModel)]="cantidadElegida"
+      [showButtons]="true"
+      [min]="1"
+      [max]="stockDisponible()"
+      buttonLayout="horizontal"
+      decrementButtonClass="p-button-secondary"
+      incrementButtonClass="p-button-secondary"
+      incrementButtonIcon="pi pi-plus"
+      decrementButtonIcon="pi pi-minus">
+    </p-inputNumber>
+    <p class="stock-info">{{ stockDisponible() }} disponibles</p>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <p-button label="Cancelar" severity="secondary" [text]="true" (onClick)="dialogoVisible = false"></p-button>
+    <p-button
+      label="Agregar al carrito · S/ {{ (precioMostrado() * cantidadElegida).toFixed(2) }}"
+      icon="pi pi-check"
+      (onClick)="confirmarAgregar()"
+      [disabled]="cargandoOfertas || stockDisponible() < 1">
+    </p-button>
+  </ng-template>
+</p-dialog>

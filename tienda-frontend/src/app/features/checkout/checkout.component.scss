@@ -1,0 +1,137 @@
+.pagina {
+  padding: 24px 20px 60px;
+  max-width: 980px;
+}
+
+.volver {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--tienda-tinta-suave);
+  text-decoration: none;
+  margin-bottom: 10px;
+}
+
+.pagina h1 {
+  font-size: 24px;
+  color: var(--tienda-verde-900);
+  margin-bottom: 22px;
+}
+
+.checkout-layout {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 28px;
+  align-items: start;
+}
+
+.bloque {
+  background: var(--tienda-superficie);
+  border: 1px solid var(--tienda-borde);
+  border-radius: var(--tienda-radio);
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.bloque h3 {
+  font-size: 15px;
+  color: var(--tienda-verde-900);
+  margin-bottom: 14px;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.campo:last-child {
+  margin-bottom: 0;
+}
+
+.campo label {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--tienda-tinta-suave);
+}
+
+.campo input,
+.campo ::ng-deep .p-dropdown,
+.campo ::ng-deep .p-inputnumber {
+  width: 100%;
+}
+
+.fila-campos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.opciones-radio {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 14px;
+}
+
+.radio-opcion {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.boton-confirmar {
+  margin-top: 4px;
+}
+
+.ayuda {
+  font-size: 12px;
+  color: var(--tienda-verde-700);
+}
+
+.resumen {
+  background: var(--tienda-superficie);
+  border: 1px solid var(--tienda-borde);
+  border-radius: var(--tienda-radio);
+  padding: 20px;
+  position: sticky;
+  top: 84px;
+}
+
+.resumen h3 {
+  font-size: 15px;
+  margin-bottom: 14px;
+}
+
+.resumen-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--tienda-tinta-suave);
+  margin-bottom: 8px;
+  gap: 10px;
+}
+
+.resumen-total {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 800;
+  font-size: 17px;
+  color: var(--tienda-verde-900);
+  border-top: 1px solid var(--tienda-borde);
+  padding-top: 12px;
+  margin-top: 10px;
+}
+
+@media (max-width: 760px) {
+  .checkout-layout {
+    grid-template-columns: 1fr;
+  }
+  .fila-campos {
+    grid-template-columns: 1fr;
+  }
+}

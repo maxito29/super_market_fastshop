@@ -1,0 +1,133 @@
+.pagina {
+  padding: 32px 20px 60px;
+}
+
+.pagina h1 {
+  font-size: 24px;
+  color: var(--tienda-verde-900);
+  margin-bottom: 20px;
+}
+
+.vacio {
+  text-align: center;
+  padding: 60px 0;
+  color: var(--tienda-tinta-suave);
+}
+
+.vacio .pi {
+  font-size: 36px;
+  color: var(--tienda-verde-500);
+  display: block;
+  margin-bottom: 12px;
+}
+
+.vacio p {
+  margin: 0 0 18px;
+}
+
+.carrito-layout {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 28px;
+  align-items: start;
+}
+
+.lista {
+  background: var(--tienda-superficie);
+  border: 1px solid var(--tienda-borde);
+  border-radius: var(--tienda-radio);
+  overflow: hidden;
+}
+
+.fila {
+  display: grid;
+  grid-template-columns: 1fr auto auto auto;
+  align-items: center;
+  gap: 18px;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--tienda-borde);
+}
+
+.fila:last-child {
+  border-bottom: none;
+}
+
+.fila-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.fila-nombre {
+  font-weight: 600;
+  font-size: 14.5px;
+}
+
+.fila-proveedor {
+  font-size: 12.5px;
+  color: var(--tienda-tinta-suave);
+}
+
+.fila-subtotal {
+  font-weight: 700;
+  color: var(--tienda-verde-900);
+  min-width: 80px;
+  text-align: right;
+}
+
+.quitar {
+  border: none;
+  background: transparent;
+  color: var(--tienda-tinta-suave);
+  cursor: pointer;
+  font-size: 15px;
+  padding: 8px;
+}
+
+.quitar:hover {
+  color: #b3412f;
+}
+
+.resumen {
+  background: var(--tienda-superficie);
+  border: 1px solid var(--tienda-borde);
+  border-radius: var(--tienda-radio);
+  padding: 20px;
+  position: sticky;
+  top: 84px;
+}
+
+.resumen h3 {
+  font-size: 15px;
+  margin-bottom: 14px;
+}
+
+.resumen-linea {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13.5px;
+  color: var(--tienda-tinta-suave);
+  margin-bottom: 10px;
+}
+
+.resumen-total {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 800;
+  font-size: 17px;
+  color: var(--tienda-verde-900);
+  border-top: 1px solid var(--tienda-borde);
+  padding-top: 12px;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 760px) {
+  .carrito-layout {
+    grid-template-columns: 1fr;
+  }
+  .fila {
+    grid-template-columns: 1fr auto;
+    row-gap: 10px;
+  }
+}

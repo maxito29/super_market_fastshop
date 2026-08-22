@@ -1,0 +1,20 @@
+<section class="contenedor pagina">
+  <div class="tarjeta">
+    <span class="icono pi pi-check-circle"></span>
+    <p class="eyebrow">¡Pedido registrado!</p>
+    <h1>{{ numeroPedido }}</h1>
+    <p class="texto">
+      Guarda este número — con él, o con tu DNI, RUC o teléfono, puedes revisar el estado de tu pedido en
+      <b>"Consultar pedido"</b>.
+    </p>
+
+    <div class="acciones">
+      <a routerLink="/">
+        <p-button label="Seguir comprando" severity="secondary" [outlined]="true"></p-button>
+      </a>
+      <a [routerLink]="['/mi-pedido']" [queryParams]="{ valor: numeroPedido }">
+        <p-button label="Ver estado de mi pedido" icon="pi pi-arrow-right" iconPos="right"></p-button>
+      </a>
+    </div>
+  </div>
+</section>

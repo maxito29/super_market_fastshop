@@ -1,0 +1,57 @@
+<section class="contenedor pagina">
+  <div class="tarjeta">
+    <div class="tabs">
+      <button class="tab" [class.tab-activo]="modo === 'login'" (click)="cambiarModo('login')">Ingresar</button>
+      <button class="tab" [class.tab-activo]="modo === 'registro'" (click)="cambiarModo('registro')">Crear cuenta</button>
+    </div>
+
+    <form (ngSubmit)="enviar()">
+      <div class="fila-campos">
+        <div class="campo">
+          <label>Tipo de documento</label>
+          <p-dropdown
+            [options]="tiposDocumento"
+            optionLabel="label"
+            optionValue="value"
+            [(ngModel)]="form.tipoDocumento"
+            name="tipoDocumento"
+            styleClass="w-full">
+          </p-dropdown>
+        </div>
+        <div class="campo">
+          <label>Número de documento</label>
+          <input pInputText [(ngModel)]="form.numeroDocumento" name="numeroDocumento" />
+        </div>
+      </div>
+
+      <ng-container *ngIf="modo === 'registro'">
+        <div class="campo">
+          <label>Nombre completo</label>
+          <input pInputText [(ngModel)]="form.nombreRazonSocial" name="nombreRazonSocial" />
+        </div>
+        <div class="fila-campos">
+          <div class="campo">
+            <label>Teléfono</label>
+            <input pInputText [(ngModel)]="form.telefono" name="telefono" />
+          </div>
+          <div class="campo">
+            <label>Correo (opcional)</label>
+            <input pInputText [(ngModel)]="form.email" name="email" />
+          </div>
+        </div>
+      </ng-container>
+
+      <div class="campo">
+        <label>Contraseña</label>
+        <p-password [(ngModel)]="form.password" name="password" [toggleMask]="true" [feedback]="false" styleClass="w-full"></p-password>
+      </div>
+
+      <p-button
+        type="submit"
+        [label]="modo === 'login' ? 'Ingresar' : 'Crear cuenta'"
+        styleClass="w-full"
+        [loading]="enviando">
+      </p-button>
+    </form>
+  </div>
+</section>

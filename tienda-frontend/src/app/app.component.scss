@@ -1,0 +1,27 @@
+main {
+  display: block;
+  min-height: calc(100vh - 68px);
+  padding-bottom: 48px;
+}
+
+.pie-pagina {
+  border-top: 1px solid var(--tienda-borde);
+  padding: 18px 0;
+}
+
+.pie-contenido {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12.5px;
+  color: var(--tienda-ink-faint, var(--tienda-tinta-suave));
+}
+
+.enlace-admin {
+  color: var(--tienda-tinta-suave);
+  text-decoration: none;
+}
+
+.enlace-admin:hover {
+  color: var(--tienda-verde-700);
+}

@@ -1,0 +1,209 @@
+.hero {
+  background: linear-gradient(180deg, var(--tienda-verde-100) 0%, var(--tienda-papel) 100%);
+  padding: 40px 0 28px;
+  border-bottom: 1px solid var(--tienda-borde);
+}
+
+.hero-centro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.hero-eyebrow {
+  font-size: 12.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--tienda-verde-700);
+  margin: 0 0 10px;
+}
+
+.hero h1 {
+  font-size: clamp(24px, 4vw, 34px);
+  color: var(--tienda-verde-900);
+  max-width: 620px;
+}
+
+.hero-texto {
+  color: var(--tienda-tinta-suave);
+  max-width: 480px;
+  margin: 12px 0 0;
+}
+
+.filtros {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 24px 20px 6px;
+}
+
+.chip {
+  border: 1px solid var(--tienda-borde);
+  background: var(--tienda-superficie);
+  color: var(--tienda-tinta-suave);
+  min-width: 108px;
+  padding: 9px 18px;
+  border-radius: 999px;
+  font-size: 13.5px;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+}
+
+.chip-activo {
+  background: var(--tienda-verde-700);
+  border-color: var(--tienda-verde-700);
+  color: #fff;
+}
+
+.grilla {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 18px;
+  padding: 20px;
+}
+
+.vacio {
+  color: var(--tienda-tinta-suave);
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 40px 0;
+}
+
+::ng-deep .tarjeta-producto .p-card-body {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+::ng-deep .tarjeta-producto .p-card-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+
+.producto-imagen {
+  height: 120px;
+  border-radius: 8px;
+  background: var(--tienda-verde-100);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.producto-imagen img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.producto-imagen.sin-imagen .pi {
+  font-size: 34px;
+  color: var(--tienda-verde-500);
+}
+
+.producto-categoria {
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--tienda-tinta-suave);
+  font-weight: 600;
+  margin: 0 0 4px;
+}
+
+.producto-nombre {
+  font-size: 16px;
+  margin: 0 0 4px;
+}
+
+.producto-descripcion {
+  font-size: 13px;
+  color: var(--tienda-tinta-suave);
+  margin: 0;
+  flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.producto-pie {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 14px;
+  gap: 10px;
+}
+
+.producto-precio {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--tienda-verde-900);
+}
+
+.dialogo-cargando {
+  padding: 20px 0;
+  color: var(--tienda-tinta-suave);
+  text-align: center;
+}
+
+.dialogo-etiqueta {
+  font-size: 12.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--tienda-tinta-suave);
+  margin: 0 0 10px;
+}
+
+.cantidad-label {
+  margin-top: 18px;
+}
+
+.opcion-proveedor {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid var(--tienda-borde);
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+}
+
+.opcion-elegida {
+  border-color: var(--tienda-verde-700);
+  background: var(--tienda-verde-100);
+}
+
+.opcion-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 1;
+  cursor: pointer;
+}
+
+.opcion-nombre {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.opcion-precio {
+  font-weight: 700;
+  color: var(--tienda-verde-900);
+}
+
+.stock-info {
+  margin: 8px 0 0;
+  font-size: 12.5px;
+  color: var(--tienda-tinta-suave);
+}

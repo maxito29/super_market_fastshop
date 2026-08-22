@@ -1,0 +1,74 @@
+:root {
+  --tienda-verde-900: #163C2C;
+  --tienda-verde-700: #1F6B4C;
+  --tienda-verde-500: #2E8B63;
+  --tienda-verde-100: #E4F0E8;
+  --tienda-oro-600: #C9862B;
+  --tienda-oro-100: #FBF0DF;
+  --tienda-tinta: #1C201D;
+  --tienda-tinta-suave: #5B655E;
+  --tienda-papel: #F7F6F1;
+  --tienda-superficie: #FFFFFF;
+  --tienda-borde: #E3E0D6;
+  --tienda-radio: 10px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--tienda-papel);
+  color: var(--tienda-tinta);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+a {
+  color: var(--tienda-verde-700);
+}
+
+.contenedor {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Pequenos ajustes al tema de PrimeNG para que combine con la paleta de la tienda */
+.p-button {
+  border-radius: 8px;
+}
+
+.p-button.p-button-success,
+.p-button:not(.p-button-outlined):not(.p-button-text):not(.p-button-secondary):not(.p-button-danger) {
+  background: var(--tienda-verde-700);
+  border-color: var(--tienda-verde-700);
+}
+
+.p-button.p-button-success:hover,
+.p-button:not(.p-button-outlined):not(.p-button-text):not(.p-button-secondary):not(.p-button-danger):hover {
+  background: var(--tienda-verde-900);
+  border-color: var(--tienda-verde-900);
+}
+
+.p-card {
+  border-radius: var(--tienda-radio);
+  box-shadow: 0 1px 2px rgba(28, 32, 29, 0.04), 0 6px 18px -10px rgba(28, 32, 29, 0.15);
+}
+
+.p-tag.p-tag-warning {
+  background: var(--tienda-oro-100);
+  color: var(--tienda-oro-600);
+}

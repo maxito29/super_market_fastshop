@@ -1,0 +1,58 @@
+.pagina {
+  padding: 60px 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.tarjeta {
+  background: var(--tienda-superficie);
+  border: 1px solid var(--tienda-borde);
+  border-radius: var(--tienda-radio);
+  padding: 44px 40px;
+  max-width: 460px;
+  text-align: center;
+}
+
+.icono {
+  font-size: 42px;
+  color: var(--tienda-verde-700);
+  margin-bottom: 12px;
+  display: block;
+}
+
+.eyebrow {
+  font-size: 12.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--tienda-tinta-suave);
+  margin: 0 0 6px;
+}
+
+.tarjeta h1 {
+  font-size: 26px;
+  color: var(--tienda-verde-900);
+  letter-spacing: 0.02em;
+  margin-bottom: 14px;
+}
+
+.texto {
+  color: var(--tienda-tinta-suave);
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 26px;
+}
+
+.acciones {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.acciones a {
+  text-decoration: none;
+}
+
+.acciones ::ng-deep .p-button {
+  width: 100%;
+}

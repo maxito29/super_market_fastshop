@@ -1,0 +1,54 @@
+<section class="contenedor pagina">
+  <h1>Consultar pedido</h1>
+  <p class="subtitulo">Elige cómo quieres buscarlo.</p>
+
+  <div class="modos">
+    <button
+      *ngFor="let modo of modos"
+      class="chip"
+      [class.chip-activo]="modoSeleccionado === modo.value"
+      (click)="elegirModo(modo.value)">
+      {{ modo.label }}
+    </button>
+  </div>
+
+  <div class="buscador">
+    <div class="campo">
+      <label>{{ etiquetaActual }}</label>
+      <input pInputText [(ngModel)]="valor" [placeholder]="placeholderActual" (keyup.enter)="consultar()" />
+    </div>
+    <p-button label="Buscar" icon="pi pi-search" [loading]="buscando" (onClick)="consultar()"></p-button>
+  </div>
+
+  <div class="mensaje-error" *ngIf="mensajeError">
+    <span class="pi pi-exclamation-circle"></span>
+    {{ mensajeError }}
+  </div>
+
+  <div class="resultados" *ngIf="pedidos.length > 0">
+    <div class="resultado" *ngFor="let pedido of pedidos">
+      <div class="resultado-cabecera">
+        <div>
+          <p class="eyebrow">Pedido</p>
+          <h2>{{ pedido.numeroPedido }}</h2>
+        </div>
+        <p-tag [severity]="colorEstado(pedido.estado)" [value]="pedido.estado"></p-tag>
+      </div>
+
+      <div class="resultado-datos">
+        <div class="dato">
+          <span class="dato-etiqueta">Fecha</span>
+          <span>{{ pedido.fechaPedido | date: 'dd/MM/yyyy HH:mm' }}</span>
+        </div>
+        <div class="dato">
+          <span class="dato-etiqueta">Entrega</span>
+          <span>{{ pedido.modalidadEntrega === 'DELIVERY' ? 'Delivery a domicilio' : 'Recojo en tienda' }}</span>
+        </div>
+        <div class="dato">
+          <span class="dato-etiqueta">Total</span>
+          <span class="dato-total">S/ {{ pedido.total.toFixed(2) }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

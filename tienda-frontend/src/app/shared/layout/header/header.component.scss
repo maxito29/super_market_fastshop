@@ -1,0 +1,96 @@
+.encabezado {
+  background: var(--tienda-superficie);
+  border-bottom: 1px solid var(--tienda-borde);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.barra {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 68px;
+  gap: 24px;
+}
+
+.marca {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--tienda-verde-900);
+  font-weight: 800;
+  font-size: 16px;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+.marca-icono {
+  font-size: 20px;
+  color: var(--tienda-verde-700);
+}
+
+.nav {
+  display: flex;
+  gap: 20px;
+  flex: 1;
+}
+
+.nav a {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  text-decoration: none;
+  color: var(--tienda-tinta-suave);
+  font-weight: 500;
+  font-size: 14.5px;
+  padding: 6px 0;
+  border-bottom: 2px solid transparent;
+}
+
+.nav a .pi {
+  font-size: 14px;
+}
+
+.nav a.activo {
+  color: var(--tienda-verde-700);
+  border-bottom-color: var(--tienda-verde-700);
+}
+
+.iconos {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.icono-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--tienda-verde-100);
+  color: var(--tienda-verde-900);
+  text-decoration: none;
+  font-size: 17px;
+}
+
+.carrito-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: var(--tienda-oro-600);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+}

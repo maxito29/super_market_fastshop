@@ -11,4 +11,6 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
             (TipoDocumento tipoDocumento, String numeroDocumento);
 
     java.util.Optional<Cliente> findByEmail(String email);
+
+    java.util.Optional<Cliente> findByTelefono(String telefono);
 }

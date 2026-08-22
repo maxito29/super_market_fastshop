@@ -35,7 +35,7 @@ public class Producto {
     @Column(nullable = false)
     private Integer stock;
 
-    @Column(name = "imagen_url", length = 500)
+    @Column(name = "imagen_url", columnDefinition = "LONGTEXT")
     private String imagenUrl;
 
     @Column(nullable = false)
@@ -43,6 +43,9 @@ public class Producto {
 
     @Column(name = "fecha_creacion", nullable = false, updatable = false)
     private LocalDateTime fechaCreacion;
+
+    @Version
+    private Integer version;
 
     @PrePersist protected void onCreate(){
         this.fechaCreacion = LocalDateTime.now();
