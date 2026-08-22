@@ -68,9 +68,19 @@ export class CheckoutComponent implements OnInit {
       this.router.navigateByUrl('/carrito');
       return;
     }
-    this.catalogoService.listarMetodosPago().subscribe(metodos => {
-      this.metodosPago = metodos;
-      if (metodos.length > 0) this.form.metodoPagoId = metodos[0].id;
+    this.catalogoService.listarMetodosPago().subscribe({
+      next: metodos => {
+        this.metodosPago = metodos;
+        if (metodos.length > 0) this.form.metodoPagoId = metodos[0].id;
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'No se pudieron cargar los métodos de pago',
+          detail: 'Intenta recargar la página.',
+          life: 4000
+        });
+      }
     });
   }
 

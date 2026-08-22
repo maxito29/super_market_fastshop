@@ -13,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.HttpStatusCodeException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -79,7 +80,7 @@ public class ChatIaService {
         mensajes.add(msgUsuario);
 
         Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("model", "llama-3.3-70b-versatile");
+        requestBody.put("model", "openai/gpt-oss-120b");
         requestBody.put("messages", mensajes);
         requestBody.put("max_tokens", 1024);
         requestBody.put("temperature", 0.7);
@@ -95,6 +96,7 @@ public class ChatIaService {
             Map<String, Object> response = restTemplate.postForObject(apiUrl, request, Map.class);
             return extraerTexto(response);
         } catch (Exception e) {
+            e.printStackTrace();
             return "No pude conectar con el asistente en este momento. Intenta de nuevo en unos segundos.";
         }
     }
