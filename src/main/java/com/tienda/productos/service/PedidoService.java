@@ -8,6 +8,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -388,5 +391,11 @@ public class PedidoService {
 
     public List<PedidoTrabajadorResponse> pedidosPendientesPago() {
         return mapearConItems(pedidoRepository.findByEstado_Codigo("PENDIENTE"));
+    }
+
+    @Transactional(readOnly = true)
+    public Page<PedidoResponse> buscar(String valor, Pageable pageable) {
+        return pedidoRepository.buscarPorNumeroDocOTelefono(valor, pageable)
+                .map(PedidoResponse::new);
     }
 }

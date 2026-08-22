@@ -9,6 +9,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,6 +37,12 @@ public class PedidoController {
             @org.springframework.security.core.annotation.AuthenticationPrincipal com.tienda.productos.entity.Cliente cliente
     ) {
         return pedidoService.crearParaCliente(cliente, request);
+    }
+
+    @GetMapping("/buscar")
+    @Operation(summary = "Busca pedidos por número de pedido, DNI/RUC o teléfono, sin necesidad de iniciar sesión")
+    public Page<PedidoResponse> buscar(@RequestParam String valor, Pageable pageable) {
+        return pedidoService.buscar(valor, pageable);
     }
 
     @PatchMapping("/{id}/marcar-pagado")
