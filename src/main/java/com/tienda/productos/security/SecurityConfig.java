@@ -34,10 +34,12 @@ public class SecurityConfig {
             "/api/auth/**",
             "/api/cliente/registro",
             "/api/cliente/login",
+            "/api/cliente/olvide-password",
+            "/api/cliente/restablecer-password",
+            "/api/pedidos/invitado",
             "/swagger-ui/**",
             "/swagger-ui.html",
             "/v3/api-docs/**",
-            "/api/pedidos/invitado",
             "/h2-console/**",
             "/error"
     };

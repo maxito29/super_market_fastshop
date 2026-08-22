@@ -6,7 +6,7 @@
     </div>
 
     <nav class="nav-menu">
-      @for (item of menu; track item.ruta) {
+      @for (item of menu(); track item.ruta) {
         @if (item.disponible) {
           <a [routerLink]="item.ruta" routerLinkActive="active" class="nav-item" (click)="cerrarSidebarSiMovil()">
             <i [class]="item.icono"></i>

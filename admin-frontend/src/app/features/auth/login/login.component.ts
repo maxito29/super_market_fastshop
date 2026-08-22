@@ -44,10 +44,13 @@ export class LoginComponent {
     this.cargando.set(true);
     this.errorMensaje.set('');
 
-    this.authService.login(this.formulario.value as { username: string; password: string }).subscribe({
+        this.authService.login(this.formulario.value as { username: string; password: string }).subscribe({
       next: (respuesta) => {
         this.notificacionService.bienvenida(respuesta.nombre);
-        this.router.navigate(['/dashboard']);
+        const destino = respuesta.rol === 'PICKER' ? '/picker'
+                       : respuesta.rol === 'REPARTIDOR' ? '/repartidor'
+                       : '/dashboard';
+        this.router.navigate([destino]);
       },
       error: (err) => {
         this.cargando.set(false);

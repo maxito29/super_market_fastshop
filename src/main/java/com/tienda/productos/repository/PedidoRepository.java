@@ -11,4 +11,10 @@ public interface PedidoRepository extends JpaRepository<Pedido, Long> {
     Optional<Pedido> findByNumeroPedido(String numeroPedido);
 
     List<Pedido> findByCliente_NumeroDocumentoOrderByFechaPedidoDesc(String numeroDocumento);
+    java.util.List<com.tienda.productos.entity.Pedido> findByClienteIdOrderByFechaPedidoDesc(Long clienteId);
+    java.util.List<com.tienda.productos.entity.Pedido> findByEstado_CodigoAndPickerUsuarioIsNull(String codigo);
+    java.util.List<com.tienda.productos.entity.Pedido> findByPickerUsuarioIdAndEstado_Codigo(Long pickerUsuarioId, String codigo);
+    java.util.List<com.tienda.productos.entity.Pedido> findByEstado_Codigo(String codigo);
+    java.util.List<com.tienda.productos.entity.Pedido> findByEstado_CodigoAndRepartidorUsuarioIsNull(String codigo);
+    java.util.List<com.tienda.productos.entity.Pedido> findByRepartidorUsuarioIdAndEstado_Codigo(Long repartidorUsuarioId, String codigo);
 }

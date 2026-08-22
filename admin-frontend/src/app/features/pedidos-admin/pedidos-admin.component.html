@@ -1,0 +1,32 @@
+<div class="page-header">
+  <div>
+    <h1>Pedidos pendientes de pago</h1>
+    <p>Confirma manualmente pagos por Yape o Efectivo (temporal, hasta conectar Mercado Pago)</p>
+  </div>
+</div>
+
+<p-table [value]="pendientes()" [loading]="cargando()" styleClass="p-datatable-sm">
+  <ng-template pTemplate="header">
+    <tr>
+      <th>N° Pedido</th>
+      <th>Cliente</th>
+      <th>Modalidad</th>
+      <th>Total</th>
+      <th style="width: 160px">Acción</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-pedido>
+    <tr>
+      <td>{{ pedido.numeroPedido }}</td>
+      <td>{{ pedido.clienteNombre }}</td>
+      <td><p-tag [value]="pedido.modalidadEntrega === 'DELIVERY' ? 'Delivery' : 'Recojo'" severity="info"></p-tag></td>
+      <td>S/ {{ pedido.total.toFixed(2) }}</td>
+      <td>
+        <button pButton label="Confirmar pago" icon="pi pi-check" class="p-button-sm p-button-success" (click)="confirmarPago(pedido)"></button>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="emptymessage">
+    <tr><td colspan="5" style="text-align:center;padding:2rem;">No hay pedidos pendientes de pago</td></tr>
+  </ng-template>
+</p-table>

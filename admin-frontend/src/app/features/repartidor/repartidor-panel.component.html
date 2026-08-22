@@ -1,0 +1,49 @@
+<div class="page-header">
+  <div>
+    <h1>Panel de Reparto</h1>
+    <p>Entrega los pedidos con delivery</p>
+  </div>
+  <button pButton icon="pi pi-refresh" label="Actualizar" class="p-button-outlined" (click)="cargarTodo()"></button>
+</div>
+
+<p-tabView>
+  <p-tabPanel header="Disponibles para tomar">
+    @if (disponibles().length === 0) {
+      <p class="vacio">No hay pedidos esperando repartidor.</p>
+    }
+    <div class="pedidos-grid">
+      @for (pedido of disponibles(); track pedido.id) {
+        <p-card styleClass="pedido-card">
+          <div class="pedido-header">
+            <strong>{{ pedido.numeroPedido }}</strong>
+            <p-tag value="Enviado" severity="info"></p-tag>
+          </div>
+          <p class="cliente">{{ pedido.clienteNombre }} · {{ pedido.clienteTelefono }}</p>
+          <p class="direccion"><i class="pi pi-map-marker"></i> {{ pedido.direccion }}</p>
+          <p class="total">Total: S/ {{ pedido.total.toFixed(2) }}</p>
+          <button pButton label="Tomar entrega" icon="pi pi-car" class="w-full" (click)="tomar(pedido)"></button>
+        </p-card>
+      }
+    </div>
+  </p-tabPanel>
+
+  <p-tabPanel header="Mis entregas">
+    @if (misEntregas().length === 0) {
+      <p class="vacio">No tienes entregas pendientes ahora mismo.</p>
+    }
+    <div class="pedidos-grid">
+      @for (pedido of misEntregas(); track pedido.id) {
+        <p-card styleClass="pedido-card">
+          <div class="pedido-header">
+            <strong>{{ pedido.numeroPedido }}</strong>
+            <p-tag value="En camino" severity="warning"></p-tag>
+          </div>
+          <p class="cliente">{{ pedido.clienteNombre }} · {{ pedido.clienteTelefono }}</p>
+          <p class="direccion"><i class="pi pi-map-marker"></i> {{ pedido.direccion }}</p>
+          <p class="total">Total: S/ {{ pedido.total.toFixed(2) }}</p>
+          <button pButton label="Marcar entregado" icon="pi pi-check-circle" class="w-full p-button-success" (click)="marcarEntregado(pedido)"></button>
+        </p-card>
+      }
+    </div>
+  </p-tabPanel>
+</p-tabView>

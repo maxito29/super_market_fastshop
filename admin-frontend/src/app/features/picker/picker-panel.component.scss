@@ -1,0 +1,49 @@
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+
+  h1 { margin: 0 0 0.15rem; font-size: 1.5rem; color: #1e293b; }
+  p { margin: 0; color: #64748b; }
+}
+
+.pedidos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.pedido-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.cliente {
+  color: #64748b;
+  font-size: 0.85rem;
+  margin: 0 0 0.75rem;
+}
+
+.items-lista {
+  margin: 0 0 0.75rem;
+  padding-left: 1.1rem;
+  font-size: 0.85rem;
+  color: #334155;
+}
+
+.total {
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+.vacio {
+  color: #94a3b8;
+  text-align: center;
+  padding: 2rem 0;
+}
+
+.w-full { width: 100%; }
