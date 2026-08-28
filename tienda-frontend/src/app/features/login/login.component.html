@@ -1,57 +1,134 @@
-<section class="contenedor pagina">
-  <div class="tarjeta">
-    <div class="tabs">
-      <button class="tab" [class.tab-activo]="modo === 'login'" (click)="cambiarModo('login')">Ingresar</button>
-      <button class="tab" [class.tab-activo]="modo === 'registro'" (click)="cambiarModo('registro')">Crear cuenta</button>
+<section class="pagina-auth">
+
+  <!-- ============ Panel de marca ============ -->
+  <aside class="panel-marca">
+    <div class="panel-marca-decoracion" aria-hidden="true">
+      <span class="circulo circulo-1"></span>
+      <span class="circulo circulo-2"></span>
     </div>
 
-    <form (ngSubmit)="enviar()">
-      <div class="fila-campos">
-        <div class="campo">
-          <label>Tipo de documento</label>
-          <p-dropdown
-            [options]="tiposDocumento"
-            optionLabel="label"
-            optionValue="value"
-            [(ngModel)]="form.tipoDocumento"
-            name="tipoDocumento"
-            styleClass="w-full">
-          </p-dropdown>
-        </div>
-        <div class="campo">
-          <label>Número de documento</label>
-          <input pInputText [(ngModel)]="form.numeroDocumento" name="numeroDocumento" />
-        </div>
+    <div class="panel-marca-contenido">
+      <div class="marca-logo">
+        <span class="pi pi-shopping-cart"></span>
+        <span>Super Market FastShop</span>
       </div>
 
-      <ng-container *ngIf="modo === 'registro'">
-        <div class="campo">
-          <label>Nombre completo</label>
-          <input pInputText [(ngModel)]="form.nombreRazonSocial" name="nombreRazonSocial" />
-        </div>
-        <div class="fila-campos">
-          <div class="campo">
-            <label>Teléfono</label>
-            <input pInputText [(ngModel)]="form.telefono" name="telefono" />
-          </div>
-          <div class="campo">
-            <label>Correo (opcional)</label>
-            <input pInputText [(ngModel)]="form.email" name="email" />
-          </div>
-        </div>
-      </ng-container>
+      <h1>Todo lo que necesitas para tu semana, en un solo lugar</h1>
+      <p class="panel-marca-texto">Compara precios entre proveedores, arma tu pedido y recíbelo en casa o recógelo en tienda.</p>
 
-      <div class="campo">
-        <label>Contraseña</label>
-        <p-password [(ngModel)]="form.password" name="password" [toggleMask]="true" [feedback]="false" styleClass="w-full"></p-password>
+      <ul class="panel-marca-beneficios">
+        <li *ngFor="let b of beneficios">
+          <span class="beneficio-icono" [class]="b.icono"></span>
+          {{ b.texto }}
+        </li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- ============ Panel de formulario ============ -->
+  <div class="panel-formulario">
+    <div class="formulario-envoltorio">
+
+      <div class="cabecera-form">
+        <h2>{{ modo === 'login' ? '¡Qué bueno verte de nuevo!' : 'Crea tu cuenta' }}</h2>
+        <p>{{ modo === 'login' ? 'Ingresa tus datos para continuar con tu pedido.' : 'Únete y empieza a ahorrar fresco.' }}</p>
       </div>
 
-      <p-button
-        type="submit"
-        [label]="modo === 'login' ? 'Ingresar' : 'Crear cuenta'"
-        styleClass="w-full"
-        [loading]="enviando">
-      </p-button>
-    </form>
+      <!-- Tabs -->
+      <div class="tabs-modernas">
+        <button type="button" class="tab-btn" [class.tab-activo]="modo === 'login'" (click)="cambiarModo('login')">
+          Ingresar
+        </button>
+        <button type="button" class="tab-btn" [class.tab-activo]="modo === 'registro'" (click)="cambiarModo('registro')">
+          Crear cuenta
+        </button>
+        <span class="tab-indicador" [class.derecha]="modo === 'registro'"></span>
+      </div>
+
+      <form (ngSubmit)="enviar()" class="formulario-auth">
+
+        <div class="fila-campos-grid">
+          <div class="campo-contenedor">
+            <label class="etiqueta-formulario" for="tipoDocumento">Tipo de documento</label>
+            <select id="tipoDocumento" class="select-nativo-premium" [(ngModel)]="form.tipoDocumento" name="tipoDocumento">
+              <option *ngFor="let t of tiposDocumento" [value]="t.value">{{ t.label }}</option>
+            </select>
+          </div>
+
+          <div class="campo-contenedor">
+            <label class="etiqueta-formulario" for="numeroDocumento">Número de documento</label>
+            <input
+              id="numeroDocumento"
+              type="text"
+              [(ngModel)]="form.numeroDocumento"
+              name="numeroDocumento"
+              placeholder="00000000"
+              class="input-nativo-premium" />
+          </div>
+        </div>
+
+        <div *ngIf="modo === 'registro'" class="bloque-registro-animado">
+          <div class="campo-contenedor animacion-fade">
+            <label class="etiqueta-formulario" for="nombreRazonSocial">Nombre completo / Razón social</label>
+            <input
+              id="nombreRazonSocial"
+              type="text"
+              [(ngModel)]="form.nombreRazonSocial"
+              name="nombreRazonSocial"
+              placeholder="Ej. Juan Pérez"
+              class="input-nativo-premium" />
+          </div>
+
+          <div class="fila-campos-grid animacion-fade">
+            <div class="campo-contenedor">
+              <label class="etiqueta-formulario" for="telefono">Teléfono</label>
+              <input
+                id="telefono"
+                type="tel"
+                [(ngModel)]="form.telefono"
+                name="telefono"
+                placeholder="999888777"
+                class="input-nativo-premium" />
+            </div>
+            <div class="campo-contenedor">
+              <label class="etiqueta-formulario" for="email">Correo electrónico</label>
+              <input
+                id="email"
+                type="email"
+                [(ngModel)]="form.email"
+                name="email"
+                placeholder="ejemplo@correo.com"
+                class="input-nativo-premium" />
+            </div>
+          </div>
+        </div>
+
+        <div class="campo-contenedor">
+          <label class="etiqueta-formulario" for="password">Contraseña</label>
+          <div class="password-envoltorio">
+            <input
+              id="password"
+              [type]="mostrarPassword ? 'text' : 'password'"
+              [(ngModel)]="form.password"
+              name="password"
+              placeholder="••••••••"
+              class="input-nativo-premium" />
+            <button type="button" class="password-toggle" (click)="alternarPassword()" [attr.aria-label]="mostrarPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'">
+              <span class="pi" [class.pi-eye]="!mostrarPassword" [class.pi-eye-slash]="mostrarPassword"></span>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="boton-submit-premium" [disabled]="enviando">
+          <span class="pi pi-spin pi-spinner" *ngIf="enviando"></span>
+          {{ modo === 'login' ? 'Ingresar a mi cuenta' : 'Registrarme ahora' }}
+        </button>
+      </form>
+
+      <a routerLink="/" class="volver-catalogo">
+        <span class="pi pi-arrow-left"></span>
+        Volver al catálogo
+      </a>
+    </div>
   </div>
 </section>

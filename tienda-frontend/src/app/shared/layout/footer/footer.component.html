@@ -1,0 +1,96 @@
+<footer class="pie-pagina">
+  <div class="contenedor pie-superior">
+
+    <div class="pie-marca">
+      <div class="pie-logo">
+        <span class="pi pi-shopping-cart"></span>
+        <span>Super Market FastShop</span>
+      </div>
+      <p class="pie-tagline">¡Entérate de eventos exclusivos y promociones especiales que tenemos para ti!</p>
+
+      <form class="pie-newsletter" (ngSubmit)="suscribirse()" #formNewsletter="ngForm">
+        <div class="pie-newsletter-fila">
+          <input
+            type="email"
+            name="correo"
+            placeholder="Ingresa tu correo"
+            [(ngModel)]="correoNewsletter"
+            required
+            email
+            #correoInput="ngModel" />
+          <button type="submit" [disabled]="!correoInput.valid || !aceptaPoliticas">
+            Suscribirme
+          </button>
+        </div>
+
+        <label class="pie-checkbox">
+          <input type="checkbox" name="aceptaPoliticas" [(ngModel)]="aceptaPoliticas" />
+          <span>Acepto las políticas de tratamiento de datos personales</span>
+        </label>
+
+        <p class="pie-confirmacion" [class.visible]="suscripcionEnviada">
+          <span class="pi pi-check-circle"></span>
+          ¡Listo! Te avisaremos de nuevas ofertas.
+        </p>
+      </form>
+
+      <div class="pie-contacto">
+        <h4>Contáctanos</h4>
+        <a href="tel:+51016200000" class="pie-contacto-linea">
+          <span class="pi pi-phone"></span>
+          (01) 620 0000
+        </a>
+        <a routerLink="/" class="pie-contacto-linea">
+          <span class="pi pi-map-marker"></span>
+          Encuentra tu tienda más cercana
+        </a>
+        <a href="mailto:contacto@fastshop.pe" class="pie-contacto-linea">
+          <span class="pi pi-envelope"></span>
+          contacto&#64;fastshop.pe
+        </a>
+      </div>
+    </div>
+
+    <nav class="pie-columna">
+      <h4>Acerca de</h4>
+      <ul>
+        <li><span>Nosotros</span></li>
+        <li><span>Trabaja con nosotros</span></li>
+        <li><span>Sostenibilidad</span></li>
+      </ul>
+    </nav>
+
+    <nav class="pie-columna">
+      <h4>Compra en</h4>
+      <ul>
+        <li><a routerLink="/">Catálogo</a></li>
+        <li><a routerLink="/carrito">Mi carrito</a></li>
+        <li><a routerLink="/mi-pedido">Seguir mi pedido</a></li>
+        <li><span>Formas de pago</span></li>
+      </ul>
+    </nav>
+
+    <nav class="pie-columna">
+      <h4>Políticas de uso</h4>
+      <ul>
+        <li><span>Términos y condiciones</span></li>
+        <li><span>Política de datos personales</span></li>
+        <li><span>Cambios y devoluciones</span></li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="contenedor pie-redes-fila">
+    <span class="pie-redes-titulo">Síguenos en</span>
+    <div class="pie-redes">
+      <a href="#" aria-label="Facebook" class="pie-red-icono"><span class="pi pi-facebook"></span></a>
+      <a href="#" aria-label="Instagram" class="pie-red-icono"><span class="pi pi-instagram"></span></a>
+      <a href="#" aria-label="X (Twitter)" class="pie-red-icono"><span class="pi pi-twitter"></span></a>
+    </div>
+  </div>
+
+  <div class="contenedor pie-inferior">
+    <span>&copy; {{ anioActual }} Super Market FastShop. Todos los derechos reservados.</span>
+    <a href="http://localhost:4200/login" class="enlace-admin">Panel administrativo</a>
+  </div>
+</footer>

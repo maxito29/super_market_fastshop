@@ -1,0 +1,109 @@
+.sidebar-tienda {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 280px;
+  background: var(--tienda-superficie);
+  border-right: 1px solid var(--tienda-borde);
+  box-shadow: 8px 0 24px -12px rgba(22, 60, 44, 0.25);
+  z-index: 1100;
+  display: flex;
+  flex-direction: column;
+  padding: 18px 14px;
+  transform: translateX(-100%);
+  transition: transform 0.22s ease;
+  overflow-y: auto;
+}
+
+.sidebar-tienda.abierto {
+  transform: translateX(0);
+}
+
+.sidebar-cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 8px 14px;
+  border-bottom: 1px solid var(--tienda-borde);
+  margin-bottom: 10px;
+}
+
+.sidebar-titulo {
+  font-family: var(--tienda-fuente-titulo);
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--tienda-verde-900);
+}
+
+.boton-cerrar {
+  border: none;
+  background: var(--tienda-verde-100);
+  color: var(--tienda-verde-900);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.sidebar-subtitulo {
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--tienda-tinta-suave);
+  margin: 18px 0 6px 10px;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  border: none;
+  background: transparent;
+  text-align: left;
+  text-decoration: none;
+  color: var(--tienda-tinta);
+  font-family: var(--tienda-fuente-texto);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.sidebar-item .pi {
+  font-size: 14px;
+  color: var(--tienda-verde-500);
+  width: 16px;
+}
+
+.sidebar-item:hover {
+  background: var(--tienda-verde-100);
+}
+
+.sidebar-item.activo {
+  background: var(--tienda-verde-700);
+  color: #fff;
+}
+
+.sidebar-item.activo .pi {
+  color: #fff;
+}
+
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(22, 60, 44, 0.35);
+  z-index: 1050;
+}

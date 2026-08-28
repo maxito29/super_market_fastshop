@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+
+// Inyecciones nativas de PrimeNG necesarias para el funcionamiento del ciclo
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { TagModule } from 'primeng/tag';
@@ -19,6 +21,9 @@ type ModoBusqueda = 'numero' | 'dni' | 'ruc' | 'telefono';
   styleUrl: './mi-pedido.component.scss'
 })
 export class MiPedidoComponent implements OnInit {
+  // Inyección moderna de dependencias (Angular 17 standard)
+  private pedidoService = inject(PedidoService);
+  private route = inject(ActivatedRoute);
 
   modos: { label: string; value: ModoBusqueda; placeholder: string }[] = [
     { label: 'Número de pedido', value: 'numero', placeholder: 'PED-XXXXXXXXXXX' },
@@ -33,8 +38,6 @@ export class MiPedidoComponent implements OnInit {
   buscoUnaVez = false;
   pedidos: PedidoResponse[] = [];
   mensajeError = '';
-
-  constructor(private pedidoService: PedidoService, private route: ActivatedRoute) {}
 
   ngOnInit(): void {
     const valorInicial = this.route.snapshot.queryParamMap.get('valor');
@@ -55,17 +58,18 @@ export class MiPedidoComponent implements OnInit {
   elegirModo(modo: ModoBusqueda): void {
     this.modoSeleccionado = modo;
     this.valor = '';
+    this.mensajeError = '';
   }
 
   consultar(): void {
-    if (!this.valor) return;
+    if (!this.valor.trim()) return;
 
     this.buscando = true;
     this.buscoUnaVez = true;
     this.pedidos = [];
     this.mensajeError = '';
 
-    this.pedidoService.buscar(this.valor).subscribe({
+    this.pedidoService.buscar(this.valor.trim()).subscribe({
       next: pagina => {
         this.pedidos = pagina.content;
         if (this.pedidos.length === 0) {

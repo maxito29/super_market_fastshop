@@ -1,25 +1,53 @@
 <header class="encabezado">
   <div class="contenedor barra">
-    <a routerLink="/" class="marca">
-      <span class="marca-icono pi pi-shopping-basket"></span>
-      <span class="marca-texto">SUPER MARKET FASTSHOP</span>
-    </a>
-
-    <nav class="nav">
-      <a routerLink="/mi-pedido" routerLinkActive="activo">
-        <span class="pi pi-file-search"></span>
-        Consultar pedido
-      </a>
-    </nav>
-
-    <div class="iconos">
-      <a routerLink="/login" routerLinkActive="activo" class="icono-link" title="Ingresar">
-        <span class="pi pi-user"></span>
-      </a>
-      <a routerLink="/carrito" routerLinkActive="activo" class="icono-link" title="Carrito">
-        <span class="pi pi-shopping-cart"></span>
-        <span class="carrito-badge" *ngIf="carrito.totalItems() > 0">{{ carrito.totalItems() }}</span>
+    
+    <!-- Bloque Izquierdo: Menú y Logo -->
+    <div class="bloque-izquierdo">
+      <button class="boton-menu" aria-label="Menú principal" (click)="menu.toggle()">
+        <span class="pi pi-bars"></span>
+      </button>
+      
+      <a routerLink="/" class="marca">
+        <span class="marca-icono" aria-hidden="true">
+          <!-- Tu SVG original -->
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6 8h12l-1.2 10.2a2 2 0 0 1-2 1.8H9.2a2 2 0 0 1-2-1.8L6 8Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+            <path d="M9 8V6a3 3 0 0 1 6 0v2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            <path d="M9.5 11.5 10 15M14.5 11.5 14 15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span class="marca-nombre">Fastshop</span>
       </a>
     </div>
+
+    <!-- Bloque Central: Buscador PrimeNG -->
+    <div class="bloque-busqueda">
+      <p-iconField iconPosition="right">
+        <p-inputIcon styleClass="pi pi-search"></p-inputIcon>
+        <input type="text" pInputText placeholder="¿Qué estás buscando hoy?" class="buscador-input" />
+      </p-iconField>
+    </div>
+
+    <!-- Bloque Derecho: Navegación y Acciones -->
+    <div class="bloque-derecho">
+      <nav class="nav-tienda">
+        <a routerLink="/mi-pedido" routerLinkActive="activo" class="enlace-usuario">
+          <span class="pi pi-box icono-accion"></span>
+          <span class="texto-accion">Mis pedidos</span>
+        </a>
+        <a routerLink="/login" routerLinkActive="activo" class="enlace-usuario">
+          <span class="pi pi-user icono-accion"></span>
+          <span class="texto-accion">Mi cuenta</span>
+        </a>
+      </nav>
+
+      <div class="carrito-contenedor">
+        <button class="enlace-carrito" [class.activo]="carrito.abierto()" title="Carrito" (click)="alPresionarCarrito()">
+          <span class="pi pi-shopping-cart"></span>
+          <span class="carrito-badge" *ngIf="carrito.totalItems() > 0">{{ carrito.totalItems() }}</span>
+        </button>
+      </div>
+    </div>
+
   </div>
 </header>

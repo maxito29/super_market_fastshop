@@ -1,0 +1,45 @@
+<aside class="sidebar-tienda" [class.abierto]="menu.abierto()">
+  <div class="sidebar-cabecera">
+    <span class="sidebar-titulo">Menú</span>
+    <button class="boton-cerrar" (click)="cerrar()" aria-label="Cerrar menú">
+      <span class="pi pi-times"></span>
+    </button>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a routerLink="/" routerLinkActive="activo" [routerLinkActiveOptions]="{ exact: true }" class="sidebar-item" (click)="cerrar()">
+      <span class="pi pi-home"></span>
+      Inicio
+    </a>
+    <a routerLink="/mi-pedido" routerLinkActive="activo" class="sidebar-item" (click)="cerrar()">
+      <span class="pi pi-box"></span>
+      Consultar pedido
+    </a>
+    <a routerLink="/login" routerLinkActive="activo" class="sidebar-item" (click)="cerrar()">
+      <span class="pi pi-user"></span>
+      Mi cuenta
+    </a>
+  </nav>
+
+  <p class="sidebar-subtitulo">Categorías</p>
+
+  <nav class="sidebar-nav">
+    <button
+      class="sidebar-item"
+      [class.activo]="filtro.categoriaId() === null"
+      (click)="irACategoria(null)">
+      <span class="pi pi-th-large"></span>
+      Todas
+    </button>
+    <button
+      class="sidebar-item"
+      *ngFor="let categoria of categorias"
+      [class.activo]="filtro.categoriaId() === categoria.id"
+      (click)="irACategoria(categoria.id)">
+      <span class="pi pi-tag"></span>
+      {{ categoria.nombre }}
+    </button>
+  </nav>
+</aside>
+
+<div class="sidebar-overlay" *ngIf="menu.abierto()" (click)="cerrar()"></div>

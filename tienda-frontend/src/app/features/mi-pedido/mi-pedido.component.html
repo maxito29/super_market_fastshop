@@ -1,54 +1,98 @@
-<section class="contenedor pagina">
-  <h1>Consultar pedido</h1>
-  <p class="subtitulo">Elige cómo quieres buscarlo.</p>
+<section class="contenedor-pagina-pedidos animacion-fade-in">
+  
+  <!-- Encabezado de la Sección -->
+  <div class="cabecera-seccion">
+    <div class="icono-decorativo">
+      <i class="pi pi-receipt"></i>
+    </div>
+    <h1>Consultar pedido</h1>
+    <p class="subtitulo">Elige cómo quieres buscarlo para conocer su estado actual.</p>
+  </div>
 
-  <div class="modos">
+  <!-- Grupo de Selectores (Chips) -->
+  <div class="contenedor-modos">
     <button
-      *ngFor="let modo of modos"
-      class="chip"
+      *ngFor="let modo of modos; let i = index"
+      type="button"
+      class="chip-moderno"
       [class.chip-activo]="modoSeleccionado === modo.value"
+      [style.animation-delay]="i * 0.05 + 's'"
       (click)="elegirModo(modo.value)">
+      <span class="punto-indicador"></span>
       {{ modo.label }}
     </button>
   </div>
 
-  <div class="buscador">
-    <div class="campo">
-      <label>{{ etiquetaActual }}</label>
-      <input pInputText [(ngModel)]="valor" [placeholder]="placeholderActual" (keyup.enter)="consultar()" />
+  <!-- Formulario / Barra del Buscador -->
+  <div class="bloque-buscador-premium">
+    <div class="campo-formulario">
+      <label class="etiqueta-campo">{{ etiquetaActual }}</label>
+      <div class="input-icono-wrapper">
+        <input 
+          pInputText 
+          [(ngModel)]="valor" 
+          [placeholder]="placeholderActual" 
+          (keyup.enter)="consultar()" 
+          class="input-nativo-premium" />
+        <i class="pi pi-search icono-input"></i>
+      </div>
     </div>
-    <p-button label="Buscar" icon="pi pi-search" [loading]="buscando" (onClick)="consultar()"></p-button>
+    
+    <p-button 
+      [label]="buscando ? 'Buscando...' : 'Buscar'" 
+      [loading]="buscando" 
+      (onClick)="consultar()"
+      styleClass="boton-buscar-premium">
+    </p-button>
   </div>
 
-  <div class="mensaje-error" *ngIf="mensajeError">
-    <span class="pi pi-exclamation-circle"></span>
-    {{ mensajeError }}
+  <!-- Alerta de Mensaje de Error / No Encontrado -->
+  <div class="alerta-error-moderna" *ngIf="mensajeError">
+    <div class="alerta-contenido">
+      <i class="pi pi-exclamation-circle icono-alerta"></i>
+      <span class="texto-alerta">{{ mensajeError }}</span>
+    </div>
   </div>
 
-  <div class="resultados" *ngIf="pedidos.length > 0">
-    <div class="resultado" *ngFor="let pedido of pedidos">
-      <div class="resultado-cabecera">
-        <div>
-          <p class="eyebrow">Pedido</p>
-          <h2>{{ pedido.numeroPedido }}</h2>
+  <!-- Listado de Resultados Estilizado -->
+  <div class="contenedor-resultados" *ngIf="pedidos.length > 0">
+    <div class="tarjeta-pedido-premium" *ngFor="let pedido of pedidos; let i = index" [style.animation-delay]="i * 0.1 + 's'">
+      
+      <!-- Cabecera de la Tarjeta -->
+      <div class="tarjeta-cabecera">
+        <div class="meta-pedido">
+          <p class="etiqueta-superior">Código de Pedido</p>
+          <h2 class="numero-pedido-texto">{{ pedido.numeroPedido }}</h2>
         </div>
-        <p-tag [severity]="colorEstado(pedido.estado)" [value]="pedido.estado"></p-tag>
+        <!-- Sobreescritura estética nativa sobre p-tag -->
+        <p-tag 
+          [severity]="colorEstado(pedido.estado)" 
+          [value]="pedido.estado"
+          [styleClass]="'tag-estado-personalizado estado-' + colorEstado(pedido.estado)">
+        </p-tag>
       </div>
 
-      <div class="resultado-datos">
-        <div class="dato">
-          <span class="dato-etiqueta">Fecha</span>
-          <span>{{ pedido.fechaPedido | date: 'dd/MM/yyyy HH:mm' }}</span>
+      <!-- Datos del Pedido -->
+      <div class="tarjeta-cuerpo-datos">
+        <div class="bloque-dato">
+          <span class="titulo-dato">Fecha de Compra</span>
+          <span class="valor-dato"><i class="pi pi-calendar"></i> {{ pedido.fechaPedido | date: 'dd/MM/yyyy HH:mm' }}</span>
         </div>
-        <div class="dato">
-          <span class="dato-etiqueta">Entrega</span>
-          <span>{{ pedido.modalidadEntrega === 'DELIVERY' ? 'Delivery a domicilio' : 'Recojo en tienda' }}</span>
+        
+        <div class="bloque-dato">
+          <span class="titulo-dato">Modalidad</span>
+          <span class="valor-dato">
+            <i class="pi" [ngClass]="pedido.modalidadEntrega === 'DELIVERY' ? 'pi-truck' : 'pi-shop'"></i>
+            {{ pedido.modalidadEntrega === 'DELIVERY' ? 'Delivery a domicilio' : 'Recojo en tienda' }}
+          </span>
         </div>
-        <div class="dato">
-          <span class="dato-etiqueta">Total</span>
-          <span class="dato-total">S/ {{ pedido.total.toFixed(2) }}</span>
+        
+        <div class="bloque-dato bloque-monto-final">
+          <span class="titulo-dato">Total Pagado</span>
+          <span class="valor-dato monto-total">S/ {{ pedido.total.toFixed(2) }}</span>
         </div>
       </div>
+
     </div>
   </div>
 </section>

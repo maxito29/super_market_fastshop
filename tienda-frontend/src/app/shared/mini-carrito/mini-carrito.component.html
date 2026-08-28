@@ -1,0 +1,69 @@
+<div class="drawer-overlay" [class.visible]="carrito.abierto()" (click)="cerrar()"></div>
+
+<aside class="drawer" [class.abierto]="carrito.abierto()">
+  <header class="drawer-cabecera">
+    <h2>Tu carrito <span class="drawer-contador">({{ carrito.totalItems() }})</span></h2>
+    <button class="drawer-cerrar" (click)="cerrar()" aria-label="Cerrar carrito">
+      <span class="pi pi-times"></span>
+    </button>
+  </header>
+
+  <div class="drawer-cuerpo" *ngIf="carrito.items().length > 0; else drawerVacio">
+    <div class="item-fila" *ngFor="let item of carrito.items()">
+      <div class="item-imagen" [class.sin-imagen]="!item.imagenUrl">
+        <img *ngIf="item.imagenUrl" [src]="item.imagenUrl" [alt]="item.nombre" loading="lazy" />
+        <span *ngIf="!item.imagenUrl" class="pi pi-shopping-basket"></span>
+      </div>
+
+      <div class="item-info">
+        <div class="item-cabecera">
+          <div>
+            <p class="item-nombre">{{ item.nombre }}</p>
+            <p class="item-variante">{{ item.proveedorNombre ?? 'Precio de tienda' }}</p>
+          </div>
+          <span class="item-precio">S/ {{ (item.cantidad * item.precioUnitario).toFixed(2) }}</span>
+        </div>
+
+        <div class="item-pie">
+          <div class="stepper-mini">
+            <button
+              class="stepper-mini-boton"
+              (click)="decrementar(item.productoId, item.ofertaProductoId, item.cantidad)"
+              aria-label="Quitar uno">−</button>
+            <span class="stepper-mini-valor">{{ item.cantidad }}</span>
+            <button
+              class="stepper-mini-boton"
+              (click)="incrementar(item.productoId, item.ofertaProductoId, item.cantidad, item.stockDisponible)"
+              [disabled]="item.cantidad >= item.stockDisponible"
+              aria-label="Agregar uno">+</button>
+          </div>
+
+          <button class="item-quitar" (click)="quitar(item.productoId, item.ofertaProductoId)" aria-label="Eliminar producto">
+            <span class="pi pi-trash"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #drawerVacio>
+    <div class="drawer-vacio">
+      <span class="pi pi-shopping-cart drawer-vacio-icono" aria-hidden="true"></span>
+      <p class="drawer-vacio-titulo">Tu carrito está vacío</p>
+      <p class="drawer-vacio-texto">Agrega productos del catálogo para verlos aquí.</p>
+      <button class="drawer-vacio-boton" (click)="seguirComprando()">Ver catálogo</button>
+    </div>
+  </ng-template>
+
+  <footer class="drawer-pie" *ngIf="carrito.items().length > 0">
+    <div class="drawer-subtotal-fila">
+      <span class="drawer-subtotal-etiqueta">Subtotal:</span>
+      <span class="drawer-subtotal-valor">S/ {{ carrito.totalPagar().toFixed(2) }}</span>
+    </div>
+    <p class="drawer-envio-nota">Los costos de envío se agregan en los siguientes pasos.</p>
+    <button class="drawer-boton-principal" (click)="irAlCarrito()">
+      Ver carrito
+      <span class="pi pi-arrow-right"></span>
+    </button>
+  </footer>
+</aside>

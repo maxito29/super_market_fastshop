@@ -1,54 +1,102 @@
 <section class="contenedor pagina">
-  <h1>Tu carrito</h1>
+
+  <div class="pagina-cabecera">
+    <div>
+      <a routerLink="/" class="volver">
+        <span class="pi pi-arrow-left"></span>
+        Seguir comprando
+      </a>
+      <h1>Tu carrito <span class="pagina-contador" *ngIf="carrito.items().length > 0">({{ carrito.totalItems() }})</span></h1>
+    </div>
+
+    <button class="vaciar" *ngIf="carrito.items().length > 0" (click)="vaciarCarrito()">
+      <span class="pi pi-trash"></span>
+      Vaciar carrito
+    </button>
+  </div>
 
   <div *ngIf="carrito.items().length === 0" class="vacio">
-    <span class="pi pi-shopping-cart"></span>
-    <p>Todavía no agregaste productos.</p>
-    <a routerLink="/">
-      <p-button label="Ver catálogo" icon="pi pi-arrow-left"></p-button>
+    <span class="vacio-icono-aro">
+      <span class="pi pi-shopping-cart" aria-hidden="true"></span>
+    </span>
+    <p class="vacio-titulo">Todavía no agregaste productos</p>
+    <p class="vacio-texto">Explora el catálogo y arma tu pedido de la semana.</p>
+    <a routerLink="/" class="boton-primario-carrito">
+      <span class="pi pi-shopping-bag"></span>
+      Ir al catálogo
     </a>
   </div>
 
   <div class="carrito-layout" *ngIf="carrito.items().length > 0">
+
     <div class="lista">
-      <div class="fila" *ngFor="let item of carrito.items()">
-        <div class="fila-info">
-          <span class="fila-nombre">{{ item.nombre }}</span>
-          <span class="fila-proveedor">{{ item.proveedorNombre ?? 'Precio de tienda' }}</span>
+      <article
+        class="tarjeta-item"
+        *ngFor="let item of carrito.items(); let i = index"
+        [class.saliendo]="estaSaliendo(item)"
+        [style.animation-delay]="(i * 45) + 'ms'">
+
+        <div class="item-imagen" [class.sin-imagen]="!item.imagenUrl">
+          <img *ngIf="item.imagenUrl" [src]="item.imagenUrl" [alt]="item.nombre" loading="lazy" />
+          <span *ngIf="!item.imagenUrl" class="pi pi-shopping-basket"></span>
         </div>
 
-        <p-inputNumber
-          [ngModel]="item.cantidad"
-          (ngModelChange)="actualizarCantidad(item.productoId, item.ofertaProductoId, $event)"
-          [showButtons]="true"
-          [min]="1"
-          [max]="item.stockDisponible"
-          buttonLayout="horizontal"
-          incrementButtonIcon="pi pi-plus"
-          decrementButtonIcon="pi pi-minus">
-        </p-inputNumber>
+        <div class="item-info">
+          <span class="item-nombre">{{ item.nombre }}</span>
+          <span class="item-proveedor">{{ item.proveedorNombre ?? 'Precio de tienda' }}</span>
+          <span class="item-precio-unidad">S/ {{ item.precioUnitario.toFixed(2) }} c/u</span>
+        </div>
 
-        <span class="fila-subtotal">S/ {{ (item.cantidad * item.precioUnitario).toFixed(2) }}</span>
+        <div class="item-stepper">
+          <div class="stepper">
+            <button class="stepper-boton" (click)="decrementar(item)" [disabled]="item.cantidad <= 1" aria-label="Quitar uno">−</button>
+            <span class="stepper-valor">{{ item.cantidad }}</span>
+            <button class="stepper-boton" (click)="incrementar(item)" [disabled]="item.cantidad >= item.stockDisponible" aria-label="Agregar uno">+</button>
+          </div>
+        </div>
 
-        <button class="quitar" (click)="quitar(item.productoId, item.ofertaProductoId)">
+        <span class="item-subtotal">S/ {{ (item.cantidad * item.precioUnitario).toFixed(2) }}</span>
+
+        <button class="item-quitar" (click)="quitar(item)" aria-label="Eliminar producto">
           <span class="pi pi-trash"></span>
         </button>
-      </div>
+      </article>
     </div>
 
     <aside class="resumen">
-      <h3>Resumen</h3>
+      <h3>Resumen del pedido</h3>
+
       <div class="resumen-linea">
         <span>Productos ({{ carrito.totalItems() }})</span>
         <span>S/ {{ carrito.totalPagar().toFixed(2) }}</span>
       </div>
+      <div class="resumen-linea">
+        <span>Envío</span>
+        <span class="resumen-nota">Se calcula al pagar</span>
+      </div>
+
+      <div class="resumen-borde-dentado" aria-hidden="true"></div>
+
       <div class="resumen-total">
         <span>Total</span>
         <span>S/ {{ carrito.totalPagar().toFixed(2) }}</span>
       </div>
-      <a routerLink="/checkout">
-        <p-button label="Continuar con el pedido" icon="pi pi-arrow-right" iconPos="right" styleClass="w-full"></p-button>
+
+      <a routerLink="/checkout" class="boton-primario-carrito w-full">
+        Continuar con el pedido
+        <span class="pi pi-arrow-right"></span>
       </a>
+
+      <ul class="resumen-confianza">
+        <li>
+          <span class="pi pi-truck"></span>
+          Envío gratis desde S/ 50
+        </li>
+        <li>
+          <span class="pi pi-shield"></span>
+          Pago seguro al finalizar
+        </li>
+      </ul>
     </aside>
   </div>
 </section>

@@ -1,117 +1,220 @@
-<section class="hero">
-  <div class="contenedor hero-centro">
-    <p class="hero-eyebrow">Recojo en tienda o delivery</p>
-    <h1>Lo que necesitas para tu semana, al mejor precio</h1>
-    <p class="hero-texto">Compara precios de distintos proveedores por cada producto y elige el que más te convenga.</p>
-  </div>
-</section>
-
-<section class="contenedor filtros">
-  <button
-    class="chip"
-    [class.chip-activo]="categoriaSeleccionada === null"
-    (click)="seleccionarCategoria(null)">
-    Todas
-  </button>
-  <button
-    class="chip"
-    *ngFor="let categoria of categorias"
-    [class.chip-activo]="categoriaSeleccionada === categoria.id"
-    (click)="seleccionarCategoria(categoria.id)">
-    {{ categoria.nombre }}
-  </button>
-</section>
-
-<section class="contenedor grilla">
-  <p-card *ngFor="let producto of productos" styleClass="tarjeta-producto">
-    <div class="producto-imagen" [class.sin-imagen]="!producto.imagenUrl">
-      <img *ngIf="producto.imagenUrl" [src]="producto.imagenUrl" [alt]="producto.nombre" />
-      <span *ngIf="!producto.imagenUrl" class="pi pi-shopping-basket"></span>
-    </div>
-
-    <p class="producto-categoria">{{ producto.categoriaNombre }}</p>
-    <h3 class="producto-nombre">{{ producto.nombre }}</h3>
-    <p class="producto-descripcion">{{ producto.descripcion }}</p>
-
-    <div class="producto-pie">
-      <span class="producto-precio">S/ {{ producto.precio.toFixed(2) }}</span>
-      <p-button
-        label="Comparar y agregar"
-        icon="pi pi-shopping-cart"
-        size="small"
-        (onClick)="abrirComparador(producto)">
-      </p-button>
-    </div>
-  </p-card>
-
-  <p class="vacio" *ngIf="productos.length === 0">No hay productos en esta categoría todavía.</p>
-</section>
-
-<p-dialog
-  [(visible)]="dialogoVisible"
-  [modal]="true"
-  [style]="{ width: '440px' }"
-  [header]="productoEnDialogo?.nombre ?? ''">
-
-  <div *ngIf="cargandoOfertas" class="dialogo-cargando">Buscando proveedores...</div>
-
-  <div *ngIf="!cargandoOfertas" class="dialogo-cuerpo">
-    <p class="dialogo-etiqueta">¿Con qué proveedor lo compras?</p>
-
-    <div class="opcion-proveedor" [class.opcion-elegida]="ofertaElegida === 'base'">
-      <p-radioButton
-        name="proveedor"
-        [value]="'base'"
-        [(ngModel)]="ofertaElegida"
-        inputId="op-base">
-      </p-radioButton>
-      <label for="op-base" class="opcion-info">
-        <span class="opcion-nombre">Precio de tienda</span>
-        <span class="opcion-precio">S/ {{ productoEnDialogo?.precio?.toFixed(2) }}</span>
-      </label>
-    </div>
-
+<!-- ============ Carrusel hero ============ -->
+<section class="carrusel" (mouseenter)="detenerCarrusel()" (mouseleave)="iniciarCarrusel()">
+  <div class="carrusel-pista" [style.transform]="'translateX(-' + (diapositivaActual * 100) + '%)'">
     <div
-      class="opcion-proveedor"
-      *ngFor="let oferta of ofertasEnDialogo; let i = index"
-      [class.opcion-elegida]="ofertaElegida !== 'base' && ofertaElegida.ofertaId === oferta.ofertaId">
-      <p-radioButton
-        name="proveedor"
-        [value]="oferta"
-        [(ngModel)]="ofertaElegida"
-        [inputId]="'op-' + oferta.ofertaId">
-      </p-radioButton>
-      <label [for]="'op-' + oferta.ofertaId" class="opcion-info">
-        <span class="opcion-nombre">
-          {{ oferta.proveedorNombre }}
-          <p-tag *ngIf="i === 0" severity="warning" value="Más barato"></p-tag>
-        </span>
-        <span class="opcion-precio">S/ {{ oferta.precio.toFixed(2) }}</span>
-      </label>
+      class="carrusel-slide"
+      [class.acento-tomate]="d.acento === 'tomate'"
+      [class.acento-verde]="d.acento === 'verde'"
+      *ngFor="let d of diapositivas">
+      <div class="contenedor carrusel-contenido">
+        <p class="carrusel-eyebrow">{{ d.etiqueta }}</p>
+        <h1>{{ d.titulo }}</h1>
+        <p class="carrusel-texto">{{ d.texto }}</p>
+        <button class="carrusel-cta">
+          {{ d.cta }}
+          <span class="pi pi-arrow-right"></span>
+        </button>
+      </div>
+      <div class="carrusel-icono-flotante" aria-hidden="true">
+        <span [class]="d.icono"></span>
+      </div>
     </div>
-
-    <p class="dialogo-etiqueta cantidad-label">Cantidad</p>
-    <p-inputNumber
-      [(ngModel)]="cantidadElegida"
-      [showButtons]="true"
-      [min]="1"
-      [max]="stockDisponible()"
-      buttonLayout="horizontal"
-      decrementButtonClass="p-button-secondary"
-      incrementButtonClass="p-button-secondary"
-      incrementButtonIcon="pi pi-plus"
-      decrementButtonIcon="pi pi-minus">
-    </p-inputNumber>
-    <p class="stock-info">{{ stockDisponible() }} disponibles</p>
   </div>
 
-  <ng-template pTemplate="footer">
-    <p-button label="Cancelar" severity="secondary" [text]="true" (onClick)="dialogoVisible = false"></p-button>
-    <p-button
-      label="Agregar al carrito · S/ {{ (precioMostrado() * cantidadElegida).toFixed(2) }}"
-      icon="pi pi-check"
-      (onClick)="confirmarAgregar()"
-      [disabled]="cargandoOfertas || stockDisponible() < 1">
-    </p-button>
+  <button class="carrusel-flecha carrusel-flecha-izq" (click)="anteriorManual()" aria-label="Diapositiva anterior">
+    <span class="pi pi-chevron-left"></span>
+  </button>
+  <button class="carrusel-flecha carrusel-flecha-der" (click)="siguienteManual()" aria-label="Siguiente diapositiva">
+    <span class="pi pi-chevron-right"></span>
+  </button>
+
+  <div class="carrusel-puntos">
+    <button
+      *ngFor="let d of diapositivas; let i = index"
+      class="punto"
+      [class.activo]="i === diapositivaActual"
+      (click)="irADiapositiva(i)"
+      [attr.aria-label]="'Ir a la diapositiva ' + (i + 1)">
+    </button>
+  </div>
+</section>
+
+<!-- ============ Carrusel infinito de categorías ============ -->
+<section class="categorias-seccion">
+  <div class="contenedor categorias-cabecera">
+    <h2>Compra por categoría</h2>
+    <button class="chip-todas" [class.activo]="filtro.categoriaId() === null" (click)="seleccionarCategoria(null)">
+      <span class="pi pi-th-large"></span>
+      Ver todas
+    </button>
+  </div>
+
+  <div class="marquee" [class.pausado]="marqueePausado">
+    <div class="marquee-pista" (mouseenter)="marqueePausado = true" (mouseleave)="marqueePausado = false">
+      <button
+        class="marquee-item"
+        *ngFor="let categoria of categoriasMarquee"
+        [class.activo]="filtro.categoriaId() === categoria.id"
+        (click)="seleccionarCategoria(categoria.id)">
+        <span class="marquee-icono pi pi-tag"></span>
+        {{ categoria.nombre }}
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ Franja de beneficios ============ -->
+<section class="contenedor beneficios">
+  <div class="beneficio" *ngFor="let b of beneficios">
+    <span class="beneficio-icono" [class]="b.icono"></span>
+    <div>
+      <p class="beneficio-titulo">{{ b.titulo }}</p>
+      <p class="beneficio-texto">{{ b.texto }}</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ Banner promocional ============ -->
+<section class="contenedor">
+  <div class="promo-banner">
+    <div class="promo-texto">
+      <p class="promo-eyebrow">Ahorra comparando</p>
+      <h2>Un mismo producto, varios proveedores</h2>
+      <p class="promo-descripcion">Al agregar un producto puedes elegir con qué proveedor comprarlo y quedarte con el precio más bajo disponible.</p>
+    </div>
+    <span class="promo-icono pi pi-percentage" aria-hidden="true"></span>
+  </div>
+</section>
+
+<!-- ============ Catálogo de productos ============ -->
+<section class="contenedor cuerpo">
+
+  <div class="cuerpo-cabecera-fila">
+    <h2 class="cuerpo-titulo">{{ categoriaActualNombre() ?? 'Todos los productos' }}</h2>
+    <div class="cuerpo-cabecera" *ngIf="categoriaActualNombre() as nombre">
+      <span class="filtro-activo">
+        {{ nombre }}
+        <button class="quitar-filtro" (click)="seleccionarCategoria(null)" aria-label="Quitar filtro">
+          <span class="pi pi-times"></span>
+        </button>
+      </span>
+    </div>
+  </div>
+
+  <div class="grilla" *ngIf="productos.length > 0; else vacioTpl">
+    <article
+      class="tarjeta-producto"
+      *ngFor="let producto of productos; let i = index"
+      [style.animation-delay]="retrasoAnimacion(i)">
+
+      <div class="producto-imagen" [class.sin-imagen]="!producto.imagenUrl">
+        <img *ngIf="producto.imagenUrl" [src]="producto.imagenUrl" [alt]="producto.nombre" loading="lazy" />
+        <span *ngIf="!producto.imagenUrl" class="pi pi-shopping-basket"></span>
+
+        <span class="ribbon-stock" *ngIf="esBajoStock(producto)">Últimas unidades</span>
+
+        <div class="producto-overlay">
+          <button class="boton-overlay-agregar" (click)="abrirComparador(producto)">
+            <span class="pi pi-shopping-cart"></span>
+            Agregar al carrito
+          </button>
+        </div>
+      </div>
+
+      <div class="producto-cuerpo">
+        <p class="producto-categoria">{{ producto.categoriaNombre }}</p>
+        <h3 class="producto-nombre">{{ producto.nombre }}</h3>
+        <p class="producto-descripcion">{{ producto.descripcion }}</p>
+
+        <div class="producto-pie">
+          <div class="producto-precio-bloque">
+            <span class="tienda-etiqueta-precio">S/ {{ producto.precio.toFixed(2) }}</span>
+            <span class="producto-stock-texto">{{ producto.stock }} disp.</span>
+          </div>
+          <button class="boton-agregar" (click)="abrirComparador(producto)" aria-label="Agregar al carrito">
+            <span class="pi pi-plus"></span>
+          </button>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <ng-template #vacioTpl>
+    <div class="vacio">
+      <span class="pi pi-inbox vacio-icono" aria-hidden="true"></span>
+      <p class="vacio-titulo">No hay productos en esta categoría todavía</p>
+      <p class="vacio-texto">Prueba con otra categoría o vuelve más tarde.</p>
+    </div>
   </ng-template>
-</p-dialog>
+
+</section>
+
+<!-- ============ Modal comparador de proveedores (sin PrimeNG) ============ -->
+<div class="modal-overlay" *ngIf="dialogoVisible" (click)="cerrarDialogo()">
+  <div class="modal-panel" (click)="$event.stopPropagation()">
+
+    <header class="modal-cabecera">
+      <h3>{{ productoEnDialogo?.nombre }}</h3>
+      <button class="modal-cerrar" (click)="cerrarDialogo()" aria-label="Cerrar">
+        <span class="pi pi-times"></span>
+      </button>
+    </header>
+
+    <div class="modal-cuerpo">
+      <ng-container *ngIf="cargandoOfertas; else contenidoTpl">
+        <div class="skeleton-fila" *ngFor="let s of [1, 2, 3]"></div>
+      </ng-container>
+
+      <ng-template #contenidoTpl>
+        <p class="modal-etiqueta">¿Con qué proveedor lo compras?</p>
+
+        <label class="opcion-proveedor" [class.opcion-elegida]="ofertaElegida === 'base'">
+          <input type="radio" name="proveedor" [checked]="ofertaElegida === 'base'" (change)="elegirOferta('base')" />
+          <span class="opcion-radio" aria-hidden="true"></span>
+          <span class="opcion-info">
+            <span class="opcion-nombre">Precio de tienda</span>
+            <span class="opcion-precio">S/ {{ productoEnDialogo?.precio?.toFixed(2) }}</span>
+          </span>
+        </label>
+
+        <label
+          class="opcion-proveedor"
+          *ngFor="let oferta of ofertasEnDialogo; let i = index"
+          [class.opcion-elegida]="ofertaElegida !== 'base' && ofertaElegida.ofertaId === oferta.ofertaId">
+          <input
+            type="radio"
+            name="proveedor"
+            [checked]="ofertaElegida !== 'base' && ofertaElegida.ofertaId === oferta.ofertaId"
+            (change)="elegirOferta(oferta)" />
+          <span class="opcion-radio" aria-hidden="true"></span>
+          <span class="opcion-info">
+            <span class="opcion-nombre">
+              {{ oferta.proveedorNombre }}
+              <span class="badge-barato" *ngIf="i === 0">Más barato</span>
+            </span>
+            <span class="opcion-precio">S/ {{ oferta.precio.toFixed(2) }}</span>
+          </span>
+        </label>
+
+        <p class="modal-etiqueta cantidad-label">Cantidad</p>
+        <div class="stepper">
+          <button class="stepper-boton" (click)="decrementarCantidad()" [disabled]="cantidadElegida <= 1" aria-label="Quitar uno">−</button>
+          <span class="stepper-valor">{{ cantidadElegida }}</span>
+          <button class="stepper-boton" (click)="incrementarCantidad()" [disabled]="cantidadElegida >= stockDisponible()" aria-label="Agregar uno">+</button>
+        </div>
+        <p class="stock-info">{{ stockDisponible() }} disponibles</p>
+      </ng-template>
+    </div>
+
+    <footer class="modal-pie">
+      <button class="boton-secundario" (click)="cerrarDialogo()">Cancelar</button>
+      <button
+        class="boton-primario"
+        (click)="confirmarAgregar()"
+        [disabled]="cargandoOfertas || stockDisponible() < 1">
+        <span class="pi pi-check"></span>
+        Agregar · S/ {{ (precioMostrado() * cantidadElegida).toFixed(2) }}
+      </button>
+    </footer>
+  </div>
+</div>

@@ -11,8 +11,10 @@ function claveItem(productoId: number, ofertaProductoId: number | null): string 
 export class CarritoService {
 
   private itemsSignal = signal<ItemCarrito[]>(this.cargarDeStorage());
+  private abiertoSignal = signal<boolean>(false);
 
   readonly items = this.itemsSignal.asReadonly();
+  readonly abierto = this.abiertoSignal.asReadonly();
 
   readonly totalItems = computed(() =>
     this.itemsSignal().reduce((acumulado, item) => acumulado + item.cantidad, 0)
@@ -21,6 +23,14 @@ export class CarritoService {
   readonly totalPagar = computed(() =>
     this.itemsSignal().reduce((acumulado, item) => acumulado + item.cantidad * item.precioUnitario, 0)
   );
+
+  abrir(): void {
+    this.abiertoSignal.set(true);
+  }
+
+  cerrar(): void {
+    this.abiertoSignal.set(false);
+  }
 
   agregar(nuevoItem: ItemCarrito): void {
     const clave = claveItem(nuevoItem.productoId, nuevoItem.ofertaProductoId);
