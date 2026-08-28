@@ -31,6 +31,14 @@ public class ProductoService {
         return productoRepository.findByCategoriaId(categoriaId).stream().map(ProductoResponse::new).toList();
     }
 
+    public List<ProductoResponse> buscarPorNombre(String texto) {
+        if (texto == null || texto.isBlank()) {
+            return listarActivos();
+        }
+        return productoRepository.findByActivoTrueAndNombreContainingIgnoreCase(texto.trim())
+                .stream().map(ProductoResponse::new).toList();
+    }
+
     public List<ProductoResponse> listarTodos() {
         return productoRepository.findAll().stream().map(ProductoResponse::new).toList();
     }

@@ -7,6 +7,12 @@ export interface DniConsultaResponse {
   nombreCompleto: string;
 }
 
+export interface RucConsultaResponse {
+  razonSocial: string;
+  estado?: string;
+  condicion?: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class DocumentoService {
 
@@ -14,5 +20,9 @@ export class DocumentoService {
 
   consultarDni(numero: string): Observable<DniConsultaResponse> {
     return this.http.get<DniConsultaResponse>(`${API_URL}/documentos/dni/${numero}`);
+  }
+
+  consultarRuc(numero: string): Observable<RucConsultaResponse> {
+    return this.http.get<RucConsultaResponse>(`${API_URL}/documentos/ruc/${numero}`);
   }
 }

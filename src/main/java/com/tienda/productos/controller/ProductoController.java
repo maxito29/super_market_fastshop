@@ -31,6 +31,12 @@ public class ProductoController {
         return productoService.listarPorCategoria(categoriaId);
     }
 
+    @GetMapping("/buscar")
+    @Operation(summary = "Busca productos activos cuyo nombre contenga el texto indicado")
+    public List<ProductoResponse> buscar(@RequestParam(name = "q", defaultValue = "") String q) {
+        return productoService.buscarPorNombre(q);
+    }
+
     @GetMapping("/admin/todos")
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Lista todos los productos, incluyendo los inactivos (solo ADMIN)")

@@ -89,17 +89,27 @@
 <!-- ============ Catálogo de productos ============ -->
 <section class="contenedor cuerpo">
 
-  <div class="cuerpo-cabecera-fila">
-    <h2 class="cuerpo-titulo">{{ categoriaActualNombre() ?? 'Todos los productos' }}</h2>
-    <div class="cuerpo-cabecera" *ngIf="categoriaActualNombre() as nombre">
-      <span class="filtro-activo">
-        {{ nombre }}
-        <button class="quitar-filtro" (click)="seleccionarCategoria(null)" aria-label="Quitar filtro">
-          <span class="pi pi-times"></span>
-        </button>
-      </span>
-    </div>
+<div class="cuerpo-cabecera-fila">
+  <h2 class="cuerpo-titulo">
+    {{ filtro.texto() ? 'Resultados para "' + filtro.texto() + '"' : (categoriaActualNombre() ?? 'Todos los productos') }}
+  </h2>
+  <div class="cuerpo-cabecera" *ngIf="filtro.texto() as texto">
+    <span class="filtro-activo">
+      {{ texto }}
+      <button class="quitar-filtro" (click)="limpiarBusqueda()" aria-label="Quitar búsqueda">
+        <span class="pi pi-times"></span>
+      </button>
+    </span>
   </div>
+  <div class="cuerpo-cabecera" *ngIf="!filtro.texto() && categoriaActualNombre() as nombre">
+    <span class="filtro-activo">
+      {{ nombre }}
+      <button class="quitar-filtro" (click)="seleccionarCategoria(null)" aria-label="Quitar filtro">
+        <span class="pi pi-times"></span>
+      </button>
+    </span>
+  </div>
+</div>
 
   <div class="grilla" *ngIf="productos.length > 0; else vacioTpl">
     <article
@@ -139,13 +149,19 @@
     </article>
   </div>
 
-  <ng-template #vacioTpl>
-    <div class="vacio">
-      <span class="pi pi-inbox vacio-icono" aria-hidden="true"></span>
+<ng-template #vacioTpl>
+  <div class="vacio">
+    <span class="pi vacio-icono" [class.pi-search]="filtro.texto()" [class.pi-inbox]="!filtro.texto()" aria-hidden="true"></span>
+    <ng-container *ngIf="filtro.texto(); else vacioCategoriaTpl">
+      <p class="vacio-titulo">No encontramos productos para "{{ filtro.texto() }}"</p>
+      <p class="vacio-texto">Revisa la ortografía o prueba con otra palabra.</p>
+    </ng-container>
+    <ng-template #vacioCategoriaTpl>
       <p class="vacio-titulo">No hay productos en esta categoría todavía</p>
       <p class="vacio-texto">Prueba con otra categoría o vuelve más tarde.</p>
-    </div>
-  </ng-template>
+    </ng-template>
+  </div>
+</ng-template>
 
 </section>
 

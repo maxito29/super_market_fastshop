@@ -13,6 +13,8 @@ public interface ProductoRepository extends JpaRepository<Producto, Long> {
 
     List<Producto> findByActivoTrue();
 
+    List<Producto> findByActivoTrueAndNombreContainingIgnoreCase(String nombre);
+
     Optional<Producto> findByCodigo(String codigo);
 
     long countByActivoTrue();

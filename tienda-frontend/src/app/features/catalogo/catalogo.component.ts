@@ -81,10 +81,11 @@ export class CatalogoComponent implements OnInit, OnDestroy {
   ) {
     // Se recarga el catálogo cada vez que cambia la categoría elegida,
     // ya sea desde el menú hamburguesa, los chips o esta misma página.
-    effect(() => {
-      this.filtro.categoriaId();
-      this.cargarProductos();
-    });
+  effect(() => {
+    this.filtro.categoriaId();
+    this.filtro.texto();
+    this.cargarProductos();
+  });
   }
 
   ngOnInit(): void {
@@ -132,25 +133,32 @@ export class CatalogoComponent implements OnInit, OnDestroy {
     this.iniciarCarrusel();
   }
 
-  // ---------- Catálogo ----------
-  cargarProductos(): void {
-    const categoriaId = this.filtro.categoriaId();
-    const fuente = categoriaId
+cargarProductos(): void {
+  const texto = this.filtro.texto();
+  const categoriaId = this.filtro.categoriaId();
+
+  const fuente = texto
+    ? this.catalogoService.buscarProductos(texto)
+    : categoriaId
       ? this.catalogoService.listarProductosPorCategoria(categoriaId)
       : this.catalogoService.listarProductos();
 
-    fuente.subscribe(productos => (this.productos = productos));
-  }
+  fuente.subscribe(productos => (this.productos = productos));
+}
 
-  categoriaActualNombre(): string | null {
-    const id = this.filtro.categoriaId();
-    if (!id) return null;
-    return this.categorias.find(c => c.id === id)?.nombre ?? null;
-  }
+categoriaActualNombre(): string | null {
+  const id = this.filtro.categoriaId();
+  if (!id) return null;
+  return this.categorias.find(c => c.id === id)?.nombre ?? null;
+}
 
-  seleccionarCategoria(id: number | null): void {
-    this.filtro.seleccionar(id);
-  }
+seleccionarCategoria(id: number | null): void {
+  this.filtro.seleccionar(id);
+}
+
+limpiarBusqueda(): void {
+  this.filtro.limpiarBusqueda();
+}
 
   esBajoStock(producto: Producto): boolean {
     return producto.stock > 0 && producto.stock <= 10;

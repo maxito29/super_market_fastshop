@@ -2,11 +2,6 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { ButtonModule } from 'primeng/button';
-import { InputTextModule } from 'primeng/inputtext';
-import { RadioButtonModule } from 'primeng/radiobutton';
-import { DropdownModule } from 'primeng/dropdown';
-import { InputNumberModule } from 'primeng/inputnumber';
 import { MessageService } from 'primeng/api';
 
 import { CatalogoService } from '../../core/services/catalogo.service';
@@ -19,16 +14,7 @@ import { CrearPedidoInvitadoRequest, ModalidadEntrega, TipoComprobante } from '.
 @Component({
   selector: 'app-checkout',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    RouterLink,
-    ButtonModule,
-    InputTextModule,
-    RadioButtonModule,
-    DropdownModule,
-    InputNumberModule
-  ],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './checkout.component.html',
   styleUrl: './checkout.component.scss'
 })
@@ -36,7 +22,15 @@ export class CheckoutComponent implements OnInit {
 
   metodosPago: MetodoPago[] = [];
   enviando = false;
+
   buscandoDni = false;
+  dniEncontrado = false;
+
+  buscandoRuc = false;
+  rucEncontrado = false;
+  rucError = false;
+  rucErrorMensaje = '';
+  rucAdvertencia = '';
 
   form = {
     nombre: '',
@@ -84,17 +78,58 @@ export class CheckoutComponent implements OnInit {
     });
   }
 
+  cambiarTipoComprobante(tipo: TipoComprobante): void {
+    this.form.tipoComprobante = tipo;
+  }
+
+  cambiarModalidadEntrega(modalidad: ModalidadEntrega): void {
+    this.form.modalidadEntrega = modalidad;
+  }
+
   buscarPorDni(): void {
     if (this.form.dni.length !== 8) return;
 
     this.buscandoDni = true;
+    this.dniEncontrado = false;
+
     this.documentoService.consultarDni(this.form.dni).subscribe({
       next: resultado => {
         this.form.nombre = resultado.nombreCompleto;
         this.buscandoDni = false;
+        this.dniEncontrado = true;
+        setTimeout(() => (this.dniEncontrado = false), 2000);
       },
       error: () => {
         this.buscandoDni = false;
+      }
+    });
+  }
+
+  buscarPorRuc(): void {
+    if (this.form.ruc.length !== 11) return;
+
+    this.buscandoRuc = true;
+    this.rucEncontrado = false;
+    this.rucError = false;
+    this.rucAdvertencia = '';
+
+    this.documentoService.consultarRuc(this.form.ruc).subscribe({
+      next: resultado => {
+        this.form.razonSocial = resultado.razonSocial;
+        this.buscandoRuc = false;
+        this.rucEncontrado = true;
+        setTimeout(() => (this.rucEncontrado = false), 2000);
+
+        const estadoOk = !resultado.estado || resultado.estado === 'ACTIVO';
+        const condicionOk = !resultado.condicion || resultado.condicion === 'HABIDO';
+        if (!estadoOk || !condicionOk) {
+          this.rucAdvertencia = `Este RUC figura como ${resultado.estado ?? '—'} / ${resultado.condicion ?? '—'} en SUNAT. Verifica los datos antes de continuar.`;
+        }
+      },
+      error: err => {
+        this.buscandoRuc = false;
+        this.rucError = true;
+        this.rucErrorMensaje = err?.error?.mensaje ?? 'No pudimos encontrar ese RUC. Ingresa la razón social manualmente.';
       }
     });
   }

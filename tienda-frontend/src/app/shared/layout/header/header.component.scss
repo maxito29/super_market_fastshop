@@ -81,12 +81,28 @@
 
 /* Bloque central: buscador */
 .bloque-busqueda {
+  position: relative;
   flex: 1;
   max-width: 480px;
   margin: 0 auto;
+  z-index: 210;
+
+  .buscador-form {
+    width: 100%;
+  }
 
   .p-iconfield {
     width: 100%;
+  }
+
+  ::ng-deep .buscador-limpiar {
+    cursor: pointer;
+    pointer-events: auto;
+    color: var(--tienda-verde-700);
+
+    &:hover {
+      color: var(--tienda-verde-900);
+    }
   }
 }
 
@@ -97,10 +113,212 @@
   padding: 10px 40px 10px 16px !important;
   font-size: 14px;
   background: var(--tienda-verde-100);
+  position: relative;
+  z-index: 211;
 
   &:focus {
     border-color: var(--tienda-verde-700) !important;
     box-shadow: 0 0 0 3px rgba(31, 107, 76, 0.15) !important;
+  }
+}
+
+/* Cuando el panel está abierto, el input queda por encima del overlay
+   oscuro y conserva sus esquinas redondeadas incluso con el panel debajo. */
+.bloque-busqueda.panel-activo .buscador-input {
+  border-bottom-left-radius: 999px !important;
+  border-bottom-right-radius: 999px !important;
+}
+
+.buscador-overlay {
+  position: fixed;
+  inset: 0;
+  top: 72px;
+  background: rgba(15, 23, 20, 0.35);
+  z-index: 190;
+}
+
+/* ---------- Panel flotante de resultados ---------- */
+.panel-busqueda {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  right: 0;
+  background: var(--tienda-superficie);
+  border-radius: 16px;
+  border: 1px solid var(--tienda-borde);
+  box-shadow: 0 16px 40px rgba(15, 23, 20, 0.18);
+  padding: 18px;
+  max-height: min(70vh, 520px);
+  overflow-y: auto;
+  z-index: 212;
+}
+
+.panel-subtitulo {
+  margin: 0 0 12px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--tienda-tinta-suave);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+/* Estado: términos populares */
+.chips-populares {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip-termino {
+  border: none;
+  border-radius: 999px;
+  padding: 7px 14px;
+  background: var(--tienda-verde-100);
+  color: var(--tienda-verde-900);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: var(--tienda-verde-500);
+    color: #fff;
+  }
+}
+
+/* Estado: cargando */
+.panel-cargando {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 20px 4px;
+  color: var(--tienda-tinta-suave);
+  font-size: 14px;
+}
+
+/* Estado: sin resultados */
+.panel-sin-resultados {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 28px 12px;
+  text-align: center;
+  color: var(--tienda-tinta-suave);
+
+  .pi {
+    font-size: 26px;
+    opacity: 0.5;
+  }
+
+  p {
+    margin: 0;
+    font-size: 14px;
+  }
+}
+
+/* Estado: listado de resultados */
+.resultado-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 4px;
+  border-bottom: 1px solid var(--tienda-borde);
+
+  &:last-of-type {
+    border-bottom: none;
+  }
+}
+
+.resultado-imagen {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--tienda-verde-100);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  &.sin-imagen .pi {
+    color: var(--tienda-verde-500);
+    font-size: 18px;
+  }
+}
+
+.resultado-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.resultado-nombre {
+  margin: 0 0 2px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--tienda-tinta);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.resultado-precio {
+  margin: 0;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--tienda-verde-700);
+}
+
+.resultado-boton-agregar {
+  flex-shrink: 0;
+  border: none;
+  border-radius: 999px;
+  padding: 8px 16px;
+  background: var(--tienda-verde-700);
+  color: #fff;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s ease, opacity 0.15s ease;
+  white-space: nowrap;
+
+  &:hover:not(:disabled) {
+    background: var(--tienda-verde-900);
+  }
+
+  &:disabled {
+    background: var(--tienda-tinta-suave);
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  &.agregado {
+    background: var(--tienda-verde-500);
+  }
+}
+
+.panel-ver-todos {
+  display: block;
+  width: 100%;
+  margin-top: 14px;
+  padding: 10px;
+  border: none;
+  border-top: 1px solid var(--tienda-borde);
+  background: transparent;
+  color: var(--tienda-verde-700);
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: center;
+
+  &:hover {
+    color: var(--tienda-verde-900);
   }
 }
 

@@ -1,28 +1,35 @@
 package com.tienda.productos.controller;
 
-import com.tienda.productos.dto.DniConsultaResponse;
-import com.tienda.productos.service.ReniecService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.tienda.productos.dto.DocumentoResponses;
+import com.tienda.productos.exception.DocumentoConsultaException;
+import com.tienda.productos.service.DocumentoService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/documentos")
-@RequiredArgsConstructor
-@Tag(name = "Documentos", description = "Consulta de DNI para autocompletar datos del cliente")
 public class DocumentoController {
 
-    private final ReniecService reniecService;
+    private final DocumentoService documentoService;
+
+    public DocumentoController(DocumentoService documentoService) {
+        this.documentoService = documentoService;
+    }
 
     @GetMapping("/dni/{numero}")
-    @Operation(summary = "Consulta el nombre completo asociado a un DNI")
-    public DniConsultaResponse consultarDni(@PathVariable String numero) {
-        DniConsultaResponse respuesta = new DniConsultaResponse();
-        respuesta.setNombreCompleto(reniecService.consultarNombreCompleto(numero));
-        return respuesta;
+    public DocumentoResponses.DniConsultaResponse consultarDni(@PathVariable String numero) {
+        return documentoService.consultarDni(numero);
+    }
+
+    @GetMapping("/ruc/{numero}")
+    public DocumentoResponses.RucConsultaResponse consultarRuc(@PathVariable String numero) {
+        return documentoService.consultarRuc(numero);
+    }
+
+    @ExceptionHandler(DocumentoConsultaException.class)
+    public ResponseEntity<DocumentoResponses.ErrorResponse> manejarErrorConsulta(DocumentoConsultaException ex) {
+        return ResponseEntity
+                .status(ex.getStatus())
+                .body(new DocumentoResponses.ErrorResponse(ex.getMessage()));
     }
 }

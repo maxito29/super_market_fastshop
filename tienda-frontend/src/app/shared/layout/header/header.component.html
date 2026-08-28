@@ -20,13 +20,96 @@
       </a>
     </div>
 
-    <!-- Bloque Central: Buscador PrimeNG -->
-    <div class="bloque-busqueda">
-      <p-iconField iconPosition="right">
-        <p-inputIcon styleClass="pi pi-search"></p-inputIcon>
-        <input type="text" pInputText placeholder="¿Qué estás buscando hoy?" class="buscador-input" />
-      </p-iconField>
+    <!-- Bloque Central: Buscador PrimeNG con panel de resultados -->
+    <div class="bloque-busqueda" [class.panel-activo]="panelAbierto">
+      <form class="buscador-form" role="search" (ngSubmit)="buscarAhora()">
+        <p-iconField iconPosition="right">
+          <p-inputIcon
+            [styleClass]="textoBusqueda ? 'pi pi-times buscador-limpiar' : 'pi pi-search'"
+            (click)="textoBusqueda ? limpiarBusqueda() : null">
+          </p-inputIcon>
+          <input
+            type="text"
+            pInputText
+            name="busquedaProducto"
+            placeholder="¿Qué estás buscando hoy?"
+            class="buscador-input"
+            aria-label="Buscar productos"
+            autocomplete="off"
+            [(ngModel)]="textoBusqueda"
+            (ngModelChange)="alEscribirBusqueda($event)"
+            (focus)="abrirPanel()" />
+        </p-iconField>
+      </form>
+
+      <!-- Panel flotante: términos populares (sin texto) o resultados en vivo -->
+      <div class="panel-busqueda" *ngIf="panelAbierto">
+
+        <!-- Estado 1: sin texto todavía -->
+        <div class="panel-vacio" *ngIf="!textoBusqueda.trim()">
+          <p class="panel-subtitulo">Términos más buscados</p>
+          <div class="chips-populares">
+            <button
+              type="button"
+              class="chip-termino"
+              *ngFor="let termino of terminosPopulares"
+              (click)="buscarTermino(termino)">
+              {{ termino }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Estado 2: buscando -->
+        <div class="panel-cargando" *ngIf="textoBusqueda.trim() && buscando">
+          <span class="pi pi-spin pi-spinner"></span>
+          Buscando productos...
+        </div>
+
+        <!-- Estado 3: resultados -->
+        <div class="panel-resultados" *ngIf="textoBusqueda.trim() && !buscando && resultados.length > 0">
+          <p class="panel-subtitulo">Listado de productos</p>
+
+          <div class="resultado-item" *ngFor="let producto of resultados">
+            <div class="resultado-imagen" [class.sin-imagen]="!producto.imagenUrl">
+              <img *ngIf="producto.imagenUrl" [src]="producto.imagenUrl" [alt]="producto.nombre" loading="lazy" />
+              <span *ngIf="!producto.imagenUrl" class="pi pi-shopping-basket"></span>
+            </div>
+
+            <div class="resultado-info">
+              <p class="resultado-nombre">{{ producto.nombre }}</p>
+              <p class="resultado-precio">S/ {{ producto.precio.toFixed(2) }}</p>
+            </div>
+
+            <button
+              type="button"
+              class="resultado-boton-agregar"
+              [class.agregado]="productoRecienAgregadoId === producto.id"
+              [disabled]="producto.stock <= 0"
+              (click)="agregarRapido(producto, $event)">
+              <span *ngIf="productoRecienAgregadoId !== producto.id">
+                {{ producto.stock > 0 ? 'Agregar' : 'Agotado' }}
+              </span>
+              <span *ngIf="productoRecienAgregadoId === producto.id">
+                <span class="pi pi-check"></span> Agregado
+              </span>
+            </button>
+          </div>
+
+          <button type="button" class="panel-ver-todos" (click)="verTodosLosResultados()">
+            Ver todos los productos ({{ totalResultados }})
+          </button>
+        </div>
+
+        <!-- Estado 4: sin resultados -->
+        <div class="panel-sin-resultados" *ngIf="textoBusqueda.trim() && !buscando && resultados.length === 0">
+          <span class="pi pi-search"></span>
+          <p>No encontramos productos para "{{ textoBusqueda }}"</p>
+        </div>
+      </div>
     </div>
+
+    <!-- Fondo oscurecido detrás del panel, como en un buscador tipo modal -->
+    <div class="buscador-overlay" *ngIf="panelAbierto" (click)="panelAbierto = false"></div>
 
     <!-- Bloque Derecho: Navegación y Acciones -->
     <div class="bloque-derecho">

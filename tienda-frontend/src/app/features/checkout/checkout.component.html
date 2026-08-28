@@ -1,131 +1,176 @@
 <section class="contenedor pagina">
-  <a routerLink="/carrito" class="volver"><span class="pi pi-arrow-left"></span> Volver al carrito</a>
+  <a routerLink="/carrito" class="volver">
+    <span class="pi pi-arrow-left"></span>
+    Volver al carrito
+  </a>
   <h1>Completa tu pedido</h1>
 
   <div class="checkout-layout">
     <form class="formulario" (ngSubmit)="confirmarPedido()">
 
-      <div class="bloque">
+      <!-- ============ Comprobante ============ -->
+      <div class="bloque" style="animation-delay: 0ms">
         <h3>Comprobante</h3>
-        <div class="opciones-radio">
-          <label class="radio-opcion">
-            <p-radioButton name="comprobante" value="BOLETA" [(ngModel)]="form.tipoComprobante"></p-radioButton>
+
+        <div class="tabs-comprobante">
+          <button type="button" class="tab-btn" [class.tab-activo]="form.tipoComprobante === 'BOLETA'" (click)="cambiarTipoComprobante('BOLETA')">
             Boleta
-          </label>
-          <label class="radio-opcion">
-            <p-radioButton name="comprobante" value="FACTURA" [(ngModel)]="form.tipoComprobante"></p-radioButton>
+          </button>
+          <button type="button" class="tab-btn" [class.tab-activo]="form.tipoComprobante === 'FACTURA'" (click)="cambiarTipoComprobante('FACTURA')">
             Factura
-          </label>
+          </button>
+          <span class="tab-indicador" [class.derecha]="form.tipoComprobante === 'FACTURA'"></span>
         </div>
 
         <div class="campo" *ngIf="form.tipoComprobante === 'BOLETA'">
           <label>DNI (opcional, obligatorio desde S/ 700)</label>
-          <input
-            pInputText
-            [(ngModel)]="form.dni"
-            name="dni"
-            placeholder="8 dígitos"
-            maxlength="8"
-            (blur)="buscarPorDni()" />
+          <div class="campo-consulta" [class.encontrado]="dniEncontrado">
+            <input
+              type="text"
+              [(ngModel)]="form.dni"
+              name="dni"
+              placeholder="8 dígitos"
+              maxlength="8"
+              (blur)="buscarPorDni()" />
+            <span class="campo-consulta-icono">
+              <span class="pi pi-spin pi-spinner" *ngIf="buscandoDni"></span>
+              <span class="pi pi-check-circle icono-exito" *ngIf="dniEncontrado"></span>
+            </span>
+          </div>
           <span class="ayuda" *ngIf="buscandoDni">Buscando tu nombre...</span>
         </div>
 
         <ng-container *ngIf="form.tipoComprobante === 'FACTURA'">
-          <div class="campo">
+          <div class="campo animacion-fade">
             <label>RUC</label>
-            <input pInputText [(ngModel)]="form.ruc" name="ruc" placeholder="11 dígitos" maxlength="11" />
+            <div class="campo-con-boton">
+              <div class="campo-consulta" [class.encontrado]="rucEncontrado" [class.con-error]="rucError">
+                <input
+                  type="text"
+                  [(ngModel)]="form.ruc"
+                  name="ruc"
+                  placeholder="11 dígitos"
+                  maxlength="11"
+                  (input)="rucError = false" />
+                <span class="campo-consulta-icono">
+                  <span class="pi pi-spin pi-spinner" *ngIf="buscandoRuc"></span>
+                  <span class="pi pi-check-circle icono-exito" *ngIf="rucEncontrado"></span>
+                </span>
+              </div>
+              <button type="button" class="boton-consultar" (click)="buscarPorRuc()" [disabled]="form.ruc.length !== 11 || buscandoRuc">
+                <span class="pi pi-spin pi-spinner" *ngIf="buscandoRuc"></span>
+                <span *ngIf="!buscandoRuc">Consultar</span>
+              </button>
+            </div>
+            <span class="ayuda ayuda-error" *ngIf="rucError">{{ rucErrorMensaje }}</span>
+            <span class="ayuda ayuda-advertencia" *ngIf="rucAdvertencia">
+              <span class="pi pi-exclamation-triangle"></span>
+              {{ rucAdvertencia }}
+            </span>
           </div>
-          <div class="campo">
+          <div class="campo animacion-fade">
             <label>Razón social</label>
-            <input pInputText [(ngModel)]="form.razonSocial" name="razonSocial" placeholder="Nombre de la empresa" />
+            <div class="campo-consulta" [class.encontrado]="rucEncontrado">
+              <input type="text" [(ngModel)]="form.razonSocial" name="razonSocial" placeholder="Nombre de la empresa" />
+            </div>
           </div>
         </ng-container>
       </div>
 
-      <div class="bloque">
+      <!-- ============ Tus datos ============ -->
+      <div class="bloque" style="animation-delay: 60ms">
         <h3>Tus datos</h3>
         <div class="campo">
           <label>Nombre completo</label>
-          <input pInputText [(ngModel)]="form.nombre" name="nombre" placeholder="Ej. Ana Torres" />
+          <div class="campo-consulta" [class.encontrado]="dniEncontrado">
+            <input type="text" [(ngModel)]="form.nombre" name="nombre" placeholder="Ej. Ana Torres" />
+          </div>
         </div>
         <div class="fila-campos">
           <div class="campo">
             <label>Teléfono</label>
-            <input pInputText [(ngModel)]="form.telefono" name="telefono" placeholder="9XXXXXXXX" />
+            <input type="tel" [(ngModel)]="form.telefono" name="telefono" placeholder="9XXXXXXXX" />
           </div>
           <div class="campo">
             <label>Correo (opcional)</label>
-            <input pInputText [(ngModel)]="form.email" name="email" placeholder="tucorreo@ejemplo.com" />
+            <input type="email" [(ngModel)]="form.email" name="email" placeholder="tucorreo@ejemplo.com" />
           </div>
         </div>
       </div>
 
-      <div class="bloque">
+      <!-- ============ Entrega ============ -->
+      <div class="bloque" style="animation-delay: 120ms">
         <h3>Entrega</h3>
-        <div class="opciones-radio">
-          <label class="radio-opcion">
-            <p-radioButton name="modalidad" value="RECOJO_TIENDA" [(ngModel)]="form.modalidadEntrega"></p-radioButton>
-            Recojo en tienda
-          </label>
-          <label class="radio-opcion">
-            <p-radioButton name="modalidad" value="DELIVERY" [(ngModel)]="form.modalidadEntrega"></p-radioButton>
-            Delivery a domicilio
-          </label>
+
+        <div class="tarjetas-opcion">
+          <button
+            type="button"
+            class="tarjeta-opcion"
+            [class.seleccionada]="form.modalidadEntrega === 'RECOJO_TIENDA'"
+            (click)="cambiarModalidadEntrega('RECOJO_TIENDA')">
+            <span class="pi pi-shop"></span>
+            <span class="tarjeta-opcion-texto">
+              <strong>Recojo en tienda</strong>
+              <small>Listo el mismo día</small>
+            </span>
+          </button>
+
+          <button
+            type="button"
+            class="tarjeta-opcion"
+            [class.seleccionada]="form.modalidadEntrega === 'DELIVERY'"
+            (click)="cambiarModalidadEntrega('DELIVERY')">
+            <span class="pi pi-truck"></span>
+            <span class="tarjeta-opcion-texto">
+              <strong>Delivery a domicilio</strong>
+              <small>Gratis desde S/ 50</small>
+            </span>
+          </button>
         </div>
 
-        <ng-container *ngIf="form.modalidadEntrega === 'DELIVERY'">
-          <div class="campo">
+        <div class="bloque-registro-animado" *ngIf="form.modalidadEntrega === 'DELIVERY'">
+          <div class="campo animacion-fade">
             <label>Dirección</label>
-            <input pInputText [(ngModel)]="form.direccion" name="direccion" placeholder="Av. / Jr. / Calle y número" />
+            <input type="text" [(ngModel)]="form.direccion" name="direccion" placeholder="Av. / Jr. / Calle y número" />
           </div>
-          <div class="fila-campos">
+          <div class="fila-campos animacion-fade">
             <div class="campo">
               <label>Distrito</label>
-              <input pInputText [(ngModel)]="form.distrito" name="distrito" placeholder="Ej. San Isidro" />
+              <input type="text" [(ngModel)]="form.distrito" name="distrito" placeholder="Ej. San Isidro" />
             </div>
             <div class="campo">
               <label>Referencia (opcional)</label>
-              <input pInputText [(ngModel)]="form.referencia" name="referencia" placeholder="Ej. frente al parque" />
+              <input type="text" [(ngModel)]="form.referencia" name="referencia" placeholder="Ej. frente al parque" />
             </div>
           </div>
-        </ng-container>
+        </div>
       </div>
 
-      <div class="bloque">
+      <!-- ============ Pago ============ -->
+      <div class="bloque" style="animation-delay: 180ms">
         <h3>Pago</h3>
         <div class="campo">
           <label>Método de pago</label>
-          <p-dropdown
-            [options]="metodosPago"
-            optionLabel="nombre"
-            optionValue="id"
-            [(ngModel)]="form.metodoPagoId"
-            name="metodoPago"
-            placeholder="Selecciona un método"
-            styleClass="w-full">
-          </p-dropdown>
+          <select class="select-nativo-premium" [(ngModel)]="form.metodoPagoId" name="metodoPago">
+            <option [ngValue]="null" disabled>Selecciona un método</option>
+            <option *ngFor="let metodo of metodosPago" [ngValue]="metodo.id">{{ metodo.nombre }}</option>
+          </select>
         </div>
 
-        <div class="campo" *ngIf="metodoPagoEsEfectivo()">
+        <div class="campo animacion-fade" *ngIf="metodoPagoEsEfectivo()">
           <label>¿Con cuánto vas a pagar? (para tu vuelto)</label>
-          <p-inputNumber
-            [(ngModel)]="form.montoPagoEfectivo"
-            name="montoPagoEfectivo"
-            mode="currency"
-            currency="PEN"
-            locale="es-PE">
-          </p-inputNumber>
+          <div class="campo-moneda">
+            <span class="campo-moneda-simbolo">S/</span>
+            <input type="number" min="0" step="0.10" [(ngModel)]="form.montoPagoEfectivo" name="montoPagoEfectivo" placeholder="0.00" />
+          </div>
         </div>
       </div>
 
-      <p-button
-        type="submit"
-        label="Confirmar pedido"
-        icon="pi pi-check-circle"
-        styleClass="w-full boton-confirmar"
-        [loading]="enviando"
-        [disabled]="!formularioValido() || enviando">
-      </p-button>
+      <button type="submit" class="boton-confirmar" [disabled]="!formularioValido() || enviando">
+        <span class="pi pi-spin pi-spinner" *ngIf="enviando"></span>
+        <span class="pi pi-check-circle" *ngIf="!enviando"></span>
+        Confirmar pedido
+      </button>
     </form>
 
     <aside class="resumen">
@@ -134,6 +179,9 @@
         <span>{{ item.cantidad }} x {{ item.nombre }}</span>
         <span>S/ {{ (item.cantidad * item.precioUnitario).toFixed(2) }}</span>
       </div>
+
+      <div class="resumen-borde-dentado" aria-hidden="true"></div>
+
       <div class="resumen-total">
         <span>Total</span>
         <span>S/ {{ carrito.totalPagar().toFixed(2) }}</span>
