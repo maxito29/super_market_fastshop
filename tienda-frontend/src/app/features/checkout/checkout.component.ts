@@ -8,6 +8,7 @@ import { CatalogoService } from '../../core/services/catalogo.service';
 import { CarritoService } from '../../core/services/carrito.service';
 import { PedidoService } from '../../core/services/pedido.service';
 import { DocumentoService } from '../../core/services/documento.service';
+import { PagoService } from '../../core/services/pago.service';
 import { MetodoPago } from '../../core/models/catalogo.models';
 import { CrearPedidoInvitadoRequest, ModalidadEntrega, TipoComprobante } from '../../core/models/pedido.models';
 
@@ -53,6 +54,7 @@ export class CheckoutComponent implements OnInit {
     public carrito: CarritoService,
     private pedidoService: PedidoService,
     private documentoService: DocumentoService,
+    private pagoService: PagoService,
     private messageService: MessageService,
     private router: Router
   ) {}
@@ -139,6 +141,11 @@ export class CheckoutComponent implements OnInit {
     return metodo?.codigo === 'EFECTIVO';
   }
 
+  metodoPagoEsMercadoPago(): boolean {
+    const metodo = this.metodosPago.find(m => m.id === this.form.metodoPagoId);
+    return metodo?.codigo === 'MERCADOPAGO';
+  }
+
   formularioValido(): boolean {
     if (!this.form.nombre || !this.form.telefono || !this.form.metodoPagoId) return false;
     if (this.form.modalidadEntrega === 'DELIVERY' && (!this.form.direccion || !this.form.distrito)) return false;
@@ -174,6 +181,25 @@ export class CheckoutComponent implements OnInit {
 
     this.pedidoService.crearComoInvitado(request).subscribe({
       next: pedido => {
+        if (this.metodoPagoEsMercadoPago()) {
+          this.pagoService.crearPreferencia(pedido.id).subscribe({
+            next: preferencia => {
+              this.carrito.vaciar();
+              window.location.href = preferencia.initPoint;
+            },
+            error: err => {
+              this.enviando = false;
+              this.messageService.add({
+                severity: 'error',
+                summary: 'No se pudo iniciar el pago',
+                detail: err?.error?.mensaje ?? 'Tu pedido quedó guardado como pendiente. Intenta nuevamente.',
+                life: 5000
+              });
+            }
+          });
+          return;
+        }
+
         this.carrito.vaciar();
         this.router.navigate(['/pedido-confirmado', pedido.numeroPedido]);
       },

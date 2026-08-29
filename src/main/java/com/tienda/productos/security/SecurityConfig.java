@@ -37,6 +37,7 @@ public class SecurityConfig {
             "/api/cliente/olvide-password",
             "/api/cliente/restablecer-password",
             "/api/pedidos/invitado",
+            "/api/pagos/**",
             "/swagger-ui/**",
             "/swagger-ui.html",
             "/v3/api-docs/**",
