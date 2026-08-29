@@ -40,4 +40,7 @@ export class CatalogoService {
 obtenerCategoria(id: number): Observable<Categoria> {
   return this.http.get<Categoria>(`${API_URL}/categorias/${id}`);
 }
+listarDestacados(): Observable<Producto[]> {
+  return this.http.get<Producto[]>(`${API_URL}/productos/destacados`);
+}
 }

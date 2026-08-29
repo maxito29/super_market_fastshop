@@ -108,6 +108,14 @@
   </div>
 </section>
 
+<!-- ============ Vitrina: Lo mejor de la semana ============ -->
+<app-vitrina-productos
+  titulo="Lo mejor de la semana"
+  icono="pi pi-star-fill"
+  acento="verde"
+  [productos]="destacados">
+</app-vitrina-productos>
+
 <!-- ============ Franja de beneficios ============ -->
 <section class="contenedor beneficios">
   <div class="beneficio" *ngFor="let b of beneficios">
@@ -162,23 +170,25 @@
       *ngFor="let producto of productos; let i = index"
       [style.animation-delay]="retrasoAnimacion(i)">
 
-      <div class="producto-imagen" [class.sin-imagen]="!producto.imagenUrl">
+      <a [routerLink]="['/producto', producto.id]" class="producto-imagen" [class.sin-imagen]="!producto.imagenUrl">
         <img *ngIf="producto.imagenUrl" [src]="producto.imagenUrl" [alt]="producto.nombre" loading="lazy" />
         <span *ngIf="!producto.imagenUrl" class="pi pi-shopping-basket"></span>
 
         <span class="ribbon-stock" *ngIf="esBajoStock(producto)">Últimas unidades</span>
 
         <div class="producto-overlay">
-          <button class="boton-overlay-agregar" (click)="abrirComparador(producto)">
+          <button class="boton-overlay-agregar" (click)="$event.preventDefault(); $event.stopPropagation(); abrirComparador(producto)">
             <span class="pi pi-shopping-cart"></span>
             Agregar al carrito
           </button>
         </div>
-      </div>
+      </a>
 
       <div class="producto-cuerpo">
         <p class="producto-categoria">{{ producto.categoriaNombre }}</p>
-        <h3 class="producto-nombre">{{ producto.nombre }}</h3>
+        <h3 class="producto-nombre">
+          <a [routerLink]="['/producto', producto.id]">{{ producto.nombre }}</a>
+        </h3>
         <p class="producto-descripcion">{{ producto.descripcion }}</p>
 
         <div class="producto-pie">

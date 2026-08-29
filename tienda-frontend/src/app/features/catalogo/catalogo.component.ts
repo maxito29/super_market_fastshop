@@ -4,12 +4,13 @@ import {
   OnDestroy, OnInit, ViewChild, effect
 } from '@angular/core';
 import { CategoriaIconoComponent } from '../../shared/categoria-icono/categoria-icono.component';
+import { VitrinaProductosComponent } from '../../shared/vitrina-productos/vitrina-productos.component';
 
 import { CatalogoService } from '../../core/services/catalogo.service';
 import { CarritoService } from '../../core/services/carrito.service';
 import { CatalogoFiltroService } from '../../core/services/catalogo-filtro.service';
 import { Categoria, OfertaProducto, Producto } from '../../core/models/catalogo.models';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 interface DiapositivaHero {
   etiqueta: string;
@@ -23,7 +24,7 @@ interface DiapositivaHero {
 @Component({
   selector: 'app-catalogo',
   standalone: true,
-  imports: [CommonModule, CategoriaIconoComponent],
+  imports: [CommonModule, CategoriaIconoComponent, RouterLink, VitrinaProductosComponent],
   templateUrl: './catalogo.component.html',
   styleUrl: './catalogo.component.scss'
 })
@@ -34,6 +35,7 @@ export class CatalogoComponent implements OnInit, AfterViewInit, OnDestroy {
   categorias: Categoria[] = [];
   categoriasMarquee: Categoria[] = [];
   productos: Producto[] = [];
+  destacados: Producto[] = [];
   
 
   // ---------- Carrusel de categorías (marquee) ----------
@@ -126,6 +128,7 @@ export class CatalogoComponent implements OnInit, AfterViewInit, OnDestroy {
       this.categoriasMarquee = [...categorias, ...categorias];
       requestAnimationFrame(() => this.recalcularAncho());
     });
+    this.catalogoService.listarDestacados().subscribe(destacados => (this.destacados = destacados));
     this.iniciarCarrusel();
   }
 

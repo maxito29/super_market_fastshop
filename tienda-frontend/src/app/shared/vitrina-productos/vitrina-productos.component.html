@@ -1,0 +1,28 @@
+<section class="vitrina" [class.acento-tomate]="acento === 'tomate'" *ngIf="productos.length">
+  <div class="contenedor vitrina-cabecera">
+    <div class="vitrina-titulo">
+      <span class="vitrina-icono" [class]="icono"></span>
+      <h2>{{ titulo }}</h2>
+    </div>
+    <a *ngIf="verTodoRuta" [routerLink]="verTodoRuta" class="vitrina-vertodo">
+      Ver todo <span class="pi pi-arrow-right"></span>
+    </a>
+  </div>
+
+  <div class="vitrina-scroll">
+    <div class="contenedor vitrina-pista">
+      <a 
+        *ngFor="let p of productos; let i = index"
+        [routerLink]="['/producto', p.id]"
+        class="vitrina-tarjeta"
+        [style.animation-delay]="retrasoAnimacion(i)">
+        <div class="vitrina-imagen" [class.sin-imagen]="!p.imagenUrl">
+          <img *ngIf="p.imagenUrl" [src]="p.imagenUrl" [alt]="p.nombre" loading="lazy" />
+          <span *ngIf="!p.imagenUrl" class="pi pi-shopping-basket"></span>
+        </div>
+        <p class="vitrina-nombre">{{ p.nombre }}</p>
+        <span class="tienda-etiqueta-precio vitrina-precio">S/ {{ p.precio.toFixed(2) }}</span>
+      </a>
+    </div>
+  </div>
+</section>

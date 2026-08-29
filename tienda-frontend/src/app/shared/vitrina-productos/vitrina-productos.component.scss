@@ -1,0 +1,160 @@
+.vitrina {
+  padding: 30px 0 8px;
+}
+
+.vitrina-cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.vitrina-titulo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.vitrina-icono {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  font-size: 13px;
+  color: var(--tienda-verde-700);
+  background: var(--tienda-verde-100);
+}
+
+.vitrina.acento-tomate .vitrina-icono {
+  color: var(--tienda-tomate-600);
+  background: var(--tienda-tomate-100);
+}
+
+.vitrina-titulo h2 {
+  font-size: 18px;
+  color: var(--tienda-verde-900);
+}
+
+.vitrina-vertodo {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--tienda-verde-700);
+  text-decoration: none;
+  transition: gap 0.2s ease;
+}
+
+.vitrina-vertodo .pi {
+  font-size: 10px;
+  transition: transform 0.2s ease;
+}
+
+.vitrina-vertodo:hover {
+  gap: 9px;
+}
+
+.vitrina-vertodo:hover .pi {
+  transform: translateX(2px);
+}
+
+/* Fila con scroll horizontal, igual criterio de fade que el marquee */
+.vitrina-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.vitrina-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.vitrina-pista {
+  display: flex;
+  gap: 16px;
+  padding-bottom: 6px;
+}
+
+.vitrina-tarjeta {
+  flex: 0 0 auto;
+  width: 168px;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+  border: 1px solid var(--tienda-borde);
+  border-radius: 16px;
+  background: var(--tienda-superficie);
+  overflow: hidden;
+  transition: box-shadow 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
+  opacity: 0;
+  transform: translateY(10px);
+  animation: apareceVitrina 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes apareceVitrina {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.vitrina-tarjeta:hover {
+  box-shadow: 0 16px 30px -16px rgba(22, 60, 44, 0.35);
+  transform: translateY(-4px);
+  border-color: var(--tienda-verde-500);
+}
+
+.vitrina-imagen {
+  height: 128px;
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(120% 100% at 50% 15%, #fdfdfb 0%, var(--tienda-verde-100) 100%);
+}
+
+.vitrina-imagen img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 10px rgba(22, 60, 44, 0.14));
+  transition: transform 0.3s ease;
+}
+
+.vitrina-tarjeta:hover .vitrina-imagen img {
+  transform: scale(1.06);
+}
+
+.vitrina-imagen.sin-imagen .pi {
+  font-size: 30px;
+  color: var(--tienda-verde-500);
+}
+
+.vitrina-nombre {
+  padding: 10px 12px 0;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--tienda-tinta);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 32px;
+}
+
+.vitrina-precio {
+  margin: 8px 12px 12px;
+  align-self: flex-start;
+  font-size: 12px;
+  padding: 4px 10px 4px 13px;
+}
+
+@media (max-width: 720px) {
+  .vitrina-tarjeta { width: 140px; }
+  .vitrina-imagen { height: 108px; }
+}
