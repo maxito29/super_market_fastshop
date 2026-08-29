@@ -33,9 +33,17 @@ public class CategoriaController {
         return categoriaService.listarTodas();
     }
 
+    // CAMBIO 1: Ahora es público, no requiere @PreAuthorize y llama a obtenerPublicaPorId
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Detalle público de una categoría activa (catálogo de la tienda)")
     public CategoriaResponse obtener(@PathVariable Long id) {
+        return categoriaService.obtenerPublicaPorId(id);
+    }
+
+    @GetMapping("/admin/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Detalle de una categoría para administración, incluye inactivas")
+    public CategoriaResponse obtenerAdmin(@PathVariable Long id) {
         return categoriaService.obtenerPorId(id);
     }
 

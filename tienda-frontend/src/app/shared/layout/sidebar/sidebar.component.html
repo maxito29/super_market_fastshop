@@ -31,14 +31,14 @@
       <span class="pi pi-th-large"></span>
       Todas
     </button>
-    <button
-      class="sidebar-item"
-      *ngFor="let categoria of categorias"
-      [class.activo]="filtro.categoriaId() === categoria.id"
-      (click)="irACategoria(categoria.id)">
-      <span class="pi pi-tag"></span>
-      {{ categoria.nombre }}
-    </button>
+<button
+  class="sidebar-item"
+  *ngFor="let categoria of categorias"
+  [class.activo]="filtro.categoriaId() === categoria.id"
+  (click)="irACategoria(categoria.id)">
+  <app-categoria-icono [nombre]="categoria.nombre"></app-categoria-icono>
+  {{ categoria.nombre }}
+</button>
   </nav>
 </aside>
 

@@ -31,6 +31,14 @@ public class CategoriaService {
         return new CategoriaResponse(buscarEntidad(id));
     }
 
+    public CategoriaResponse obtenerPublicaPorId(Long id) {
+        Categoria categoria = buscarEntidad(id);
+        if (!Boolean.TRUE.equals(categoria.getActivo())) {
+            throw new RecursoNoEncontradoException("Categoría con id " + id + " no encontrada");
+        }
+        return new CategoriaResponse(categoria);
+    }
+
     @Transactional
     public CategoriaResponse crear(CategoriaRequest request) {
         if (categoriaRepository.existsByNombreIgnoreCase(request.getNombre())) {

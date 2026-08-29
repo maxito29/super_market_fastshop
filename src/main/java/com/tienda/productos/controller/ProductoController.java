@@ -45,8 +45,16 @@ public class ProductoController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Detalle público de un producto activo (página de producto de la tienda)")
     public ProductoResponse obtener(@PathVariable Long id) {
+        return productoService.obtenerPublicoPorId(id);
+    }
+
+    // CAMBIO 2: Nuevo endpoint exclusivo para el administrador que incluye inactivos
+    @GetMapping("/admin/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Detalle de un producto para administración, incluye inactivos")
+    public ProductoResponse obtenerAdmin(@PathVariable Long id) {
         return productoService.obtenerPorId(id);
     }
 

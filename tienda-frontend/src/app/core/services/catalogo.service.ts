@@ -32,4 +32,12 @@ export class CatalogoService {
   listarMetodosPago(): Observable<MetodoPago[]> {
     return this.http.get<MetodoPago[]>(`${API_URL}/metodos-pago`);
   }
+
+  obtenerProducto(id: number): Observable<Producto> {
+  return this.http.get<Producto>(`${API_URL}/productos/${id}`);
+}
+
+obtenerCategoria(id: number): Observable<Categoria> {
+  return this.http.get<Categoria>(`${API_URL}/categorias/${id}`);
+}
 }

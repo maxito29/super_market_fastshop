@@ -4,12 +4,24 @@
 .carrusel {
   position: relative;
   overflow: hidden;
+  outline: none;
+}
+
+.carrusel:focus-visible {
+  box-shadow: inset 0 0 0 3px rgba(255, 255, 255, 0.55);
 }
 
 .carrusel-pista {
   display: flex;
   width: 100%;
   transition: transform 0.55s cubic-bezier(0.65, 0, 0.35, 1);
+  touch-action: pan-y;
+  cursor: grab;
+}
+
+.carrusel-pista.arrastrando {
+  transition: none;
+  cursor: grabbing;
 }
 
 .carrusel-slide {
@@ -28,11 +40,75 @@
     linear-gradient(120deg, var(--tienda-tomate-600) 0%, #a5341f 100%);
 }
 
+/* Manchas orgánicas de fondo, a la deriva — le dan vida al slide sin distraer */
+.carrusel-blob {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.14);
+  filter: blur(40px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.carrusel-blob-1 {
+  width: 260px;
+  height: 260px;
+  top: -90px;
+  right: 12%;
+  animation: derivarBlob 16s ease-in-out infinite;
+}
+
+.carrusel-blob-2 {
+  width: 180px;
+  height: 180px;
+  bottom: -70px;
+  left: 8%;
+  background: rgba(255, 255, 255, 0.08);
+  animation: derivarBlob 20s ease-in-out infinite reverse;
+}
+
+@keyframes derivarBlob {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(24px, 18px) scale(1.12); }
+}
+
 .carrusel-contenido {
   position: relative;
   z-index: 2;
   max-width: 560px;
   padding: 56px 0;
+}
+
+.carrusel-eyebrow,
+.carrusel-slide h1,
+.carrusel-texto,
+.carrusel-cta {
+  opacity: 0;
+  transform: translateY(16px);
+}
+
+.carrusel-slide.activo .carrusel-eyebrow {
+  animation: entradaTexto 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: 0.05s;
+}
+
+.carrusel-slide.activo h1 {
+  animation: entradaTexto 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: 0.15s;
+}
+
+.carrusel-slide.activo .carrusel-texto {
+  animation: entradaTexto 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: 0.26s;
+}
+
+.carrusel-slide.activo .carrusel-cta {
+  animation: entradaTexto 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: 0.37s;
+}
+
+@keyframes entradaTexto {
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .carrusel-eyebrow {
@@ -107,11 +183,58 @@
   align-items: center;
   justify-content: center;
   z-index: 1;
+  animation: flotarIcono 5s ease-in-out infinite;
+}
+
+.carrusel-icono-anillo {
+  position: absolute;
+  inset: -14px;
+  border-radius: 50%;
+  border: 1px dashed rgba(255, 255, 255, 0.22);
+  animation: girarAnillo 24s linear infinite;
 }
 
 .carrusel-icono-flotante .pi {
   font-size: 84px;
   color: rgba(255, 255, 255, 0.5);
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.carrusel-slide.activo .carrusel-icono-flotante .pi {
+  animation: apareceIcono 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: 0.1s;
+}
+
+@keyframes apareceIcono {
+  from { opacity: 0; transform: scale(0.6) rotate(-25deg); }
+  to { opacity: 1; transform: scale(1) rotate(0); }
+}
+
+@keyframes flotarIcono {
+  0%, 100% { transform: translateY(-50%); }
+  50% { transform: translateY(calc(-50% - 10px)); }
+}
+
+@keyframes girarAnillo {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.carrusel-contador {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  z-index: 3;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 5px 10px;
+  border-radius: 999px;
+  backdrop-filter: blur(4px);
+  font-variant-numeric: tabular-nums;
 }
 
 .carrusel-flecha {
@@ -129,13 +252,18 @@
   align-items: center;
   justify-content: center;
   backdrop-filter: blur(4px);
-  transition: background 0.15s ease, transform 0.15s ease;
+  transition: background 0.15s ease, transform 0.15s ease, box-shadow 0.2s ease;
   z-index: 3;
 }
 
 .carrusel-flecha:hover {
   background: rgba(255, 255, 255, 0.32);
-  transform: translateY(-50%) scale(1.06);
+  transform: translateY(-50%) scale(1.08);
+  box-shadow: 0 8px 18px -8px rgba(0, 0, 0, 0.4);
+}
+
+.carrusel-flecha:active {
+  transform: translateY(-50%) scale(0.94);
 }
 
 .carrusel-flecha-izq { left: 18px; }
@@ -152,19 +280,32 @@
 }
 
 .punto {
-  width: 8px;
-  height: 8px;
+  position: relative;
+  width: 26px;
+  height: 5px;
   border-radius: 999px;
   border: none;
-  background: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.28);
   cursor: pointer;
   padding: 0;
-  transition: width 0.25s ease, background 0.2s ease;
+  overflow: hidden;
+  transition: transform 0.2s ease;
 }
 
-.punto.activo {
-  width: 22px;
+.punto:hover {
+  transform: scaleY(1.4);
+}
+
+.punto-relleno {
+  position: absolute;
+  inset: 0;
+  width: 0%;
   background: #fff;
+  border-radius: inherit;
+}
+
+.punto.activo .punto-relleno {
+  transition: width 0.1s linear;
 }
 
 @media (max-width: 720px) {
@@ -172,29 +313,93 @@
   .carrusel-contenido { padding: 40px 0; }
   .carrusel-icono-flotante { display: none; }
   .carrusel-flecha { width: 34px; height: 34px; }
+  .carrusel-contador { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .carrusel-blob,
+  .carrusel-icono-flotante,
+  .carrusel-icono-anillo {
+    animation: none !important;
+  }
+  .carrusel-eyebrow, .carrusel-slide h1, .carrusel-texto, .carrusel-cta {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
 }
 
 /* ======================================================
    Carrusel infinito de categorías
 ====================================================== */
 .categorias-seccion {
-  padding: 28px 0 6px;
+  position: relative;
+  padding: 32px 0 10px;
+  overflow: hidden;
+}
+
+.categorias-fondo {
+  position: absolute;
+  inset: -40% -10% auto -10%;
+  height: 220px;
+  background:
+    radial-gradient(circle at 15% 30%, color-mix(in srgb, var(--tienda-verde-500) 18%, transparent), transparent 60%),
+    radial-gradient(circle at 85% 60%, color-mix(in srgb, var(--tienda-verde-700) 14%, transparent), transparent 55%);
+  filter: blur(30px);
+  pointer-events: none;
+  z-index: 0;
 }
 
 .categorias-cabecera {
+  position: relative;
+  z-index: 1;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
-  margin-bottom: 14px;
+  margin-bottom: 16px;
+}
+
+.categorias-titulo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.categorias-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tienda-verde-500);
 }
 
 .categorias-cabecera h2 {
-  font-size: 18px;
+  position: relative;
+  display: inline-block;
+  font-size: 19px;
   margin: 0;
   color: var(--tienda-verde-900);
 }
 
+.categorias-cabecera h2::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -5px;
+  width: 34px;
+  height: 3px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--tienda-verde-500), var(--tienda-verde-700));
+  transition: width 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.categorias-seccion:hover h2::after {
+  width: 100%;
+}
+
 .chip-todas {
+  position: relative;
+  z-index: 1;
   flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
@@ -212,9 +417,18 @@
   transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
 }
 
+.chip-todas .pi {
+  transition: transform 0.35s ease;
+}
+
 .chip-todas:hover {
   border-color: var(--tienda-verde-500);
   color: var(--tienda-verde-700);
+  transform: translateY(-1px);
+}
+
+.chip-todas:hover .pi {
+  transform: rotate(90deg);
 }
 
 .chip-todas.activo {
@@ -223,30 +437,28 @@
   color: #fff;
 }
 
-/* Cinta con loop infinito
-   Clave para que NO salte al reiniciar: el contenido está duplicado una vez
-   (mismo truco que tu ejemplo de scroller.js) y el contenedor que se anima
-   NO debe llevar padding propio — cualquier padding ahí rompe el punto medio
-   exacto del translateX(-50%) y genera el salto/corte al completar la vuelta. */
+/* Pista con movimiento controlado por JS (translate3d en cada frame).
+   Nada de @keyframes aquí: así el arrastre y la pausa nunca "saltan". */
 .marquee {
   position: relative;
+  z-index: 1;
   overflow: hidden;
-  padding: 2px 0 10px;
-  mask-image: linear-gradient(90deg, transparent 0, #000 40px, #000 calc(100% - 40px), transparent 100%);
-  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 40px, #000 calc(100% - 40px), transparent 100%);
+  padding: 4px 0 14px;
+  mask-image: linear-gradient(90deg, transparent 0, #000 48px, #000 calc(100% - 48px), transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 48px, #000 calc(100% - 48px), transparent 100%);
 }
 
 .marquee-pista {
   display: flex;
   width: max-content;
   gap: 12px;
-  animation: desplazarMarquee var(--marquee-duracion, 32s) linear infinite;
+  will-change: transform;
+  cursor: grab;
+  touch-action: pan-y;
 }
 
-/* En vez de un stop seco, se frena suave: se siente más premium */
-.marquee.pausado .marquee-pista {
-  animation-play-state: running;
-  animation-duration: calc(var(--marquee-duracion, 32s) * 4);
+.marquee.arrastrando .marquee-pista {
+  cursor: grabbing;
 }
 
 .marquee-item {
@@ -254,57 +466,96 @@
   flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   border: 1px solid var(--tienda-borde);
   background: var(--tienda-superficie);
   color: var(--tienda-tinta);
   font-family: var(--tienda-fuente-texto);
   font-weight: 600;
   font-size: 13px;
-  padding: 10px 18px;
+  padding: 8px 18px 8px 8px;
   border-radius: 999px;
   cursor: pointer;
   white-space: nowrap;
-  box-shadow: 0 6px 14px -10px rgba(22, 60, 44, 0.35);
-  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  user-select: none;
+  box-shadow: 0 6px 14px -10px rgba(22, 60, 44, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease,
+              transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.2s ease;
+
+  /* Entrada escalonada al cargar la página */
+  opacity: 0;
+  transform: translateY(8px);
+  animation: apareceItem 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+@keyframes apareceItem {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Insignia circular del icono: cada categoría toma un matiz distinto
+   girando el mismo verde base — sin inventar colores nuevos */
 .marquee-icono {
-  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  font-size: 13px;
   color: var(--tienda-verde-700);
-  transition: color 0.2s ease, transform 0.3s ease;
+  background: color-mix(in srgb, var(--tienda-verde-500) 16%, var(--tienda-superficie));
+  filter: hue-rotate(calc(var(--indice, 0) * 42deg));
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), filter 0.2s ease;
 }
 
 .marquee-item:hover {
   border-color: var(--tienda-verde-500);
   transform: translateY(-3px) scale(1.03);
-  box-shadow: 0 12px 22px -12px rgba(22, 60, 44, 0.45);
+  box-shadow: 0 14px 24px -12px rgba(22, 60, 44, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.7);
 }
 
 .marquee-item:hover .marquee-icono {
-  transform: rotate(-8deg) scale(1.15);
+  transform: rotate(-10deg) scale(1.12);
 }
 
 .marquee-item.activo {
   background: var(--tienda-verde-700);
   border-color: var(--tienda-verde-700);
   color: #fff;
-  box-shadow: 0 10px 20px -10px rgba(31, 107, 76, 0.55);
+  box-shadow: 0 10px 20px -10px rgba(31, 107, 76, 0.55), 0 0 0 0 rgba(31, 107, 76, 0.5);
+  animation: apareceItem 0.5s cubic-bezier(0.22, 1, 0.36, 1) both, anilloActivo 2.2s ease-out infinite;
 }
 
 .marquee-item.activo .marquee-icono {
-  color: #fff;
-  animation: pulsoIcono 1.6s ease-in-out infinite;
+  color: var(--tienda-verde-700);
+  background: #fff;
+  filter: none;
 }
 
-@keyframes desplazarMarquee {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
+@keyframes anilloActivo {
+  0%   { box-shadow: 0 10px 20px -10px rgba(31, 107, 76, 0.55), 0 0 0 0 rgba(31, 107, 76, 0.45); }
+  70%  { box-shadow: 0 10px 20px -10px rgba(31, 107, 76, 0.55), 0 0 0 9px rgba(31, 107, 76, 0); }
+  100% { box-shadow: 0 10px 20px -10px rgba(31, 107, 76, 0.55), 0 0 0 0 rgba(31, 107, 76, 0); }
 }
 
-@keyframes pulsoIcono {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.25); }
+/* Accesibilidad: sin la animación continua, se vuelve un carrusel
+   deslizable normal en vez de forzar movimiento constante */
+@media (prefers-reduced-motion: reduce) {
+  .marquee {
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+  }
+  .marquee-pista {
+    cursor: default;
+    animation: none !important;
+  }
+  .marquee-item {
+    scroll-snap-align: start;
+    animation: none !important;
+    opacity: 1;
+    transform: none;
+  }
 }
 
 /* ======================================================
@@ -758,6 +1009,8 @@
   font-size: 13px;
   margin: 0;
 }
+
+
 
 /* ======================================================
    Modal comparador de proveedores (custom, sin PrimeNG)

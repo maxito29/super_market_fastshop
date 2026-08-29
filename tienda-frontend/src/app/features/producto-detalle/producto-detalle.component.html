@@ -1,0 +1,76 @@
+<ng-container *ngIf="producto() as p">
+
+  <nav class="migas contenedor" aria-label="Ruta de navegación">
+    <a routerLink="/">Inicio</a>
+    <span class="pi pi-angle-right"></span>
+    <a [routerLink]="['/categoria', p.categoriaId]">{{ p.categoriaNombre }}</a>
+    <span class="pi pi-angle-right"></span>
+    <span class="migas-actual">{{ p.nombre }}</span>
+  </nav>
+
+  <section class="contenedor producto-detalle">
+    <div class="producto-detalle-imagen">
+      <img *ngIf="p.imagenUrl" [src]="p.imagenUrl" [alt]="p.nombre" />
+      <span *ngIf="!p.imagenUrl" class="pi pi-shopping-basket producto-detalle-sinimagen"></span>
+      <span class="ribbon-stock" *ngIf="p.stock > 0 && p.stock <= 10">Últimas unidades</span>
+    </div>
+
+    <div class="producto-detalle-info">
+      <p class="producto-detalle-categoria">{{ p.categoriaNombre }}</p>
+      <h1>{{ p.nombre }}</h1>
+      <p class="producto-detalle-codigo">SKU: {{ p.codigo }}</p>
+
+      <span class="tienda-etiqueta-precio producto-detalle-precio">S/ {{ precioMostrado().toFixed(2) }}</span>
+
+      <div class="producto-detalle-proveedores" *ngIf="!cargandoOfertas && ofertas.length > 0">
+        <p class="modal-etiqueta">¿Con qué proveedor lo compras?</p>
+
+        <label class="opcion-proveedor" [class.opcion-elegida]="ofertaElegida === 'base'">
+          <input type="radio" name="proveedor" [checked]="ofertaElegida === 'base'" (change)="elegirOferta('base')" />
+          <span class="opcion-radio" aria-hidden="true"></span>
+          <span class="opcion-info">
+            <span class="opcion-nombre">Precio de tienda</span>
+            <span class="opcion-precio">S/ {{ p.precio.toFixed(2) }}</span>
+          </span>
+        </label>
+
+        <label
+          class="opcion-proveedor"
+          *ngFor="let oferta of ofertas; let i = index"
+          [class.opcion-elegida]="ofertaElegida !== 'base' && ofertaElegida.ofertaId === oferta.ofertaId">
+          <input
+            type="radio"
+            name="proveedor"
+            [checked]="ofertaElegida !== 'base' && ofertaElegida.ofertaId === oferta.ofertaId"
+            (change)="elegirOferta(oferta)" />
+          <span class="opcion-radio" aria-hidden="true"></span>
+          <span class="opcion-info">
+            <span class="opcion-nombre">
+              {{ oferta.proveedorNombre }}
+              <span class="badge-barato" *ngIf="i === 0">Más barato</span>
+            </span>
+            <span class="opcion-precio">S/ {{ oferta.precio.toFixed(2) }}</span>
+          </span>
+        </label>
+      </div>
+
+      <div class="producto-detalle-acciones">
+        <div class="stepper">
+          <button class="stepper-boton" (click)="decrementar()" [disabled]="cantidad <= 1">−</button>
+          <span class="stepper-valor">{{ cantidad }}</span>
+          <button class="stepper-boton" (click)="incrementar()" [disabled]="cantidad >= stockDisponible()">+</button>
+        </div>
+        <button class="boton-primario producto-detalle-boton" (click)="agregarAlCarrito()" [disabled]="stockDisponible() < 1">
+          <span class="pi pi-shopping-cart"></span>
+          Agregar · S/ {{ (precioMostrado() * cantidad).toFixed(2) }}
+        </button>
+      </div>
+      <p class="stock-info">{{ stockDisponible() }} disponibles</p>
+
+      <details class="producto-detalle-acordeon" open>
+        <summary>Descripción</summary>
+        <p>{{ p.descripcion }}</p>
+      </details>
+    </div>
+  </section>
+</ng-container>

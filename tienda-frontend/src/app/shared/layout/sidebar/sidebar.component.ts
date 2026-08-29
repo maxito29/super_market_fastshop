@@ -5,11 +5,12 @@ import { CatalogoService } from '../../../core/services/catalogo.service';
 import { CatalogoFiltroService } from '../../../core/services/catalogo-filtro.service';
 import { MenuLateralService } from '../../../core/services/menu-lateral.service';
 import { Categoria } from '../../../core/models/catalogo.models';
+import { CategoriaIconoComponent } from '../../categoria-icono/categoria-icono.component';
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive],
+  imports: [CommonModule, RouterLink, RouterLinkActive, CategoriaIconoComponent],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss'
 })
@@ -28,11 +29,15 @@ export class SidebarComponent implements OnInit {
     this.catalogoService.listarCategorias().subscribe(categorias => (this.categorias = categorias));
   }
 
-  irACategoria(id: number | null): void {
-    this.filtro.seleccionar(id);
+irACategoria(id: number | null): void {
+  this.menu.cerrar();
+  if (id === null) {
+    this.filtro.seleccionar(null);
     this.router.navigate(['/']);
-    this.menu.cerrar();
+  } else {
+    this.router.navigate(['/categoria', id]);
   }
+}
 
   cerrar(): void {
     this.menu.cerrar();

@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { CarritoService } from '../../../core/services/carrito.service';
 import { MenuLateralService } from '../../../core/services/menu-lateral.service';
 import { CatalogoFiltroService } from '../../../core/services/catalogo-filtro.service';
@@ -54,8 +54,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     public menu: MenuLateralService,
     public filtro: CatalogoFiltroService,
     private catalogoService: CatalogoService,
-    private router: Router,
-    private elementoHost: ElementRef<HTMLElement>
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -63,42 +62,20 @@ export class HeaderComponent implements OnInit, OnDestroy {
     // usuario limpia la búsqueda desde el catálogo, el buscador lo refleja.
     this.textoBusqueda = this.filtro.texto();
 
+    // Este pipe solo se usa mientras el usuario ESCRIBE: el debounce evita
+    // disparar una petición HTTP por cada tecla. Las búsquedas "explícitas"
+    // (clic en un término popular, reabrir el panel con texto ya escrito)
+    // van directo a ejecutarBusquedaPanel() sin esperar el debounce, para
+    // que se sientan instantáneas.
     this.busquedaCambiada$
-      .pipe(
-        debounceTime(300),
-        distinctUntilChanged(),
-        switchMap(texto => {
-          const limpio = texto.trim();
-          if (!limpio) {
-            this.buscando = false;
-            this.resultados = [];
-            this.totalResultados = 0;
-            return [];
-          }
-          this.buscando = true;
-          return this.catalogoService.buscarProductos(limpio);
-        })
-      )
-      .subscribe(productos => {
-        this.buscando = false;
-        this.totalResultados = productos.length;
-        this.resultados = productos.slice(0, LIMITE_RESULTADOS_PANEL);
-      });
+      .pipe(debounceTime(220), distinctUntilChanged())
+      .subscribe(texto => this.ejecutarBusquedaPanel(texto));
   }
 
   ngOnDestroy(): void {
     this.busquedaCambiada$.complete();
     if (this.temporizadorAgregado) {
       clearTimeout(this.temporizadorAgregado);
-    }
-  }
-
-  // Cierra el panel al hacer clic fuera del buscador (fuera del header,
-  // click en el overlay oscuro, etc.), como en cualquier buscador tipo modal.
-  @HostListener('document:click', ['$event'])
-  alHacerClickFuera(evento: MouseEvent): void {
-    if (!this.elementoHost.nativeElement.contains(evento.target as Node)) {
-      this.panelAbierto = false;
     }
   }
 
@@ -118,11 +95,21 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   abrirPanel(): void {
     this.panelAbierto = true;
+
+    // El buscador y el menú lateral son dos overlays; si el menú ya estaba
+    // abierto, se cierra al abrir la búsqueda para que no compitan por la
+    // pantalla ni por el foco.
+    this.menu.cerrar();
+
     // Si ya había texto escrito (el usuario volvió a hacer foco), refresca
-    // los resultados en vez de dejar el panel vacío.
+    // los resultados de inmediato, sin esperar el debounce.
     if (this.textoBusqueda.trim() && this.resultados.length === 0) {
-      this.busquedaCambiada$.next(this.textoBusqueda);
+      this.ejecutarBusquedaPanel(this.textoBusqueda);
     }
+  }
+
+  cerrarPanel(): void {
+    this.panelAbierto = false;
   }
 
   alEscribirBusqueda(texto: string): void {
@@ -131,7 +118,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   buscarTermino(termino: string): void {
     this.textoBusqueda = termino;
-    this.busquedaCambiada$.next(termino);
+    // Búsqueda inmediata: el usuario ya eligió el término, no tiene sentido
+    // hacerlo esperar el debounce pensado para cuando se está tipeando.
+    this.ejecutarBusquedaPanel(termino);
   }
 
   verTodosLosResultados(): void {
@@ -150,8 +139,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   agregarRapido(producto: Producto, evento: Event): void {
-    // Evita que el clic sobre el botón "Agregar" cierre el panel (el
-    // listener de document:click vería el clic como "fuera" del buscador).
+    // Evita que el clic sobre el botón "Agregar" cierre el panel.
     evento.stopPropagation();
     if (producto.stock <= 0) {
       return;
@@ -177,6 +165,24 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.temporizadorAgregado = setTimeout(() => (this.productoRecienAgregadoId = null), 1500);
   }
 
+  private ejecutarBusquedaPanel(texto: string): void {
+    const limpio = texto.trim();
+
+    if (!limpio) {
+      this.buscando = false;
+      this.resultados = [];
+      this.totalResultados = 0;
+      return;
+    }
+
+    this.buscando = true;
+    this.catalogoService.buscarProductos(limpio).subscribe(productos => {
+      this.buscando = false;
+      this.totalResultados = productos.length;
+      this.resultados = productos.slice(0, LIMITE_RESULTADOS_PANEL);
+    });
+  }
+
   private confirmarBusqueda(texto: string): void {
     const limpio = texto.trim();
 
@@ -188,8 +194,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     this.panelAbierto = false;
 
-    // El catálogo vive en la ruta principal; si el cliente busca desde otra
-    // página (carrito, pedidos, etc.) lo llevamos ahí para ver resultados.
     if (this.router.url === '/' || this.router.url.startsWith('/?')) {
       return;
     }

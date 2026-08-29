@@ -1,0 +1,21 @@
+.categoria-detalle-cabecera {
+  padding: 20px 0 26px;
+}
+
+.categoria-detalle-cabecera h1 {
+  font-size: clamp(22px, 3vw, 30px);
+  color: var(--tienda-verde-900);
+}
+
+.categoria-detalle-descripcion {
+  color: var(--tienda-tinta-suave);
+  margin: 8px 0 0;
+  max-width: 560px;
+}
+
+.categoria-detalle-conteo {
+  margin: 10px 0 0;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--tienda-verde-700);
+}

@@ -1,10 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit, effect } from '@angular/core';
+import {
+  AfterViewInit, Component, ElementRef, HostListener,
+  OnDestroy, OnInit, ViewChild, effect
+} from '@angular/core';
+import { CategoriaIconoComponent } from '../../shared/categoria-icono/categoria-icono.component';
 
 import { CatalogoService } from '../../core/services/catalogo.service';
 import { CarritoService } from '../../core/services/carrito.service';
 import { CatalogoFiltroService } from '../../core/services/catalogo-filtro.service';
 import { Categoria, OfertaProducto, Producto } from '../../core/models/catalogo.models';
+import { Router } from '@angular/router';
 
 interface DiapositivaHero {
   etiqueta: string;
@@ -18,16 +23,32 @@ interface DiapositivaHero {
 @Component({
   selector: 'app-catalogo',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, CategoriaIconoComponent],
   templateUrl: './catalogo.component.html',
   styleUrl: './catalogo.component.scss'
 })
-export class CatalogoComponent implements OnInit, OnDestroy {
+export class CatalogoComponent implements OnInit, AfterViewInit, OnDestroy {
+
+  @ViewChild('pistaMarquee') pistaMarqueeRef?: ElementRef<HTMLDivElement>;
 
   categorias: Categoria[] = [];
   categoriasMarquee: Categoria[] = [];
   productos: Producto[] = [];
+  
+
+  // ---------- Carrusel de categorías (marquee) ----------
   marqueePausado = false;
+  arrastrandoMarquee = false;
+
+  private readonly velocidadBase = 42; // px por segundo
+  private posicionMarquee = 0;
+  private anchoMitadPista = 0;
+  private rafId?: number;
+  private ultimoTimestamp = 0;
+  private arrastreInicioX = 0;
+  private posicionAlIniciarArrastre = 0;
+  private distanciaArrastre = 0;
+  private reduceMovimiento = false;
 
   readonly beneficios = [
     { icono: 'pi pi-truck', titulo: 'Envío gratis', texto: 'En pedidos desde S/ 50' },
@@ -64,7 +85,15 @@ export class CatalogoComponent implements OnInit, OnDestroy {
     }
   ];
   diapositivaActual = 0;
+  progreso = 0; // 0-100, para la barra de cada punto
+  arrastrandoHero = false;
+  offsetArrastreHero = 0; // px, mientras se arrastra
+
+  private readonly duracionAutoplay = 6000;
   private temporizadorCarrusel?: ReturnType<typeof setInterval>;
+  private rafProgresoId?: number;
+  private inicioProgreso = 0;
+  private arrastreHeroInicioX = 0;
 
   // ---------- Modal comparador ----------
   dialogoVisible = false;
@@ -77,41 +106,133 @@ export class CatalogoComponent implements OnInit, OnDestroy {
   constructor(
     private catalogoService: CatalogoService,
     private carritoService: CarritoService,
-    public filtro: CatalogoFiltroService
+    public filtro: CatalogoFiltroService,
+    private router: Router 
   ) {
-    // Se recarga el catálogo cada vez que cambia la categoría elegida,
-    // ya sea desde el menú hamburguesa, los chips o esta misma página.
-  effect(() => {
-    this.filtro.categoriaId();
-    this.filtro.texto();
-    this.cargarProductos();
-  });
+    effect(() => {
+      this.filtro.categoriaId();
+      this.filtro.texto();
+      this.cargarProductos();
+    });
   }
 
   ngOnInit(): void {
+    this.reduceMovimiento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
     this.catalogoService.listarCategorias().subscribe(categorias => {
       this.categorias = categorias;
       // Se duplica la lista para que la cinta de categorías pueda hacer
       // un loop infinito sin que se note el punto donde vuelve a empezar.
       this.categoriasMarquee = [...categorias, ...categorias];
+      requestAnimationFrame(() => this.recalcularAncho());
     });
     this.iniciarCarrusel();
   }
 
-  ngOnDestroy(): void {
-    this.detenerCarrusel();
+  ngAfterViewInit(): void {
+    if (this.reduceMovimiento) return; // se deja como scroll manual (ver SCSS)
+    requestAnimationFrame(() => {
+      this.recalcularAncho();
+      this.rafId = requestAnimationFrame(this.animarMarquee);
+    });
   }
 
-  // ---------- Carrusel ----------
+  ngOnDestroy(): void {
+    this.detenerCarrusel();
+    if (this.rafId) cancelAnimationFrame(this.rafId);
+    if (this.rafProgresoId) cancelAnimationFrame(this.rafProgresoId);
+  }
+
+  // ---------- Marquee de categorías ----------
+  @HostListener('window:resize')
+  recalcularAncho(): void {
+    const pista = this.pistaMarqueeRef?.nativeElement;
+    if (pista) this.anchoMitadPista = pista.scrollWidth / 2;
+  }
+
+  private animarMarquee = (timestamp: number): void => {
+    if (!this.ultimoTimestamp) this.ultimoTimestamp = timestamp;
+    const delta = (timestamp - this.ultimoTimestamp) / 1000;
+    this.ultimoTimestamp = timestamp;
+
+    if (!this.arrastrandoMarquee && this.anchoMitadPista > 0) {
+      const velocidad = this.marqueePausado ? this.velocidadBase * 0.15 : this.velocidadBase;
+      this.posicionMarquee -= velocidad * delta;
+      if (Math.abs(this.posicionMarquee) >= this.anchoMitadPista) {
+        this.posicionMarquee += this.anchoMitadPista;
+      }
+    }
+
+    const pista = this.pistaMarqueeRef?.nativeElement;
+    if (pista) pista.style.transform = `translate3d(${this.posicionMarquee}px, 0, 0)`;
+
+    this.rafId = requestAnimationFrame(this.animarMarquee);
+  };
+
+  iniciarArrastre(event: PointerEvent): void {
+    if (this.reduceMovimiento) return;
+    this.arrastrandoMarquee = true;
+    this.distanciaArrastre = 0;
+    this.arrastreInicioX = event.clientX;
+    this.posicionAlIniciarArrastre = this.posicionMarquee;
+    (event.target as HTMLElement).setPointerCapture(event.pointerId);
+  }
+
+  moverArrastre(event: PointerEvent): void {
+    if (!this.arrastrandoMarquee) return;
+    const delta = event.clientX - this.arrastreInicioX;
+    this.distanciaArrastre = Math.abs(delta);
+    this.posicionMarquee = this.posicionAlIniciarArrastre + delta;
+
+    if (this.anchoMitadPista > 0) {
+      if (this.posicionMarquee > 0) this.posicionMarquee -= this.anchoMitadPista;
+      if (this.posicionMarquee < -this.anchoMitadPista) this.posicionMarquee += this.anchoMitadPista;
+    }
+  }
+
+  terminarArrastre(): void {
+    this.arrastrandoMarquee = false;
+  }
+
+clicMarquee(categoriaId: number, event: Event): void {
+  if (this.distanciaArrastre > 6) {
+    event.preventDefault();
+    return;
+  }
+  this.router.navigate(['/categoria', categoriaId]); 
+}
+
+  // ---------- Carrusel hero: autoplay + barra de progreso ----------
   iniciarCarrusel(): void {
     this.detenerCarrusel();
-    this.temporizadorCarrusel = setInterval(() => this.siguienteDiapositiva(), 6000);
+    this.temporizadorCarrusel = setInterval(() => this.siguienteDiapositiva(), this.duracionAutoplay);
+    this.iniciarProgreso();
   }
 
   detenerCarrusel(): void {
     if (this.temporizadorCarrusel) {
       clearInterval(this.temporizadorCarrusel);
     }
+    this.detenerProgreso();
+  }
+
+  private iniciarProgreso(): void {
+    this.detenerProgreso();
+    this.progreso = 0;
+    this.inicioProgreso = performance.now();
+
+    const paso = (timestamp: number): void => {
+      const transcurrido = timestamp - this.inicioProgreso;
+      this.progreso = Math.min(100, (transcurrido / this.duracionAutoplay) * 100);
+      if (this.progreso < 100) {
+        this.rafProgresoId = requestAnimationFrame(paso);
+      }
+    };
+    this.rafProgresoId = requestAnimationFrame(paso);
+  }
+
+  private detenerProgreso(): void {
+    if (this.rafProgresoId) cancelAnimationFrame(this.rafProgresoId);
   }
 
   siguienteDiapositiva(): void {
@@ -133,32 +254,62 @@ export class CatalogoComponent implements OnInit, OnDestroy {
     this.iniciarCarrusel();
   }
 
-cargarProductos(): void {
-  const texto = this.filtro.texto();
-  const categoriaId = this.filtro.categoriaId();
+  // ---------- Carrusel hero: arrastre / swipe ----------
+  iniciarArrastreHero(event: PointerEvent): void {
+    this.arrastrandoHero = true;
+    this.arrastreHeroInicioX = event.clientX;
+    this.offsetArrastreHero = 0;
+    this.detenerCarrusel();
+    (event.target as HTMLElement).setPointerCapture(event.pointerId);
+  }
 
-  const fuente = texto
-    ? this.catalogoService.buscarProductos(texto)
-    : categoriaId
-      ? this.catalogoService.listarProductosPorCategoria(categoriaId)
-      : this.catalogoService.listarProductos();
+  moverArrastreHero(event: PointerEvent): void {
+    if (!this.arrastrandoHero) return;
+    this.offsetArrastreHero = event.clientX - this.arrastreHeroInicioX;
+  }
 
-  fuente.subscribe(productos => (this.productos = productos));
-}
+  terminarArrastreHero(): void {
+    if (!this.arrastrandoHero) return;
+    this.arrastrandoHero = false;
 
-categoriaActualNombre(): string | null {
-  const id = this.filtro.categoriaId();
-  if (!id) return null;
-  return this.categorias.find(c => c.id === id)?.nombre ?? null;
-}
+    const umbral = 60; // px mínimos para considerar un swipe
+    if (this.offsetArrastreHero < -umbral) {
+      this.siguienteManual();
+    } else if (this.offsetArrastreHero > umbral) {
+      this.anteriorManual();
+    } else {
+      this.iniciarCarrusel();
+    }
+    this.offsetArrastreHero = 0;
+  }
 
-seleccionarCategoria(id: number | null): void {
-  this.filtro.seleccionar(id);
-}
+  // ---------- Resto del catálogo ----------
+  cargarProductos(): void {
+    const texto = this.filtro.texto();
+    const categoriaId = this.filtro.categoriaId();
 
-limpiarBusqueda(): void {
-  this.filtro.limpiarBusqueda();
-}
+    const fuente = texto
+      ? this.catalogoService.buscarProductos(texto)
+      : categoriaId
+        ? this.catalogoService.listarProductosPorCategoria(categoriaId)
+        : this.catalogoService.listarProductos();
+
+    fuente.subscribe(productos => (this.productos = productos));
+  }
+
+  categoriaActualNombre(): string | null {
+    const id = this.filtro.categoriaId();
+    if (!id) return null;
+    return this.categorias.find(c => c.id === id)?.nombre ?? null;
+  }
+
+  seleccionarCategoria(id: number | null): void {
+    this.filtro.seleccionar(id);
+  }
+
+  limpiarBusqueda(): void {
+    this.filtro.limpiarBusqueda();
+  }
 
   esBajoStock(producto: Producto): boolean {
     return producto.stock > 0 && producto.stock <= 10;

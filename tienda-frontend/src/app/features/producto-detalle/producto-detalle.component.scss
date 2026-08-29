@@ -1,0 +1,120 @@
+.producto-detalle {
+  display: grid;
+  grid-template-columns: minmax(280px, 420px) 1fr;
+  gap: 44px;
+  padding: 8px 0 56px;
+}
+
+.producto-detalle-imagen {
+  position: relative;
+  align-self: start;
+  aspect-ratio: 1 / 1;
+  border-radius: var(--tienda-radio-lg);
+  background: radial-gradient(120% 100% at 50% 15%, #fdfdfb 0%, var(--tienda-verde-100) 100%);
+  border: 1px solid var(--tienda-borde);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  animation: apareceImagen 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes apareceImagen {
+  from { opacity: 0; transform: scale(0.97); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.producto-detalle-imagen img {
+  max-width: 82%;
+  max-height: 82%;
+  object-fit: contain;
+  filter: drop-shadow(0 20px 24px rgba(22, 60, 44, 0.18));
+}
+
+.producto-detalle-sinimagen {
+  font-size: 96px;
+  color: var(--tienda-verde-500);
+}
+
+.producto-detalle-info {
+  padding-top: 4px;
+  animation: entraInfo 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: 0.08s;
+}
+
+@keyframes entraInfo {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.producto-detalle-categoria {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--tienda-verde-700);
+  margin: 0 0 6px;
+}
+
+.producto-detalle-info h1 {
+  font-size: clamp(22px, 3vw, 30px);
+  line-height: 1.2;
+}
+
+.producto-detalle-codigo {
+  color: var(--tienda-tinta-suave);
+  font-size: 12.5px;
+  margin: 6px 0 18px;
+}
+
+.producto-detalle-precio {
+  font-size: 22px;
+  margin-bottom: 22px;
+}
+
+.producto-detalle-proveedores {
+  margin-bottom: 20px;
+  padding: 16px;
+  border: 1px solid var(--tienda-borde);
+  border-radius: var(--tienda-radio-lg);
+  background: var(--tienda-superficie);
+}
+
+.producto-detalle-acciones {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.producto-detalle-boton {
+  padding: 13px 24px;
+  font-size: 14px;
+}
+
+.producto-detalle-acordeon {
+  margin-top: 28px;
+  border-top: 1px solid var(--tienda-borde);
+  padding-top: 18px;
+}
+
+.producto-detalle-acordeon summary {
+  font-family: var(--tienda-fuente-titulo);
+  font-weight: 700;
+  cursor: pointer;
+  color: var(--tienda-tinta);
+}
+
+.producto-detalle-acordeon p {
+  margin-top: 10px;
+  color: var(--tienda-tinta-suave);
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+@media (max-width: 760px) {
+  .producto-detalle {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}

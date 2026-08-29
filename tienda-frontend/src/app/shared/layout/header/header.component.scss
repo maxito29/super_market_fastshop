@@ -28,47 +28,177 @@
 }
 
 .boton-menu {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 46px;
+  height: 46px;
   border: none;
   border-radius: 50%;
-  background: transparent;
+  background: var(--tienda-verde-100);
   color: var(--tienda-verde-900);
   cursor: pointer;
-  font-size: 18px;
   flex-shrink: 0;
-  transition: background 0.15s ease;
+  overflow: hidden;
+  transition: background 0.25s ease, box-shadow 0.25s ease, transform 0.15s ease, color 0.25s ease;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: var(--tienda-verde-500);
+    opacity: 0;
+    transform: scale(0.6);
+    transition: opacity 0.25s ease, transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
 
   &:hover {
-    background: var(--tienda-verde-100);
+    box-shadow: 0 4px 14px rgba(31, 107, 76, 0.22);
+
+    &::before {
+      opacity: 0.16;
+      transform: scale(1);
+    }
   }
+
+  &:active {
+    transform: scale(0.88);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--tienda-verde-500);
+    outline-offset: 2px;
+  }
+
+  &.activo {
+    background: var(--tienda-verde-700);
+    color: #fff;
+
+    &:hover::before {
+      opacity: 0.22;
+    }
+
+    .linea-1 {
+      top: 7px;
+      transform: rotate(45deg);
+    }
+
+    .linea-2 {
+      opacity: 0;
+      width: 0;
+      left: 50%;
+    }
+
+    .linea-3 {
+      top: 7px;
+      transform: rotate(-45deg);
+    }
+  }
+}
+
+.boton-menu-lineas {
+  position: relative;
+  width: 22px;
+  height: 16px;
+  z-index: 1;
+}
+
+.linea {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 2.2px;
+  border-radius: 999px;
+  background: currentColor;
+  transition:
+    transform 0.3s cubic-bezier(0.65, 0, 0.35, 1),
+    top 0.3s cubic-bezier(0.65, 0, 0.35, 1),
+    left 0.25s ease,
+    width 0.25s ease,
+    opacity 0.2s ease;
+}
+
+.linea-1 {
+  top: 0;
+}
+
+.linea-2 {
+  top: 7px;
+}
+
+.linea-3 {
+  top: 14px;
 }
 
 .marca {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   text-decoration: none;
   color: var(--tienda-verde-900);
+  padding: 4px 8px 4px 4px;
+  border-radius: 12px;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.2s ease;
+
+  &:hover {
+    background: var(--tienda-verde-100);
+
+    .marca-icono {
+      transform: translateY(-1px) rotate(-6deg) scale(1.06);
+      box-shadow: 0 10px 20px -8px rgba(31, 107, 76, 0.55);
+    }
+
+    .marca-nombre-shop {
+      color: var(--tienda-tomate-600);
+    }
+  }
+
+  &:active {
+    transform: scale(0.97);
+
+    .marca-icono {
+      transform: scale(0.94) rotate(-3deg);
+      box-shadow: 0 4px 10px -4px rgba(31, 107, 76, 0.5);
+    }
+  }
 }
 
 .marca-icono {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
   flex-shrink: 0;
-  border-radius: 8px;
-  background: var(--tienda-verde-100);
-  color: var(--tienda-verde-700);
+  border-radius: 11px;
+  background: linear-gradient(135deg, var(--tienda-verde-500), var(--tienda-verde-700) 75%);
+  color: #fff;
+  box-shadow: 0 4px 10px -4px rgba(31, 107, 76, 0.5);
+  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.28s ease;
 
   svg {
     width: 20px;
     height: 20px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Punto de acento (fresco/orgánico) con un pulso muy sutil, como en apps
+     de delivery cuando algo está "activo". Puramente decorativo. */
+  &::after {
+    content: '';
+    position: absolute;
+    top: -3px;
+    right: -3px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--tienda-tomate-600);
+    border: 2px solid var(--tienda-superficie);
+    animation: pulsoAcentoMarca 2.6s ease-in-out infinite;
   }
 }
 
@@ -77,6 +207,31 @@
   font-size: 19px;
   font-weight: 700;
   white-space: nowrap;
+  letter-spacing: -0.01em;
+}
+
+.marca-nombre-fast {
+  color: var(--tienda-verde-900);
+}
+
+.marca-nombre-shop {
+  color: var(--tienda-verde-500);
+  transition: color 0.2s ease;
+}
+
+@keyframes pulsoAcentoMarca {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(214, 71, 44, 0.45);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(214, 71, 44, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marca-icono::after {
+    animation: none;
+  }
 }
 
 /* Bloque central: buscador */
@@ -122,8 +277,6 @@
   }
 }
 
-/* Cuando el panel está abierto, el input queda por encima del overlay
-   oscuro y conserva sus esquinas redondeadas incluso con el panel debajo. */
 .bloque-busqueda.panel-activo .buscador-input {
   border-bottom-left-radius: 999px !important;
   border-bottom-right-radius: 999px !important;
@@ -132,8 +285,8 @@
 .buscador-overlay {
   position: fixed;
   inset: 0;
-  top: 72px;
-  background: rgba(15, 23, 20, 0.35);
+  background: rgba(15, 23, 20, 0.4);
+  cursor: pointer;
   z-index: 190;
 }
 

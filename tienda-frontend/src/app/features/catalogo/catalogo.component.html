@@ -1,11 +1,33 @@
 <!-- ============ Carrusel hero ============ -->
-<section class="carrusel" (mouseenter)="detenerCarrusel()" (mouseleave)="iniciarCarrusel()">
-  <div class="carrusel-pista" [style.transform]="'translateX(-' + (diapositivaActual * 100) + '%)'">
+<section
+  class="carrusel"
+  tabindex="0"
+  (mouseenter)="detenerCarrusel()"
+  (mouseleave)="iniciarCarrusel()"
+  (focusin)="detenerCarrusel()"
+  (focusout)="iniciarCarrusel()"
+  (keydown.arrowleft)="anteriorManual()"
+  (keydown.arrowright)="siguienteManual()">
+
+  <div
+    class="carrusel-pista"
+    [class.arrastrando]="arrastrandoHero"
+    [style.transform]="'translateX(calc(-' + (diapositivaActual * 100) + '% + ' + offsetArrastreHero + 'px))'"
+    (pointerdown)="iniciarArrastreHero($event)"
+    (pointermove)="moverArrastreHero($event)"
+    (pointerup)="terminarArrastreHero()"
+    (pointerleave)="terminarArrastreHero()"
+    (pointercancel)="terminarArrastreHero()">
     <div
       class="carrusel-slide"
       [class.acento-tomate]="d.acento === 'tomate'"
       [class.acento-verde]="d.acento === 'verde'"
-      *ngFor="let d of diapositivas">
+      [class.activo]="i === diapositivaActual"
+      *ngFor="let d of diapositivas; let i = index">
+
+      <span class="carrusel-blob carrusel-blob-1" aria-hidden="true"></span>
+      <span class="carrusel-blob carrusel-blob-2" aria-hidden="true"></span>
+
       <div class="contenedor carrusel-contenido">
         <p class="carrusel-eyebrow">{{ d.etiqueta }}</p>
         <h1>{{ d.titulo }}</h1>
@@ -15,11 +37,15 @@
           <span class="pi pi-arrow-right"></span>
         </button>
       </div>
+
       <div class="carrusel-icono-flotante" aria-hidden="true">
+        <span class="carrusel-icono-anillo"></span>
         <span [class]="d.icono"></span>
       </div>
     </div>
   </div>
+
+  <span class="carrusel-contador">{{ diapositivaActual + 1 }} / {{ diapositivas.length }}</span>
 
   <button class="carrusel-flecha carrusel-flecha-izq" (click)="anteriorManual()" aria-label="Diapositiva anterior">
     <span class="pi pi-chevron-left"></span>
@@ -35,29 +61,48 @@
       [class.activo]="i === diapositivaActual"
       (click)="irADiapositiva(i)"
       [attr.aria-label]="'Ir a la diapositiva ' + (i + 1)">
+      <span class="punto-relleno" [style.width.%]="i === diapositivaActual ? progreso : (i < diapositivaActual ? 100 : 0)"></span>
     </button>
   </div>
 </section>
 
 <!-- ============ Carrusel infinito de categorías ============ -->
 <section class="categorias-seccion">
+  <div class="categorias-fondo" aria-hidden="true"></div>
+
   <div class="contenedor categorias-cabecera">
-    <h2>Compra por categoría</h2>
+    <div class="categorias-titulo">
+      <span class="categorias-eyebrow">Explora el mercado</span>
+      <h2>Compra por categoría</h2>
+    </div>
     <button class="chip-todas" [class.activo]="filtro.categoriaId() === null" (click)="seleccionarCategoria(null)">
       <span class="pi pi-th-large"></span>
       Ver todas
     </button>
   </div>
 
-  <div class="marquee" [class.pausado]="marqueePausado">
-    <div class="marquee-pista" (mouseenter)="marqueePausado = true" (mouseleave)="marqueePausado = false">
+  <div class="marquee" [class.arrastrando]="arrastrandoMarquee">
+    <div
+      class="marquee-pista"
+      #pistaMarquee
+      (mouseenter)="marqueePausado = true"
+      (mouseleave)="marqueePausado = false"
+      (pointerdown)="iniciarArrastre($event)"
+      (pointermove)="moverArrastre($event)"
+      (pointerup)="terminarArrastre()"
+      (pointerleave)="terminarArrastre()"
+      (pointercancel)="terminarArrastre()">
       <button
         class="marquee-item"
-        *ngFor="let categoria of categoriasMarquee"
+        *ngFor="let categoria of categoriasMarquee; let i = index"
         [class.activo]="filtro.categoriaId() === categoria.id"
-        (click)="seleccionarCategoria(categoria.id)">
-        <span class="marquee-icono pi pi-tag"></span>
-        {{ categoria.nombre }}
+        [style.animation-delay]="retrasoAnimacion(i)"
+        [style.--indice]="i % 6"
+        (click)="clicMarquee(categoria.id, $event)">
+        <span class="marquee-icono">
+          <app-categoria-icono [nombre]="categoria.nombre"></app-categoria-icono>
+        </span>
+        <span class="marquee-texto">{{ categoria.nombre }}</span>
       </button>
     </div>
   </div>

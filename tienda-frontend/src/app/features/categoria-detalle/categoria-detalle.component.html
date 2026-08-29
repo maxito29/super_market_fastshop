@@ -1,0 +1,42 @@
+<nav class="migas contenedor" aria-label="Ruta de navegación">
+  <a routerLink="/">Inicio</a>
+  <span class="pi pi-angle-right"></span>
+  <span class="migas-actual">{{ categoria()?.nombre }}</span>
+</nav>
+
+<header class="contenedor categoria-detalle-cabecera">
+  <h1>{{ categoria()?.nombre }}</h1>
+  <p class="categoria-detalle-descripcion" *ngIf="categoria()?.descripcion">{{ categoria()?.descripcion }}</p>
+  <p class="categoria-detalle-conteo">{{ productos().length }} productos</p>
+</header>
+
+<section class="contenedor cuerpo">
+  <div class="grilla" *ngIf="productos().length > 0; else vacioTpl">
+    <article
+      class="tarjeta-producto"
+      *ngFor="let producto of productos(); let i = index"
+      [style.animation-delay]="retrasoAnimacion(i)">
+      <a [routerLink]="['/producto', producto.id]" class="producto-imagen" [class.sin-imagen]="!producto.imagenUrl">
+        <img *ngIf="producto.imagenUrl" [src]="producto.imagenUrl" [alt]="producto.nombre" loading="lazy" />
+        <span *ngIf="!producto.imagenUrl" class="pi pi-shopping-basket"></span>
+        <span class="ribbon-stock" *ngIf="producto.stock > 0 && producto.stock <= 10">Últimas unidades</span>
+      </a>
+      <div class="producto-cuerpo">
+        <h3 class="producto-nombre">
+          <a [routerLink]="['/producto', producto.id]">{{ producto.nombre }}</a>
+        </h3>
+        <p class="producto-descripcion">{{ producto.descripcion }}</p>
+        <div class="producto-pie">
+          <span class="tienda-etiqueta-precio">S/ {{ producto.precio.toFixed(2) }}</span>
+        </div>
+      </div>
+    </article>
+  </div>
+  <ng-template #vacioTpl>
+    <div class="vacio">
+      <span class="pi pi-inbox vacio-icono"></span>
+      <p class="vacio-titulo">No hay productos en esta categoría todavía</p>
+      <p class="vacio-texto">Vuelve más tarde o revisa otra categoría.</p>
+    </div>
+  </ng-template>
+</section>

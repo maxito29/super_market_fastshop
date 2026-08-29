@@ -6,6 +6,7 @@ import { HeaderComponent } from './shared/layout/header/header.component';
 import { SidebarComponent } from './shared/layout/sidebar/sidebar.component';
 import { MiniCarritoComponent } from './shared/mini-carrito/mini-carrito.component';
 import { FooterComponent } from './shared/layout/footer/footer.component';
+import { BloqueoScrollService } from './core/services/bloqueo-scroll.service';
 
 @Component({
   selector: 'app-root',
@@ -16,4 +17,5 @@ import { FooterComponent } from './shared/layout/footer/footer.component';
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
+  constructor(private bloqueoScroll: BloqueoScrollService) {}
 }

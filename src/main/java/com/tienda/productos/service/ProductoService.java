@@ -129,4 +129,12 @@ public class ProductoService {
     public byte[] exportarExcel() throws java.io.IOException {
         return excelReporteService.generarExcelProductos(productoRepository.findAll());
     }
+
+    public ProductoResponse obtenerPublicoPorId(Long id) {
+        Producto producto = buscarEntidad(id);
+        if (!Boolean.TRUE.equals(producto.getActivo())) {
+            throw new RecursoNoEncontradoException("Producto con id " + id + " no encontrado");
+        }
+        return new ProductoResponse(producto);
+    }
 }

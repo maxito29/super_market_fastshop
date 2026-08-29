@@ -33,6 +33,10 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+  body.scroll-bloqueado {
+  overflow: hidden;
+}
+
 h1, h2, h3, h4 {
   font-family: var(--tienda-fuente-titulo);
   font-weight: 700;
@@ -126,3 +130,343 @@ a {
   border-radius: 999px;
   font-weight: 700;
 }
+
+
+
+/* ======================================================
+   Compartido: grilla y tarjeta de producto
+   (movido aquí desde catalogo.component.scss porque ahora
+   lo reutilizan producto-detalle, categoria-detalle y vitrina)
+====================================================== */
+.grilla {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(232px, 1fr));
+  gap: 22px;
+}
+
+.tarjeta-producto {
+  display: flex;
+  flex-direction: column;
+  background: var(--tienda-superficie);
+  border: 1px solid var(--tienda-borde);
+  border-radius: 18px;
+  overflow: hidden;
+  transition: box-shadow 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
+  animation: subirDesvanecer 0.5s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}
+
+.tarjeta-producto:hover {
+  box-shadow: 0 20px 38px -18px rgba(22, 60, 44, 0.35);
+  transform: translateY(-5px);
+  border-color: var(--tienda-verde-500);
+}
+
+.producto-imagen {
+  position: relative;
+  height: 200px;
+  padding: 22px;
+  background: radial-gradient(120% 100% at 50% 15%, #fdfdfb 0%, var(--tienda-verde-100) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.producto-imagen::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 14px;
+  width: 62%;
+  height: 16px;
+  background: radial-gradient(closest-side, rgba(22, 60, 44, 0.16), transparent 75%);
+  transform: translateX(-50%);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.tarjeta-producto:hover .producto-imagen::before {
+  opacity: 0.7;
+  transform: translateX(-50%) scale(1.08);
+}
+
+.producto-imagen img {
+  position: relative;
+  z-index: 1;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 12px rgba(22, 60, 44, 0.14));
+  transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+
+.tarjeta-producto:hover .producto-imagen img {
+  transform: translateY(-4px) scale(1.05);
+}
+
+.producto-imagen.sin-imagen .pi {
+  font-size: 40px;
+  color: var(--tienda-verde-500);
+}
+
+.ribbon-stock {
+  position: absolute;
+  top: 12px;
+  left: -6px;
+  background: var(--tienda-tomate-600);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 4px 10px 4px 14px;
+  border-radius: 0 4px 4px 0;
+  box-shadow: 0 4px 10px -4px rgba(0, 0, 0, 0.4);
+}
+
+.ribbon-stock::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -5px;
+  border-width: 5px 5px 0 0;
+  border-style: solid;
+  border-color: #7a2415 transparent transparent transparent;
+}
+
+.producto-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 14px;
+  background: linear-gradient(to top, rgba(15, 42, 31, 0.55) 0%, rgba(15, 42, 31, 0) 55%);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.tarjeta-producto:hover .producto-overlay {
+  opacity: 1;
+}
+
+.boton-overlay-agregar {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  background: #fff;
+  color: var(--tienda-verde-900);
+  font-family: var(--tienda-fuente-texto);
+  font-weight: 700;
+  font-size: 12.5px;
+  padding: 10px 18px;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 10px 22px -10px rgba(0, 0, 0, 0.5);
+  transform: translateY(10px);
+  transition: transform 0.25s ease, background 0.15s ease;
+}
+
+.tarjeta-producto:hover .boton-overlay-agregar {
+  transform: translateY(0);
+}
+
+.boton-overlay-agregar:hover {
+  background: var(--tienda-verde-100);
+}
+
+.boton-overlay-agregar:active {
+  transform: scale(0.95);
+}
+
+@media (hover: none) {
+  .producto-overlay {
+    position: static;
+    background: none;
+    opacity: 1;
+    padding: 10px 12px 0;
+  }
+  .boton-overlay-agregar {
+    width: 100%;
+    justify-content: center;
+    background: var(--tienda-verde-700);
+    color: #fff;
+    transform: none;
+  }
+}
+
+.producto-cuerpo {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 16px;
+}
+
+.producto-categoria {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--tienda-verde-700);
+  font-weight: 700;
+  margin: 0 0 4px;
+}
+
+.producto-nombre {
+  font-family: var(--tienda-fuente-texto);
+  font-size: 15.5px;
+  font-weight: 700;
+  margin: 0 0 4px;
+  color: var(--tienda-tinta);
+}
+
+.producto-descripcion {
+  font-size: 12.5px;
+  color: var(--tienda-tinta-suave);
+  margin: 0;
+  flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.producto-pie {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 14px;
+  gap: 8px;
+}
+
+.producto-precio-bloque {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.producto-stock-texto {
+  font-size: 10.5px;
+  color: var(--tienda-tinta-suave);
+  padding-left: 2px;
+}
+
+.boton-agregar {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: var(--tienda-verde-700);
+  color: #fff;
+  font-size: 13px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.boton-agregar:hover { background: var(--tienda-verde-900); }
+.boton-agregar:active { transform: scale(0.9); }
+
+.vacio {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 64px 20px;
+  color: var(--tienda-tinta-suave);
+}
+
+.vacio-icono { font-size: 44px; color: var(--tienda-verde-500); opacity: 0.6; }
+.vacio-titulo { font-family: var(--tienda-fuente-titulo); font-weight: 700; color: var(--tienda-tinta); margin: 14px 0 4px; }
+.vacio-texto { font-size: 13px; margin: 0; }
+
+@keyframes subirDesvanecer {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- Botones y stepper compartidos ---------- */
+.boton-primario {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  background: var(--tienda-verde-700);
+  color: #fff;
+  font-family: var(--tienda-fuente-texto);
+  font-weight: 700;
+  font-size: 13.5px;
+  padding: 11px 18px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.boton-primario:hover:not(:disabled) { background: var(--tienda-verde-900); }
+.boton-primario:active:not(:disabled) { transform: scale(0.97); }
+.boton-primario:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.boton-secundario {
+  border: none;
+  background: transparent;
+  color: var(--tienda-tinta-suave);
+  font-family: var(--tienda-fuente-texto);
+  font-weight: 600;
+  font-size: 13.5px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.boton-secundario:hover { background: var(--tienda-verde-100); }
+
+.stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  border: 1px solid var(--tienda-borde);
+  border-radius: 999px;
+  padding: 6px 8px;
+}
+
+.stepper-boton {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid var(--tienda-verde-700);
+  background: #fff;
+  color: var(--tienda-verde-700);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease;
+}
+
+.stepper-boton:hover:not(:disabled) { background: var(--tienda-verde-700); color: #fff; }
+.stepper-boton:active:not(:disabled) { transform: scale(0.9); }
+.stepper-boton:disabled { opacity: 0.35; cursor: not-allowed; }
+
+.stepper-valor { min-width: 20px; text-align: center; font-weight: 700; font-size: 14px; }
+.stock-info { margin: 8px 0 0; font-size: 12.5px; color: var(--tienda-tinta-suave); }
+
+/* ---------- Migas de pan (nuevo, para producto/categoría) ---------- */
+.migas {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 0 4px;
+  font-size: 12.5px;
+  color: var(--tienda-tinta-suave);
+}
+
+.migas a { color: var(--tienda-tinta-suave); text-decoration: none; }
+.migas a:hover { color: var(--tienda-verde-700); text-decoration: underline; }
+.migas .pi { font-size: 9px; }
+.migas-actual { color: var(--tienda-tinta); font-weight: 600; }
+
