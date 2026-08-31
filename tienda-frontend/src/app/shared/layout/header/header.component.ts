@@ -16,6 +16,8 @@ import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 
 const LIMITE_RESULTADOS_PANEL = 6;
+const LIMITE_BUSQUEDAS_RECIENTES = 5;
+const CLAVE_BUSQUEDAS_RECIENTES = 'fastshop_busquedas_recientes';
 
 @Component({
   selector: 'app-header',
@@ -41,10 +43,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
   totalResultados = 0;
   productoRecienAgregadoId: number | null = null;
 
-  // Lista curada de términos frecuentes para el estado inicial del buscador
-  // (sin texto). En un catálogo con más historial se podría calcular desde
-  // el backend, pero para el volumen actual una lista fija es suficiente.
   readonly terminosPopulares = ['pollo', 'leche', 'huevos', 'café', 'arroz', 'carne', 'vino', 'queso', 'pan', 'agua'];
+
+  busquedasRecientes: string[] = [];
 
   private readonly busquedaCambiada$ = new Subject<string>();
   private temporizadorAgregado?: ReturnType<typeof setTimeout>;
@@ -58,15 +59,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    // El input se mantiene sincronizado con el filtro compartido: si el
-    // usuario limpia la búsqueda desde el catálogo, el buscador lo refleja.
     this.textoBusqueda = this.filtro.texto();
+    this.busquedasRecientes = this.cargarBusquedasRecientes();
 
-    // Este pipe solo se usa mientras el usuario ESCRIBE: el debounce evita
-    // disparar una petición HTTP por cada tecla. Las búsquedas "explícitas"
-    // (clic en un término popular, reabrir el panel con texto ya escrito)
-    // van directo a ejecutarBusquedaPanel() sin esperar el debounce, para
-    // que se sientan instantáneas.
     this.busquedaCambiada$
       .pipe(debounceTime(220), distinctUntilChanged())
       .subscribe(texto => this.ejecutarBusquedaPanel(texto));
@@ -81,12 +76,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   @HostListener('document:keydown.escape')
   alPresionarEscape(): void {
-    this.panelAbierto = false;
+    this.cerrarPanel();
   }
 
   alPresionarCarrito(): void {
-    // Si el cliente ya está viendo la página del carrito, el ícono no debe
-    // abrir el drawer encima de la misma información: solo se queda ahí.
     if (this.router.url.startsWith('/carrito')) {
       return;
     }
@@ -96,13 +89,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   abrirPanel(): void {
     this.panelAbierto = true;
 
-    // El buscador y el menú lateral son dos overlays; si el menú ya estaba
-    // abierto, se cierra al abrir la búsqueda para que no compitan por la
-    // pantalla ni por el foco.
     this.menu.cerrar();
-
-    // Si ya había texto escrito (el usuario volvió a hacer foco), refresca
-    // los resultados de inmediato, sin esperar el debounce.
     if (this.textoBusqueda.trim() && this.resultados.length === 0) {
       this.ejecutarBusquedaPanel(this.textoBusqueda);
     }
@@ -110,6 +97,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   cerrarPanel(): void {
     this.panelAbierto = false;
+    this.textoBusqueda = '';
+    this.resultados = [];
+    this.totalResultados = 0;
   }
 
   alEscribirBusqueda(texto: string): void {
@@ -118,8 +108,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   buscarTermino(termino: string): void {
     this.textoBusqueda = termino;
-    // Búsqueda inmediata: el usuario ya eligió el término, no tiene sentido
-    // hacerlo esperar el debounce pensado para cuando se está tipeando.
     this.ejecutarBusquedaPanel(termino);
   }
 
@@ -131,6 +119,16 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.confirmarBusqueda(this.textoBusqueda);
   }
 
+  buscarTerminoReciente(termino: string): void {
+    this.buscarTermino(termino);
+  }
+
+  irADetalle(producto: Producto): void {
+    this.guardarBusquedaSiHayTexto();
+    this.cerrarPanel();
+    this.router.navigate(['/producto', producto.id]);
+  }
+
   limpiarBusqueda(): void {
     this.textoBusqueda = '';
     this.resultados = [];
@@ -139,11 +137,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   agregarRapido(producto: Producto, evento: Event): void {
-    // Evita que el clic sobre el botón "Agregar" cierre el panel.
     evento.stopPropagation();
     if (producto.stock <= 0) {
       return;
     }
+
+    this.guardarBusquedaSiHayTexto();
 
     this.carrito.agregar({
       productoId: producto.id,
@@ -156,8 +155,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
       stockDisponible: producto.stock
     });
 
-    // Feedback breve en el botón ("Agregado ✓") sin cerrar el panel, para
-    // poder seguir agregando varios productos desde la misma búsqueda.
     this.productoRecienAgregadoId = producto.id;
     if (this.temporizadorAgregado) {
       clearTimeout(this.temporizadorAgregado);
@@ -185,18 +182,101 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   private confirmarBusqueda(texto: string): void {
     const limpio = texto.trim();
+    this.cerrarPanel();
 
-    if (limpio) {
-      this.filtro.buscar(limpio);
-    } else {
+    if (!limpio) {
       this.filtro.limpiarBusqueda();
-    }
-
-    this.panelAbierto = false;
-
-    if (this.router.url === '/' || this.router.url.startsWith('/?')) {
+      this.irAInicioSiHaceFalta();
       return;
     }
-    this.router.navigate(['/']);
+
+    this.guardarBusquedaReciente(limpio);
+
+    this.catalogoService.buscarProductos(limpio).subscribe(productos => {
+      const categoriaId = this.categoriaMasFrecuente(productos);
+
+      if (categoriaId != null) {
+        this.filtro.seleccionar(categoriaId);
+        this.router
+          .navigate(['/categoria', categoriaId], { queryParams: { q: limpio } })
+          .then(() => this.desplazarAResultados());
+      } else {
+        this.filtro.buscar(limpio);
+        this.irAInicioSiHaceFalta();
+      }
+    });
+  }
+
+  private categoriaMasFrecuente(productos: Producto[]): number | null {
+    if (productos.length === 0) {
+      return null;
+    }
+
+    const conteoPorCategoria = new Map<number, number>();
+    for (const producto of productos) {
+      conteoPorCategoria.set(producto.categoriaId, (conteoPorCategoria.get(producto.categoriaId) ?? 0) + 1);
+    }
+
+    let categoriaId: number | null = null;
+    let mejorConteo = 0;
+    for (const [id, conteo] of conteoPorCategoria) {
+      if (conteo > mejorConteo) {
+        mejorConteo = conteo;
+        categoriaId = id;
+      }
+    }
+    return categoriaId;
+  }
+
+  private irAInicioSiHaceFalta(): void {
+    if (this.router.url === '/' || this.router.url.startsWith('/?')) {
+      this.desplazarAResultados();
+      return;
+    }
+    this.router.navigate(['/']).then(() => this.desplazarAResultados());
+  }
+
+  private desplazarAResultados(): void {
+    window.scrollTo({ top: 0 });
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        document.getElementById('catalogo-resultados')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+  }
+
+  private guardarBusquedaSiHayTexto(): void {
+    const termino = this.textoBusqueda.trim();
+    if (termino) {
+      this.guardarBusquedaReciente(termino);
+    }
+  }
+
+  private cargarBusquedasRecientes(): string[] {
+    try {
+      const guardado = localStorage.getItem(CLAVE_BUSQUEDAS_RECIENTES);
+      const lista = guardado ? JSON.parse(guardado) : [];
+      return Array.isArray(lista) ? lista : [];
+    } catch {
+      return [];
+    }
+  }
+
+  private guardarBusquedaReciente(termino: string): void {
+    const normalizado = termino.trim();
+    if (!normalizado) {
+      return;
+    }
+    const sinDuplicados = this.busquedasRecientes.filter(
+      t => t.toLowerCase() !== normalizado.toLowerCase()
+    );
+
+    this.busquedasRecientes = [normalizado, ...sinDuplicados].slice(0, LIMITE_BUSQUEDAS_RECIENTES);
+
+    try {
+      localStorage.setItem(CLAVE_BUSQUEDAS_RECIENTES, JSON.stringify(this.busquedasRecientes));
+    } catch {
+    }
   }
 }

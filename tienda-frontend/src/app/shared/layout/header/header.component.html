@@ -61,6 +61,19 @@
               {{ termino }}
             </button>
           </div>
+
+          <ng-container *ngIf="busquedasRecientes.length > 0">
+            <p class="panel-subtitulo panel-subtitulo-recientes">Últimas búsquedas</p>
+            <div class="chips-populares">
+              <button
+                type="button"
+                class="chip-termino chip-reciente"
+                *ngFor="let termino of busquedasRecientes"
+                (click)="buscarTerminoReciente(termino)">
+                {{ termino }}
+              </button>
+            </div>
+          </ng-container>
         </div>
 
         <div class="panel-cargando" *ngIf="textoBusqueda.trim() && buscando">
@@ -70,7 +83,13 @@
         <div class="panel-resultados" *ngIf="textoBusqueda.trim() && !buscando && resultados.length > 0">
           <p class="panel-subtitulo">Listado de productos</p>
 
-          <div class="resultado-item" *ngFor="let producto of resultados">
+          <div
+            class="resultado-item resultado-clicable"
+            *ngFor="let producto of resultados"
+            role="button"
+            tabindex="0"
+            (click)="irADetalle(producto)"
+            (keydown.enter)="irADetalle(producto)">
             <div class="resultado-imagen" [class.sin-imagen]="!producto.imagenUrl">
               <img *ngIf="producto.imagenUrl" [src]="producto.imagenUrl" [alt]="producto.nombre" loading="lazy" />
               <span *ngIf="!producto.imagenUrl" class="pi pi-shopping-basket"></span>

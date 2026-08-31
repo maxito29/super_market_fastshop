@@ -339,7 +339,10 @@
   }
 }
 
-/* Estado: cargando */
+.panel-subtitulo-recientes {
+  margin-top: 18px;
+}
+
 .panel-cargando {
   display: flex;
   align-items: center;
@@ -380,6 +383,22 @@
 
   &:last-of-type {
     border-bottom: none;
+  }
+}
+
+.resultado-clicable {
+  cursor: pointer;
+  border-radius: 10px;
+  transition: background 0.15s ease;
+
+  &:hover,
+  &:focus-visible {
+    background: var(--tienda-verde-100);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--tienda-verde-500);
+    outline-offset: 2px;
   }
 }
 

@@ -19,3 +19,33 @@
   font-weight: 600;
   color: var(--tienda-verde-700);
 }
+
+.categoria-detalle-filtro {
+  margin: 10px 0 0;
+}
+
+.filtro-activo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--tienda-verde-100);
+  color: var(--tienda-verde-900);
+  font-weight: 700;
+  font-size: 13.5px;
+  padding: 8px 8px 8px 16px;
+  border-radius: 999px;
+}
+
+.quitar-filtro {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border: none;
+  border-radius: 50%;
+  background: var(--tienda-verde-700);
+  color: #fff;
+  cursor: pointer;
+  font-size: 10px;
+}

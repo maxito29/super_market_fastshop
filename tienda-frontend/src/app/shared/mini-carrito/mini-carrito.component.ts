@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, DestroyRef, effect, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { CarritoService } from '../../core/services/carrito.service';
@@ -12,25 +12,7 @@ import { CarritoService } from '../../core/services/carrito.service';
   styleUrl: './mini-carrito.component.scss'
 })
 export class MiniCarritoComponent {
-  private destroyRef = inject(DestroyRef);
-
-  constructor(public carrito: CarritoService, private router: Router) {
-    effect(() => {
-      if (this.carrito.abierto()) {
-        const anchoBarraScroll = window.innerWidth - document.documentElement.clientWidth;
-        document.body.style.overflow = 'hidden';
-        document.body.style.paddingRight = anchoBarraScroll > 0 ? `${anchoBarraScroll}px` : '';
-      } else {
-        document.body.style.overflow = '';
-        document.body.style.paddingRight = '';
-      }
-    });
-
-    this.destroyRef.onDestroy(() => {
-      document.body.style.overflow = '';
-      document.body.style.paddingRight = '';
-    });
-  }
+  constructor(public carrito: CarritoService, private router: Router) {}
 
   cerrar(): void {
     this.carrito.cerrar();

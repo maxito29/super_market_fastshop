@@ -6,11 +6,19 @@
 
 <header class="contenedor categoria-detalle-cabecera">
   <h1>{{ categoria()?.nombre }}</h1>
-  <p class="categoria-detalle-descripcion" *ngIf="categoria()?.descripcion">{{ categoria()?.descripcion }}</p>
+  <p class="categoria-detalle-descripcion" *ngIf="categoria()?.descripcion && !textoBusqueda()">{{ categoria()?.descripcion }}</p>
+  <div class="categoria-detalle-filtro" *ngIf="textoBusqueda()">
+    <span class="filtro-activo">
+      Resultados para "{{ textoBusqueda() }}"
+      <button class="quitar-filtro" (click)="quitarFiltroTexto()" aria-label="Quitar búsqueda">
+        <span class="pi pi-times"></span>
+      </button>
+    </span>
+  </div>
   <p class="categoria-detalle-conteo">{{ productos().length }} productos</p>
 </header>
 
-<section class="contenedor cuerpo">
+<section class="contenedor cuerpo" id="catalogo-resultados">
   <div class="grilla" *ngIf="productos().length > 0; else vacioTpl">
     <article
       class="tarjeta-producto"
@@ -35,8 +43,14 @@
   <ng-template #vacioTpl>
     <div class="vacio">
       <span class="pi pi-inbox vacio-icono"></span>
-      <p class="vacio-titulo">No hay productos en esta categoría todavía</p>
-      <p class="vacio-texto">Vuelve más tarde o revisa otra categoría.</p>
+      <ng-container *ngIf="textoBusqueda(); else sinFiltroTpl">
+        <p class="vacio-titulo">No encontramos "{{ textoBusqueda() }}" en esta categoría</p>
+        <p class="vacio-texto">Prueba con otro término o revisa todos los productos de la categoría.</p>
+      </ng-container>
+      <ng-template #sinFiltroTpl>
+        <p class="vacio-titulo">No hay productos en esta categoría todavía</p>
+        <p class="vacio-texto">Vuelve más tarde o revisa otra categoría.</p>
+      </ng-template>
     </div>
   </ng-template>
 </section>
