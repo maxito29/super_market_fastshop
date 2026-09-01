@@ -1,56 +1,69 @@
-<nav class="migas contenedor" aria-label="Ruta de navegación">
-  <a routerLink="/">Inicio</a>
-  <span class="pi pi-angle-right"></span>
-  <span class="migas-actual">{{ categoria()?.nombre }}</span>
-</nav>
+<ng-container *ngIf="categoria() !== null; else categoriaNoEncontradaTpl">
 
-<header class="contenedor categoria-detalle-cabecera">
-  <h1>{{ categoria()?.nombre }}</h1>
-  <p class="categoria-detalle-descripcion" *ngIf="categoria()?.descripcion && !textoBusqueda()">{{ categoria()?.descripcion }}</p>
-  <div class="categoria-detalle-filtro" *ngIf="textoBusqueda()">
-    <span class="filtro-activo">
-      Resultados para "{{ textoBusqueda() }}"
-      <button class="quitar-filtro" (click)="quitarFiltroTexto()" aria-label="Quitar búsqueda">
-        <span class="pi pi-times"></span>
-      </button>
-    </span>
-  </div>
-  <p class="categoria-detalle-conteo">{{ productos().length }} productos</p>
-</header>
+  <nav class="migas contenedor" aria-label="Ruta de navegación">
+    <a routerLink="/">Inicio</a>
+    <span class="pi pi-angle-right"></span>
+    <span class="migas-actual">{{ categoria()?.nombre }}</span>
+  </nav>
 
-<section class="contenedor cuerpo" id="catalogo-resultados">
-  <div class="grilla" *ngIf="productos().length > 0; else vacioTpl">
-    <article
-      class="tarjeta-producto"
-      *ngFor="let producto of productos(); let i = index"
-      [style.animation-delay]="retrasoAnimacion(i)">
-      <a [routerLink]="['/producto', producto.id]" class="producto-imagen" [class.sin-imagen]="!producto.imagenUrl">
-        <img *ngIf="producto.imagenUrl" [src]="producto.imagenUrl" [alt]="producto.nombre" loading="lazy" />
-        <span *ngIf="!producto.imagenUrl" class="pi pi-shopping-basket"></span>
-        <span class="ribbon-stock" *ngIf="producto.stock > 0 && producto.stock <= 10">Últimas unidades</span>
-      </a>
-      <div class="producto-cuerpo">
-        <h3 class="producto-nombre">
-          <a [routerLink]="['/producto', producto.id]">{{ producto.nombre }}</a>
-        </h3>
-        <p class="producto-descripcion">{{ producto.descripcion }}</p>
-        <div class="producto-pie">
-          <span class="tienda-etiqueta-precio">S/ {{ producto.precio.toFixed(2) }}</span>
-        </div>
-      </div>
-    </article>
-  </div>
-  <ng-template #vacioTpl>
-    <div class="vacio">
-      <span class="pi pi-inbox vacio-icono"></span>
-      <ng-container *ngIf="textoBusqueda(); else sinFiltroTpl">
-        <p class="vacio-titulo">No encontramos "{{ textoBusqueda() }}" en esta categoría</p>
-        <p class="vacio-texto">Prueba con otro término o revisa todos los productos de la categoría.</p>
-      </ng-container>
-      <ng-template #sinFiltroTpl>
-        <p class="vacio-titulo">No hay productos en esta categoría todavía</p>
-        <p class="vacio-texto">Vuelve más tarde o revisa otra categoría.</p>
-      </ng-template>
+  <header class="contenedor categoria-detalle-cabecera">
+    <h1>{{ categoria()?.nombre }}</h1>
+    <p class="categoria-detalle-descripcion" *ngIf="categoria()?.descripcion && !textoBusqueda()">{{ categoria()?.descripcion }}</p>
+    <div class="categoria-detalle-filtro" *ngIf="textoBusqueda()">
+      <span class="filtro-activo">
+        Resultados para "{{ textoBusqueda() }}"
+        <button class="quitar-filtro" (click)="quitarFiltroTexto()" aria-label="Quitar búsqueda">
+          <span class="pi pi-times"></span>
+        </button>
+      </span>
     </div>
-  </ng-template>
-</section>
+    <p class="categoria-detalle-conteo">{{ productos().length }} productos</p>
+  </header>
+
+  <section class="contenedor cuerpo" id="catalogo-resultados">
+    <div class="grilla" *ngIf="productos().length > 0; else vacioTpl">
+      <article
+        class="tarjeta-producto"
+        *ngFor="let producto of productos(); let i = index"
+        [style.animation-delay]="retrasoAnimacion(i)">
+        <a [routerLink]="['/producto', producto.id]" class="producto-imagen" [class.sin-imagen]="!producto.imagenUrl">
+          <img *ngIf="producto.imagenUrl" [src]="producto.imagenUrl" [alt]="producto.nombre" loading="lazy" />
+          <span *ngIf="!producto.imagenUrl" class="pi pi-shopping-basket"></span>
+          <span class="ribbon-stock" *ngIf="producto.stock > 0 && producto.stock <= 10">Últimas unidades</span>
+        </a>
+        <div class="producto-cuerpo">
+          <h3 class="producto-nombre">
+            <a [routerLink]="['/producto', producto.id]">{{ producto.nombre }}</a>
+          </h3>
+          <p class="producto-descripcion">{{ producto.descripcion }}</p>
+          <div class="producto-pie">
+            <span class="tienda-etiqueta-precio">S/ {{ producto.precio.toFixed(2) }}</span>
+          </div>
+        </div>
+      </article>
+    </div>
+    <ng-template #vacioTpl>
+      <div class="vacio">
+        <span class="pi pi-inbox vacio-icono"></span>
+        <ng-container *ngIf="textoBusqueda(); else sinFiltroTpl">
+          <p class="vacio-titulo">No encontramos "{{ textoBusqueda() }}" en esta categoría</p>
+          <p class="vacio-texto">Prueba con otro término o revisa todos los productos de la categoría.</p>
+        </ng-container>
+        <ng-template #sinFiltroTpl>
+          <p class="vacio-titulo">No hay productos en esta categoría todavía</p>
+          <p class="vacio-texto">Vuelve más tarde o revisa otra categoría.</p>
+        </ng-template>
+      </div>
+    </ng-template>
+  </section>
+
+</ng-container>
+
+<ng-template #categoriaNoEncontradaTpl>
+  <div class="contenedor vacio">
+    <span class="pi pi-exclamation-circle vacio-icono"></span>
+    <p class="vacio-titulo">No encontramos esta categoría</p>
+    <p class="vacio-texto">Puede que ya no esté disponible o el enlace sea incorrecto.</p>
+    <a routerLink="/" class="boton-primario" style="margin-top: 16px; display: inline-flex;">Volver al inicio</a>
+  </div>
+</ng-template>

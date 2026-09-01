@@ -1,8 +1,9 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, effect, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { Title } from '@angular/platform-browser';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { map, switchMap } from 'rxjs';
+import { catchError, map, of, switchMap } from 'rxjs';
 import { CatalogoService } from '../../core/services/catalogo.service';
 
 @Component({
@@ -16,6 +17,7 @@ export class CategoriaDetalleComponent {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private catalogoService = inject(CatalogoService);
+  private titleService = inject(Title);
 
   private categoriaId$ = this.route.paramMap.pipe(map(p => Number(p.get('id'))));
 
@@ -27,12 +29,30 @@ export class CategoriaDetalleComponent {
     { initialValue: '' }
   );
 
-  categoria = toSignal(this.categoriaId$.pipe(switchMap(id => this.catalogoService.obtenerCategoria(id))));
+  // undefined = cargando · null = no existe o dio error · objeto = cargada.
+  categoria = toSignal(
+    this.categoriaId$.pipe(
+      switchMap(id => this.catalogoService.obtenerCategoria(id).pipe(catchError(() => of(null))))
+    )
+  );
 
   private productosCategoria = toSignal(
-    this.categoriaId$.pipe(switchMap(id => this.catalogoService.listarProductosPorCategoria(id))),
+    this.categoriaId$.pipe(
+      switchMap(id => this.catalogoService.listarProductosPorCategoria(id).pipe(catchError(() => of([]))))
+    ),
     { initialValue: [] }
   );
+
+  constructor() {
+    effect(() => {
+      const c = this.categoria();
+      if (c) {
+        this.titleService.setTitle(`${c.nombre} | Fastshop`);
+      } else if (c === null) {
+        this.titleService.setTitle('Categoría no encontrada | Fastshop');
+      }
+    });
+  }
 
   productos = computed(() => {
     const texto = this.textoBusqueda().toLowerCase();

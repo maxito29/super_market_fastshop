@@ -118,3 +118,49 @@
     gap: 24px;
   }
 }
+
+/* ---------- Estado de carga (skeleton) ---------- */
+.detalle-cargando {
+  display: grid;
+  grid-template-columns: minmax(280px, 420px) 1fr;
+  gap: 44px;
+  padding: 8px 0 56px;
+}
+
+.skeleton-detalle-imagen {
+  aspect-ratio: 1 / 1;
+  border-radius: var(--tienda-radio-lg);
+  background: var(--tienda-verde-100);
+  animation: pulsoSkeleton 1.4s ease-in-out infinite;
+}
+
+.skeleton-detalle-info {
+  padding-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.skeleton-linea {
+  height: 16px;
+  border-radius: 999px;
+  background: var(--tienda-verde-100);
+  animation: pulsoSkeleton 1.4s ease-in-out infinite;
+}
+
+.skeleton-corta { width: 30%; height: 12px; }
+.skeleton-larga { width: 80%; height: 28px; }
+.skeleton-media { width: 50%; height: 20px; }
+.skeleton-boton { width: 40%; height: 44px; margin-top: 10px; border-radius: 999px; }
+
+@keyframes pulsoSkeleton {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@media (max-width: 760px) {
+  .detalle-cargando {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}

@@ -182,6 +182,21 @@ async eliminar(producto: Producto): Promise<void> {
     });
   }
 
+  toggleDestacado(producto: Producto): void {
+    const nuevoValor = !producto.destacado;
+    this.productoService.marcarDestacado(producto.id, nuevoValor).subscribe({
+      next: () => {
+        this.notificacionService.exito(
+          nuevoValor ? 'Producto agregado a "Lo mejor de la semana"' : 'Producto quitado de "Lo mejor de la semana"'
+        );
+        this.productos.update(lista =>
+          lista.map(p => (p.id === producto.id ? { ...p, destacado: nuevoValor } : p))
+        );
+      },
+      error: () => this.notificacionService.error('No se pudo actualizar el destacado')
+    });
+  }
+
   exportarExcel(): void {
     this.productoService.exportarExcel().subscribe({
       next: (blob) => {

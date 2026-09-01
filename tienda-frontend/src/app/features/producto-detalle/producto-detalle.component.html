@@ -1,4 +1,4 @@
-<ng-container *ngIf="producto() as p">
+<ng-container *ngIf="producto() as p; else estadoAlternoTpl">
 
   <nav class="migas contenedor" aria-label="Ruta de navegación">
     <a routerLink="/">Inicio</a>
@@ -74,3 +74,22 @@
     </div>
   </section>
 </ng-container>
+
+<ng-template #estadoAlternoTpl>
+  <div class="contenedor detalle-cargando" *ngIf="producto() === undefined">
+    <div class="skeleton-detalle-imagen"></div>
+    <div class="skeleton-detalle-info">
+      <div class="skeleton-linea skeleton-corta"></div>
+      <div class="skeleton-linea skeleton-larga"></div>
+      <div class="skeleton-linea skeleton-media"></div>
+      <div class="skeleton-linea skeleton-boton"></div>
+    </div>
+  </div>
+
+  <div class="contenedor vacio" *ngIf="producto() === null">
+    <span class="pi pi-exclamation-circle vacio-icono"></span>
+    <p class="vacio-titulo">No encontramos este producto</p>
+    <p class="vacio-texto">Puede que ya no esté disponible o el enlace sea incorrecto.</p>
+    <a routerLink="/" class="boton-primario" style="margin-top: 16px; display: inline-flex;">Volver al inicio</a>
+  </div>
+</ng-template>

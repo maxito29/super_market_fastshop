@@ -62,12 +62,17 @@
 }
 
 /* Fila con scroll horizontal, igual criterio de fade que el marquee */
+.vitrina-carrusel {
+  position: relative;
+}
+
 .vitrina-scroll {
   overflow-x: auto;
   overflow-y: hidden;
   scroll-snap-type: x proximity;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
+  scroll-behavior: smooth;
 }
 
 .vitrina-scroll::-webkit-scrollbar {
@@ -157,4 +162,76 @@
 @media (max-width: 720px) {
   .vitrina-tarjeta { width: 140px; }
   .vitrina-imagen { height: 108px; }
+}
+
+/* ---------- Flechas de navegación (fondo blanco, a diferencia del hero) ---------- */
+.vitrina-flecha {
+  position: absolute;
+  top: 40%;
+  transform: translateY(-50%);
+  z-index: 2;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--tienda-borde);
+  background: var(--tienda-superficie);
+  color: var(--tienda-verde-900);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 18px -8px rgba(22, 60, 44, 0.3);
+  transition: background 0.15s ease, transform 0.15s ease, box-shadow 0.2s ease;
+  opacity: 0;
+  animation: apareceFlecha 0.3s ease forwards;
+}
+
+@keyframes apareceFlecha {
+  to { opacity: 1; }
+}
+
+.vitrina-flecha:hover {
+  background: var(--tienda-verde-700);
+  color: #fff;
+  transform: translateY(-50%) scale(1.08);
+  box-shadow: 0 12px 22px -10px rgba(22, 60, 44, 0.45);
+}
+
+.vitrina-flecha:active {
+  transform: translateY(-50%) scale(0.94);
+}
+
+.vitrina-flecha-izq { left: -16px; }
+.vitrina-flecha-der { right: -16px; }
+
+@media (max-width: 720px) {
+  .vitrina-flecha { display: none; }
+}
+
+/* ---------- Puntos de paginación ---------- */
+.vitrina-puntos {
+  display: flex;
+  justify-content: center;
+  gap: 7px;
+  margin-top: 14px;
+}
+
+.vitrina-punto {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  border: none;
+  background: var(--tienda-borde);
+  cursor: pointer;
+  padding: 0;
+  transition: width 0.25s ease, background 0.2s ease;
+}
+
+.vitrina-punto:hover {
+  background: var(--tienda-verde-500);
+}
+
+.vitrina-punto.activo {
+  width: 20px;
+  background: var(--tienda-verde-700);
 }

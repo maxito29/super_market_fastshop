@@ -70,6 +70,14 @@
             <td style="text-align: center;">
               <div class="acciones-cell">
                 <button pButton icon="pi pi-pencil" class="p-button-text p-button-rounded p-button-sm action-btn" pTooltip="Editar" tooltipPosition="top" (click)="abrirEdicion(producto)"></button>
+                <button
+                  pButton
+                  icon="pi pi-star-fill"
+                  class="p-button-text p-button-rounded p-button-sm action-btn"
+                  [class.destacado-activo]="producto.destacado"
+                  [pTooltip]="producto.destacado ? 'Quitar de Lo mejor de la semana' : 'Marcar como destacado'"
+                  tooltipPosition="top"
+                  (click)="toggleDestacado(producto)"></button>
                 @if (producto.activo) {
                   <button pButton icon="pi pi-trash" class="p-button-text p-button-rounded p-button-danger p-button-sm action-btn" pTooltip="Desactivar" tooltipPosition="top" (click)="eliminar(producto)"></button>
                 } @else {

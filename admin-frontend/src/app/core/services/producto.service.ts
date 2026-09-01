@@ -31,6 +31,10 @@ export class ProductoService {
     return this.http.patch<void>(`${this.baseUrl}/${id}/reactivar`, {});
   }
 
+  marcarDestacado(id: number, valor: boolean): Observable<void> {
+    return this.http.patch<void>(`${this.baseUrl}/${id}/destacado`, {}, { params: { valor } });
+  }
+
   exportarExcel(): Observable<Blob> {
     return this.http.get(`${this.baseUrl}/exportar/excel`, { responseType: 'blob' });
   }

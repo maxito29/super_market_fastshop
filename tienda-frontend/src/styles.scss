@@ -470,3 +470,114 @@ a {
 .migas .pi { font-size: 9px; }
 .migas-actual { color: var(--tienda-tinta); font-weight: 600; }
 
+
+/* ======================================================
+   Compartido: comparador de proveedores
+   (necesario para producto-detalle.component)
+====================================================== */
+.modal-etiqueta {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--tienda-tinta-suave);
+  margin: 0 0 10px;
+}
+
+.cantidad-label {
+  margin-top: 20px;
+}
+
+.opcion-proveedor {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid var(--tienda-borde);
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.opcion-proveedor:hover {
+  border-color: var(--tienda-verde-500);
+}
+
+.opcion-proveedor.opcion-elegida {
+  border-color: var(--tienda-verde-700);
+  background: var(--tienda-verde-100);
+}
+
+.opcion-proveedor input[type='radio'] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.opcion-radio {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid var(--tienda-borde);
+  position: relative;
+  transition: border-color 0.15s ease;
+}
+
+.opcion-radio::after {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  background: var(--tienda-verde-700);
+  transform: scale(0);
+  transition: transform 0.15s ease;
+}
+
+.opcion-proveedor input[type='radio']:checked + .opcion-radio {
+  border-color: var(--tienda-verde-700);
+}
+
+.opcion-proveedor input[type='radio']:checked + .opcion-radio::after {
+  transform: scale(1);
+}
+
+.opcion-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 1;
+  gap: 8px;
+}
+
+.opcion-nombre {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--tienda-tinta);
+}
+
+.badge-barato {
+  display: inline-flex;
+  align-items: center;
+  background: var(--tienda-tomate-100);
+  color: var(--tienda-tomate-600);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+
+.opcion-precio {
+  font-weight: 700;
+  color: var(--tienda-verde-900);
+  font-size: 13.5px;
+  white-space: nowrap;
+}

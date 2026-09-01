@@ -41,6 +41,9 @@ public class Producto {
     @Column(nullable = false)
     private Boolean activo = true;
 
+    @Column(nullable = false)
+    private Boolean destacado = false;
+
     @Column(name = "fecha_creacion", nullable = false, updatable = false)
     private LocalDateTime fechaCreacion;
 

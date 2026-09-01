@@ -9,6 +9,7 @@ export interface Producto {
   stock: number;
   imagenUrl: string | null;
   activo: boolean;
+  destacado: boolean;
   fechaCreacion: string;
 }
 

@@ -1,8 +1,9 @@
-import { Component, inject } from '@angular/core';
+import { Component, effect, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { Title } from '@angular/platform-browser';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { switchMap } from 'rxjs';
+import { catchError, of, switchMap } from 'rxjs';
 import { CatalogoService } from '../../core/services/catalogo.service';
 import { CarritoService } from '../../core/services/carrito.service';
 import { OfertaProducto } from '../../core/models/catalogo.models';
@@ -18,14 +19,16 @@ export class ProductoDetalleComponent {
   private route = inject(ActivatedRoute);
   private catalogoService = inject(CatalogoService);
   private carritoService = inject(CarritoService);
+  private titleService = inject(Title);
 
   cantidad = 1;
   ofertas: OfertaProducto[] = [];
   ofertaElegida: OfertaProducto | 'base' = 'base';
   cargandoOfertas = true;
 
-  // Se re-ejecuta si cambia el :id en la URL (navegar de un producto a otro
-  // relacionado sin recargar la página) — clave para no quedar "pegado".
+  // undefined = todavía cargando · null = no existe o dio error · objeto = cargado.
+  // Antes, si el id no existía (404) esta señal lanzaba el error del HTTP hacia
+  // arriba y la página quedaba en blanco; con catchError queda controlado.
   producto = toSignal(
     this.route.paramMap.pipe(
       switchMap(params => {
@@ -34,10 +37,24 @@ export class ProductoDetalleComponent {
         this.cargandoOfertas = true;
         const id = Number(params.get('id'));
         this.cargarOfertas(id);
-        return this.catalogoService.obtenerProducto(id);
+        return this.catalogoService.obtenerProducto(id).pipe(catchError(() => of(null)));
       })
     )
   );
+
+  constructor() {
+    // Actualiza la pestaña del navegador apenas se resuelve el producto,
+    // o al detectar que no existe — así cada link es identificable en el
+    // historial del navegador y no queda pegado al título de la ruta anterior.
+    effect(() => {
+      const p = this.producto();
+      if (p) {
+        this.titleService.setTitle(`${p.nombre} | Fastshop`);
+      } else if (p === null) {
+        this.titleService.setTitle('Producto no encontrado | Fastshop');
+      }
+    });
+  }
 
   private cargarOfertas(productoId: number): void {
     this.catalogoService.listarOfertas(productoId).subscribe({

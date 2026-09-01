@@ -18,6 +18,7 @@ public class ProductoResponse {
     private final Integer stock;
     private final String imagenUrl;
     private final Boolean activo;
+    private final Boolean destacado;
     private final LocalDateTime fechaCreacion;
 
     public ProductoResponse(Producto producto) {
@@ -31,6 +32,7 @@ public class ProductoResponse {
         this.stock = producto.getStock();
         this.imagenUrl = producto.getImagenUrl();
         this.activo = producto.getActivo();
+        this.destacado = producto.getDestacado();
         this.fechaCreacion = producto.getFechaCreacion();
     }
 }

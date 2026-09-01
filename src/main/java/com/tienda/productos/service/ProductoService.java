@@ -125,6 +125,18 @@ public class ProductoService {
         productoRepository.save(producto);
     }
 
+    public List<ProductoResponse> listarDestacados() {
+        return productoRepository.findByActivoTrueAndDestacadoTrueOrderByFechaCreacionDesc()
+                .stream().map(ProductoResponse::new).toList();
+    }
+
+    @Transactional
+    public void marcarDestacado(Long id, boolean valor) {
+        Producto producto = buscarEntidad(id);
+        producto.setDestacado(valor);
+        productoRepository.save(producto);
+    }
+
     @Transactional(readOnly = true)
     public byte[] exportarExcel() throws java.io.IOException {
         return excelReporteService.generarExcelProductos(productoRepository.findAll());

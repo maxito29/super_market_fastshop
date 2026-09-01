@@ -194,6 +194,14 @@ $transition-base: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
 }
 
+.destacado-activo {
+  color: #f5a524 !important;
+
+  &:hover {
+    background-color: #fef3e2 !important;
+  }
+}
+
 .table-empty-state {
   text-align: center;
   padding: 3rem 1.5rem !important;

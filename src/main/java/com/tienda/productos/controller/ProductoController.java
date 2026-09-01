@@ -37,6 +37,12 @@ public class ProductoController {
         return productoService.buscarPorNombre(q);
     }
 
+    @GetMapping("/destacados")
+    @Operation(summary = "Productos activos marcados como destacados, para la vitrina 'Lo mejor de la semana'")
+    public List<ProductoResponse> listarDestacados() {
+        return productoService.listarDestacados();
+    }
+
     @GetMapping("/admin/todos")
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Lista todos los productos, incluyendo los inactivos (solo ADMIN)")
@@ -50,7 +56,6 @@ public class ProductoController {
         return productoService.obtenerPublicoPorId(id);
     }
 
-    // CAMBIO 2: Nuevo endpoint exclusivo para el administrador que incluye inactivos
     @GetMapping("/admin/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Detalle de un producto para administración, incluye inactivos")
@@ -84,6 +89,13 @@ public class ProductoController {
     @Operation(summary = "Reactiva un producto previamente desactivado")
     public void reactivar(@PathVariable Long id) {
         productoService.reactivar(id);
+    }
+
+    @PatchMapping("/{id}/destacado")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Marca o quita un producto de la vitrina de destacados")
+    public void marcarDestacado(@PathVariable Long id, @RequestParam boolean valor) {
+        productoService.marcarDestacado(id, valor);
     }
 
     @GetMapping("/exportar/excel")

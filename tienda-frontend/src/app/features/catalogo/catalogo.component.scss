@@ -342,10 +342,6 @@
   position: absolute;
   inset: -40% -10% auto -10%;
   height: 220px;
-  background:
-    radial-gradient(circle at 15% 30%, color-mix(in srgb, var(--tienda-verde-500) 18%, transparent), transparent 60%),
-    radial-gradient(circle at 85% 60%, color-mix(in srgb, var(--tienda-verde-700) 14%, transparent), transparent 55%);
-  filter: blur(30px);
   pointer-events: none;
   z-index: 0;
 }
