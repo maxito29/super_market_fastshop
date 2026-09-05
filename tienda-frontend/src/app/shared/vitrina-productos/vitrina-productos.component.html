@@ -9,50 +9,79 @@
     </a>
   </div>
 
-  <div class="vitrina-carrusel">
-    <button
-      type="button"
-      class="vitrina-flecha vitrina-flecha-izq"
-      *ngIf="puedeIzquierda"
-      (click)="desplazar(-1)"
-      aria-label="Ver productos anteriores">
-      <span class="pi pi-chevron-left"></span>
-    </button>
+  <div class="contenedor">
+    <div class="vitrina-carrusel">
+      <button
+        type="button"
+        class="vitrina-flecha vitrina-flecha-izq"
+        *ngIf="puedeIzquierda"
+        (click)="desplazar(-1)"
+        aria-label="Ver productos anteriores">
+        <span class="pi pi-chevron-left"></span>
+      </button>
 
-    <div class="vitrina-scroll" #pista (scroll)="onScroll()">
-      <div class="contenedor vitrina-pista">
-        <a
-          *ngFor="let p of productos; let i = index"
-          [routerLink]="['/producto', p.id]"
-          class="vitrina-tarjeta"
-          [style.animation-delay]="retrasoAnimacion(i)">
-          <div class="vitrina-imagen" [class.sin-imagen]="!p.imagenUrl">
-            <img *ngIf="p.imagenUrl" [src]="p.imagenUrl" [alt]="p.nombre" loading="lazy" />
-            <span *ngIf="!p.imagenUrl" class="pi pi-shopping-basket"></span>
+      <div
+        class="vitrina-scroll"
+        #pista
+        (scroll)="onScroll()"
+        [class.tiene-fade-izq]="puedeIzquierda"
+        [class.tiene-fade-der]="puedeDerecha">
+        <div class="vitrina-pista">
+          <div
+            *ngFor="let p of productos; let i = index"
+            class="vitrina-tarjeta"
+            [class.agotado]="p.stock <= 0"
+            [style.animation-delay]="retrasoAnimacion(i)">
+
+            <a [routerLink]="['/producto', p.id]" class="vitrina-tarjeta-link">
+              <div class="vitrina-imagen" [class.sin-imagen]="!p.imagenUrl">
+                <span class="vitrina-categoria">{{ p.categoriaNombre }}</span>
+                <img *ngIf="p.imagenUrl" [src]="p.imagenUrl" [alt]="p.nombre" loading="lazy" />
+                <span *ngIf="!p.imagenUrl" class="pi pi-shopping-basket"></span>
+              </div>
+
+              <div class="vitrina-info">
+                <p class="vitrina-nombre">{{ p.nombre }}</p>
+                <span
+                  class="vitrina-stock"
+                  [class.vitrina-stock-baja]="p.stock > 0 && p.stock <= 5"
+                  [class.vitrina-stock-agotado]="p.stock <= 0">
+                  {{ etiquetaStock(p) }}
+                </span>
+                <span class="tienda-etiqueta-precio vitrina-precio">S/ {{ p.precio.toFixed(2) }}</span>
+              </div>
+            </a>
+
+            <button
+              type="button"
+              class="vitrina-boton-agregar"
+              [disabled]="p.stock <= 0"
+              (click)="agregarAlCarrito(p, $event)">
+              <span class="pi pi-shopping-cart"></span>
+              {{ p.stock <= 0 ? 'Agotado' : 'Agregar' }}
+            </button>
           </div>
-          <p class="vitrina-nombre">{{ p.nombre }}</p>
-          <span class="tienda-etiqueta-precio vitrina-precio">S/ {{ p.precio.toFixed(2) }}</span>
-        </a>
+        </div>
       </div>
+
+      <button
+        type="button"
+        class="vitrina-flecha vitrina-flecha-der"
+        *ngIf="puedeDerecha"
+        (click)="desplazar(1)"
+        aria-label="Ver más productos">
+        <span class="pi pi-chevron-right"></span>
+      </button>
     </div>
 
-    <button
-      type="button"
-      class="vitrina-flecha vitrina-flecha-der"
-      *ngIf="puedeDerecha"
-      (click)="desplazar(1)"
-      aria-label="Ver más productos">
-      <span class="pi pi-chevron-right"></span>
-    </button>
-  </div>
-
-  <div class="vitrina-puntos" *ngIf="totalPaginas > 1">
-    <button
-      *ngFor="let pagina of paginasArray(); let i = index"
-      class="vitrina-punto"
-      [class.activo]="i === paginaActual"
-      (click)="irAPagina(i)"
-      [attr.aria-label]="'Ir a la página ' + (i + 1)">
-    </button>
+    <div class="vitrina-puntos" *ngIf="totalPaginas > 1">
+      <button
+        *ngFor="let pagina of paginasArray(); let i = index"
+        class="vitrina-punto"
+        [class.activo]="i === paginaActual"
+        (click)="irAPagina(i)"
+        [attr.aria-label]="'Ir a la página ' + (i + 1)">
+      </button>
+    </div>
   </div>
 </section>

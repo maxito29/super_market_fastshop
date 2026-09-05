@@ -45,4 +45,10 @@ public class ClienteAuthController {
         clienteRecuperacionPasswordService.restablecerPassword(request.getToken(), request.getNuevaPassword());
         return Map.of("mensaje", "Contraseña actualizada correctamente");
     }
+
+    @PostMapping("/login-google")
+    @Operation(summary = "Inicia sesión (o crea cuenta) con Google")
+    public ClienteLoginResponse loginGoogle(@Valid @RequestBody ClienteGoogleLoginRequest request) {
+        return clienteAuthService.loginConGoogle(request);
+    }
 }

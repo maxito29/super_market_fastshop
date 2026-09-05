@@ -37,7 +37,7 @@ public class Cliente implements UserDetails {
     @Column(length = 254)
     private String direccion;
 
-    @Column(nullable = false, length = 20)
+    @Column(length = 20)
     private String telefono;
 
     @Column(length = 150)
@@ -55,6 +55,9 @@ public class Cliente implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_CLIENTE"));
     }
+
+    @Column(name = "google_id", length = 60, unique = true)
+    private String googleId;
 
     @Override
     public String getPassword() {

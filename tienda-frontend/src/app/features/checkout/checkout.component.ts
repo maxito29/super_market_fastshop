@@ -153,6 +153,8 @@ export class CheckoutComponent implements OnInit {
     return true;
   }
 
+  
+
   confirmarPedido(): void {
     if (!this.formularioValido() || !this.form.metodoPagoId) return;
 

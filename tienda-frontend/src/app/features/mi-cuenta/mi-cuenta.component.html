@@ -1,0 +1,56 @@
+<section class="contenedor pagina-cuenta">
+  <a routerLink="/" class="volver">
+    <span class="pi pi-arrow-left"></span>
+    Volver al catálogo
+  </a>
+
+  <h1>Mi cuenta</h1>
+
+  <div class="aviso-perfil" *ngIf="!cargando && !perfilCompleto">
+    <span class="pi pi-info-circle"></span>
+    <div>
+      <strong>Completa tu perfil</strong>
+      <p>Te falta tu documento o teléfono — los necesitamos para procesar tus pedidos.</p>
+    </div>
+  </div>
+
+  <div class="cargando-perfil" *ngIf="cargando">
+    <span class="pi pi-spin pi-spinner"></span> Cargando tu perfil...
+  </div>
+
+  <form class="formulario-perfil" *ngIf="!cargando" (ngSubmit)="guardar()">
+    <div class="fila-campos">
+      <div class="campo">
+        <label>Tipo de documento</label>
+        <select class="select-premium" [(ngModel)]="form.tipoDocumento" name="tipoDocumento">
+          <option *ngFor="let t of tiposDocumento" [value]="t.value">{{ t.label }}</option>
+        </select>
+      </div>
+      <div class="campo">
+        <label>Número de documento</label>
+        <input type="text" [(ngModel)]="form.numeroDocumento" name="numeroDocumento" placeholder="00000000" class="input-premium" />
+      </div>
+    </div>
+
+    <div class="campo">
+      <label>Nombre completo / Razón social</label>
+      <input type="text" [(ngModel)]="form.nombreRazonSocial" name="nombreRazonSocial" class="input-premium" required />
+    </div>
+
+    <div class="fila-campos">
+      <div class="campo">
+        <label>Teléfono</label>
+        <input type="tel" [(ngModel)]="form.telefono" name="telefono" placeholder="999888777" class="input-premium" />
+      </div>
+      <div class="campo">
+        <label>Correo electrónico</label>
+        <input type="email" [(ngModel)]="form.email" name="email" class="input-premium" />
+      </div>
+    </div>
+
+    <button type="submit" class="boton-guardar" [disabled]="guardando">
+      <span class="pi pi-spin pi-spinner" *ngIf="guardando"></span>
+      Guardar cambios
+    </button>
+  </form>
+</section>

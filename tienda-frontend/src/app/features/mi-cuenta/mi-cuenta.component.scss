@@ -1,0 +1,97 @@
+.pagina-cuenta { max-width: 640px; padding: 30px 20px 60px; }
+
+.volver {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--tienda-verde-700);
+  text-decoration: none;
+  margin-bottom: 18px;
+}
+
+h1 {
+  font-family: var(--tienda-fuente-titulo);
+  font-size: 24px;
+  color: var(--tienda-verde-900);
+  margin-bottom: 20px;
+}
+
+.aviso-perfil {
+  display: flex;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 14px;
+  background: #fdece7;
+  border: 1px solid var(--tienda-tomate-600);
+  margin-bottom: 24px;
+
+  .pi { color: var(--tienda-tomate-600); font-size: 18px; margin-top: 2px; }
+  strong { color: var(--tienda-tinta); font-size: 13.5px; }
+  p { margin: 2px 0 0; font-size: 12.5px; color: var(--tienda-tinta-suave); }
+}
+
+.cargando-perfil {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--tienda-tinta-suave);
+  font-size: 13px;
+  padding: 30px 0;
+}
+
+.formulario-perfil {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  background: var(--tienda-superficie);
+  border: 1px solid var(--tienda-borde);
+  border-radius: 18px;
+  padding: 24px;
+}
+
+.fila-campos { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 560px) { .fila-campos { grid-template-columns: 1fr; } }
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  label { font-size: 12px; font-weight: 700; color: var(--tienda-tinta-suave); }
+}
+
+.input-premium, .select-premium {
+  padding: 11px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--tienda-borde);
+  background: var(--tienda-papel);
+  font-size: 13.5px;
+  color: var(--tienda-tinta);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+  &:focus {
+    outline: none;
+    border-color: var(--tienda-verde-500);
+    box-shadow: 0 0 0 3px rgba(46, 139, 99, 0.15);
+  }
+}
+
+.boton-guardar {
+  align-self: flex-start;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 26px;
+  border: none;
+  border-radius: 999px;
+  background: var(--tienda-verde-700);
+  color: #fff;
+  font-weight: 700;
+  font-size: 13.5px;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.15s ease;
+
+  &:hover:not(:disabled) { background: var(--tienda-verde-900); transform: translateY(-2px); }
+  &:disabled { opacity: 0.6; cursor: not-allowed; }
+}

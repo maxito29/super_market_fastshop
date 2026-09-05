@@ -34,6 +34,7 @@ public class SecurityConfig {
             "/api/auth/**",
             "/api/cliente/registro",
             "/api/cliente/login",
+            "/api/cliente/login-google",
             "/api/cliente/olvide-password",
             "/api/cliente/restablecer-password",
             "/api/pedidos/invitado",

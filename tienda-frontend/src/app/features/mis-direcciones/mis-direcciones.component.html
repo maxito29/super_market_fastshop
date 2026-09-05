@@ -1,0 +1,113 @@
+<section class="contenedor pagina-cuenta">
+  <a routerLink="/mi-cuenta" class="volver">
+    <span class="pi pi-arrow-left"></span>
+    Volver a mi cuenta
+  </a>
+
+  <div class="cabecera-direcciones">
+    <h1>Mis direcciones</h1>
+    <button type="button" class="boton-guardar boton-nueva" (click)="nuevaDireccion()" *ngIf="!mostrarFormulario">
+      <span class="pi pi-plus"></span> Nueva dirección
+    </button>
+  </div>
+
+  <div class="cargando-perfil" *ngIf="cargando">
+    <span class="pi pi-spin pi-spinner"></span> Cargando tus direcciones...
+  </div>
+
+  <form class="formulario-perfil formulario-direccion" *ngIf="mostrarFormulario" (ngSubmit)="guardar()">
+    <h2 class="titulo-formulario">{{ editandoId ? 'Editar dirección' : 'Agregar dirección' }}</h2>
+
+    <button type="button" class="boton-ubicacion" (click)="usarUbicacionActual()" [disabled]="buscandoUbicacion">
+      <span class="pi pi-spin pi-spinner" *ngIf="buscandoUbicacion"></span>
+      <span class="pi pi-map-marker" *ngIf="!buscandoUbicacion"></span>
+      {{ buscandoUbicacion ? 'Buscando tu ubicación...' : 'Usar mi ubicación actual' }}
+    </button>
+
+<div class="campo">
+  <label>Dirección de entrega</label>
+  <input
+    type="text"
+    [(ngModel)]="form.direccion"
+    (ngModelChange)="alEscribirDireccion($event)"
+    (keydown.enter)="alPresionarEnterEnDireccion($event)"
+    name="direccion"
+    placeholder="Av. / Jr. / Calle y número"
+    class="input-premium"
+    required />
+</div>
+
+<div class="fila-campos">
+  <div class="campo">
+    <label>Distrito</label>
+    <input
+      type="text"
+      [(ngModel)]="form.distrito"
+      name="distrito"
+      placeholder="Ej. San Isidro"
+      class="input-premium"
+      list="lista-distritos"
+      (keydown.enter)="$event.preventDefault()"
+      required />
+    <datalist id="lista-distritos">
+      <option *ngFor="let d of distritosSugeridos" [value]="d"></option>
+    </datalist>
+  </div>
+  <div class="campo">
+    <label>Referencia (opcional)</label>
+    <input
+      type="text"
+      [(ngModel)]="form.referencia"
+      name="referencia"
+      placeholder="Ej. edificio azul, piso 3"
+      class="input-premium"
+      (keydown.enter)="$event.preventDefault()" />
+  </div>
+</div>
+
+    <div class="mapa-envoltorio">
+      <div class="mapa-contenedor" #mapaContenedor></div>
+      <p class="mapa-ayuda">Arrastra el marcador o haz clic en el mapa para ajustar el punto exacto</p>
+    </div>
+
+    <label class="checkbox-predeterminada">
+      <input type="checkbox" [(ngModel)]="form.predeterminada" name="predeterminada" />
+      Usar como dirección predeterminada
+    </label>
+
+    <div class="acciones-formulario">
+      <button type="submit" class="boton-guardar" [disabled]="guardando">
+        <span class="pi pi-spin pi-spinner" *ngIf="guardando"></span>
+        Guardar dirección
+      </button>
+      <button type="button" class="boton-cancelar" (click)="cancelar()">Cancelar</button>
+    </div>
+  </form>
+
+  <div class="lista-direcciones" *ngIf="!cargando && !mostrarFormulario">
+    <div class="sin-direcciones" *ngIf="direcciones.length === 0">
+      <span class="pi pi-map-marker"></span>
+      <p>Aún no has agregado una dirección para la entrega de tu pedido.</p>
+  <p>
+    Haz clic en 
+    <a class="enlace-agregar" (click)="nuevaDireccion()" *ngIf="!mostrarFormulario">
+      Agregar dirección
+    </a> 
+    para continuar.
+  </p>
+    </div>
+
+    <div class="tarjeta-direccion" *ngFor="let d of direcciones">
+      <div class="tarjeta-direccion-info">
+        <span class="etiqueta-predeterminada" *ngIf="d.predeterminada">Predeterminada</span>
+        <strong>{{ d.direccion }}</strong>
+        <span>{{ d.distrito }}</span>
+        <span *ngIf="d.referencia" class="referencia">{{ d.referencia }}</span>
+      </div>
+      <div class="tarjeta-direccion-acciones">
+        <button type="button" (click)="editar(d)" aria-label="Editar dirección"><span class="pi pi-pencil"></span></button>
+        <button type="button" (click)="eliminar(d)" aria-label="Eliminar dirección"><span class="pi pi-trash"></span></button>
+      </div>
+    </div>
+  </div>
+</section>

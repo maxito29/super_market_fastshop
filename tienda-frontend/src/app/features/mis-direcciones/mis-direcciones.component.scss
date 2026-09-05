@@ -1,0 +1,199 @@
+.pagina-cuenta { max-width: 640px; padding: 30px 20px 60px; }
+
+.volver {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--tienda-verde-700);
+  text-decoration: none;
+  margin-bottom: 18px;
+}
+
+.cabecera-direcciones {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  h1 { font-family: var(--tienda-fuente-titulo); font-size: 24px; color: var(--tienda-verde-900); }
+}
+
+.boton-nueva { padding: 10px 18px; font-size: 12.5px; }
+
+.cargando-perfil {
+  display: flex; align-items: center; gap: 8px;
+  color: var(--tienda-tinta-suave); font-size: 13px; padding: 30px 0;
+}
+
+.formulario-perfil {
+  display: flex; flex-direction: column; gap: 18px;
+  background: var(--tienda-superficie);
+  border: 1px solid var(--tienda-borde);
+  border-radius: 18px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.fila-campos { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 560px) { .fila-campos { grid-template-columns: 1fr; } }
+
+.campo {
+  display: flex; flex-direction: column; gap: 6px;
+  label { font-size: 12px; font-weight: 700; color: var(--tienda-tinta-suave); }
+}
+
+.input-premium {
+  padding: 11px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--tienda-borde);
+  background: var(--tienda-papel);
+  font-size: 13.5px;
+  color: var(--tienda-tinta);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+  &:focus {
+    outline: none;
+    border-color: var(--tienda-verde-500);
+    box-shadow: 0 0 0 3px rgba(46, 139, 99, 0.15);
+  }
+}
+
+.checkbox-predeterminada {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12.5px; color: var(--tienda-tinta);
+}
+
+.acciones-formulario { display: flex; gap: 12px; }
+
+.boton-guardar {
+  display: flex; align-items: center; gap: 8px;
+  padding: 12px 26px;
+  border: none;
+  border-radius: 999px;
+  background: var(--tienda-verde-700);
+  color: #fff;
+  font-weight: 700;
+  font-size: 13.5px;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.15s ease;
+
+  &:hover:not(:disabled) { background: var(--tienda-verde-900); transform: translateY(-2px); }
+  &:disabled { opacity: 0.6; cursor: not-allowed; }
+}
+
+.boton-cancelar {
+  padding: 12px 22px;
+  border-radius: 999px;
+  border: 1px solid var(--tienda-borde);
+  background: none;
+  font-weight: 700;
+  font-size: 13.5px;
+  color: var(--tienda-tinta-suave);
+  cursor: pointer;
+}
+
+.sin-direcciones {
+  text-align: center;
+  padding: 40px 0;
+  color: var(--tienda-tinta-suave);
+  .pi { font-size: 28px; color: var(--tienda-verde-500); margin-bottom: 8px; display: block; }
+}
+
+.tarjeta-direccion {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px 18px;
+  border: 1px solid var(--tienda-borde);
+  border-radius: 14px;
+  background: var(--tienda-superficie);
+  margin-bottom: 12px;
+}
+
+.tarjeta-direccion-info {
+  display: flex; flex-direction: column; gap: 3px;
+  font-size: 13px; color: var(--tienda-tinta);
+  span { color: var(--tienda-tinta-suave); font-size: 12px; }
+  .referencia { font-style: italic; }
+}
+
+.etiqueta-predeterminada {
+  align-self: flex-start;
+  background: var(--tienda-verde-100);
+  color: var(--tienda-verde-700) !important;
+  font-size: 10px !important;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 999px;
+  margin-bottom: 4px;
+}
+
+.tarjeta-direccion-acciones {
+  display: flex; gap: 8px;
+  button {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    border: 1px solid var(--tienda-borde);
+    background: var(--tienda-papel);
+    color: var(--tienda-tinta-suave);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s ease, color 0.15s ease;
+    &:hover { background: var(--tienda-verde-100); color: var(--tienda-verde-700); }
+  }
+}
+
+.enlace-agregar {
+  color: #0d0d0e; 
+  font-weight: bold; 
+  cursor: pointer;
+}
+
+.titulo-formulario {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--tienda-verde-900);
+  margin: 0;
+}
+
+.boton-ubicacion {
+  align-self: flex-start;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--tienda-verde-700);
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+
+  &:hover:not(:disabled) { text-decoration: underline; }
+  &:disabled { opacity: 0.7; cursor: not-allowed; }
+}
+
+.mapa-envoltorio {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mapa-contenedor {
+  height: 220px;
+  width: 100%;
+  border-radius: 14px;
+  border: 1px solid var(--tienda-borde);
+  overflow: hidden;
+  z-index: 0; 
+}
+
+.mapa-ayuda {
+  font-size: 11px;
+  color: var(--tienda-tinta-suave);
+  margin: 0;
+}
+
+

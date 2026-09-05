@@ -130,16 +130,37 @@
     <div class="buscador-overlay" *ngIf="panelAbierto" (click)="cerrarPanel()"></div>
 
     <div class="bloque-derecho">
-      <nav class="nav-tienda">
-        <a routerLink="/mi-pedido" routerLinkActive="activo" class="enlace-usuario">
-          <span class="pi pi-box icono-accion"></span>
-          <span class="texto-accion">Mis pedidos</span>
-        </a>
-        <a routerLink="/login" routerLinkActive="activo" class="enlace-usuario">
-          <span class="pi pi-user icono-accion"></span>
-          <span class="texto-accion">Mi cuenta</span>
-        </a>
-      </nav>
+ <nav class="nav-tienda">
+  <a routerLink="/mi-pedido" routerLinkActive="activo" class="enlace-usuario">
+    <span class="pi pi-box icono-accion"></span>
+    <span class="texto-accion">Mis pedidos</span>
+  </a>
+
+  <a *ngIf="!clienteAuth.cliente()" routerLink="/login" routerLinkActive="activo" class="enlace-usuario">
+    <span class="pi pi-user icono-accion"></span>
+    <span class="texto-accion">Mi cuenta</span>
+  </a>
+
+  <div *ngIf="clienteAuth.cliente()" class="menu-cuenta" id="menu-cuenta-contenedor">
+<button type="button" class="enlace-usuario boton-cuenta" [class.activo]="menuCuentaAbierto" (click)="alternarMenuCuenta()">
+  <span class="avatar-iniciales">{{ inicialesCliente }}</span>
+  <span class="texto-accion">Hola, {{ primerNombre }}</span>
+  <span class="pi pi-chevron-down flecha-cuenta" [class.girada]="menuCuentaAbierto"></span>
+</button>
+
+    <div class="dropdown-cuenta" *ngIf="menuCuentaAbierto">
+      <a routerLink="/mi-cuenta" class="dropdown-item" (click)="cerrarMenuCuenta()">
+        <span class="pi pi-user"></span> Mi cuenta
+      </a>
+      <a routerLink="/mis-direcciones" class="dropdown-item" (click)="cerrarMenuCuenta()">
+        <span class="pi pi-map-marker"></span> Mis direcciones
+      </a>
+      <button type="button" class="dropdown-item dropdown-item-salir" (click)="cerrarSesion()">
+        <span class="pi pi-sign-out"></span> Cerrar sesión
+      </button>
+    </div>
+  </div>
+</nav>
 
       <div class="carrito-contenedor">
         <button class="enlace-carrito" [class.activo]="carrito.abierto()" title="Carrito" (click)="alPresionarCarrito()">

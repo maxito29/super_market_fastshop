@@ -45,4 +45,18 @@ export class ClienteAuthService {
       return null;
     }
   }
+
+  loginConGoogle(idToken: string): Observable<ClienteLoginResponse> {
+  return this.http.post<ClienteLoginResponse>(`${API_URL}/cliente/login-google`, { idToken }).pipe(
+    tap(respuesta => this.guardarSesion(respuesta))
+  );
+}
+
+actualizarNombreLocal(nombreRazonSocial: string, numeroDocumento: string | null): void {
+  const actual = this.clienteSignal();
+  if (!actual) return;
+  const actualizado = { ...actual, nombreRazonSocial, numeroDocumento: numeroDocumento ?? actual.numeroDocumento };
+  this.clienteSignal.set(actualizado);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(actualizado));
+}
 }

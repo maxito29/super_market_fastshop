@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, ElementRef, Input, OnDestroy, ViewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Producto } from '../../core/models/catalogo.models';
+import { CarritoService } from '../../core/services/carrito.service';
 
 @Component({
   selector: 'app-vitrina-productos',
@@ -25,6 +26,8 @@ export class VitrinaProductosComponent implements AfterViewInit, OnDestroy {
   totalPaginas = 1;
 
   private resizeObserver?: ResizeObserver;
+
+  constructor(private carrito: CarritoService) {}
 
   ngAfterViewInit(): void {
     // Espera a que el *ngFor termine de pintar las tarjetas antes de medir
@@ -66,6 +69,33 @@ export class VitrinaProductosComponent implements AfterViewInit, OnDestroy {
     pista.scrollTo({ left: pista.clientWidth * pagina, behavior: 'smooth' });
   }
 
+  etiquetaStock(producto: Producto): string {
+    if (producto.stock <= 0) return 'Agotado';
+    if (producto.stock <= 5) return `¡Últimas ${producto.stock} unidades!`;
+    if (producto.stock > 10) return '10+ unidades disponibles';
+    return `${producto.stock} unidades disponibles`;
+  }
+
+  agregarAlCarrito(producto: Producto, evento: MouseEvent): void {
+    evento.preventDefault();
+    evento.stopPropagation();
+
+    if (producto.stock <= 0) return;
+
+    this.carrito.agregar({
+      productoId: producto.id,
+      nombre: producto.nombre,
+      imagenUrl: producto.imagenUrl,
+      cantidad: 1,
+      precioUnitario: producto.precio,
+      ofertaProductoId: null,
+      proveedorNombre: null,
+      stockDisponible: producto.stock
+    });
+
+    this.carrito.abrir(); // quita esta línea si no quieres que se abra el mini-carrito al agregar
+  }
+
   private actualizarEstadoScroll(): void {
     const pista = this.pistaRef?.nativeElement;
     if (!pista) return;
@@ -78,10 +108,4 @@ export class VitrinaProductosComponent implements AfterViewInit, OnDestroy {
     this.totalPaginas = ancho > 0 ? Math.max(1, Math.round(pista.scrollWidth / ancho)) : 1;
     this.paginaActual = ancho > 0 ? Math.round(pista.scrollLeft / ancho) : 0;
   }
-
-  agregarAlCarrito(producto: Producto, evento: MouseEvent): void {
-  evento.preventDefault();
-  evento.stopPropagation();
-  // tu lógica de carrito aquí
-}
 }

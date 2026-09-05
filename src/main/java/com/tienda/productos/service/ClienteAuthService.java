@@ -12,6 +12,16 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.gson.GsonFactory;
+import com.tienda.productos.dto.ClienteGoogleLoginRequest;
+import org.springframework.beans.factory.annotation.Value;
+import java.security.GeneralSecurityException;
+import java.io.IOException;
+import java.util.Collections;
+
 
 @Service
 @RequiredArgsConstructor
@@ -62,5 +72,48 @@ public class ClienteAuthService {
 
         String token = jwtService.generarToken(cliente);
         return new ClienteLoginResponse(token, cliente.getNumeroDocumento(), cliente.getNombreRazonSocial(), cliente.getEmail());
+    }
+
+    @Value("${google.client-id}")
+    private String googleClientId;
+
+    public ClienteLoginResponse loginConGoogle(ClienteGoogleLoginRequest request) {
+        GoogleIdToken.Payload payload = verificarTokenGoogle(request.getIdToken());
+
+        String googleId = payload.getSubject();
+        String email = payload.getEmail();
+        String nombre = (String) payload.get("name");
+
+        Cliente cliente = clienteRepository.findByGoogleId(googleId)
+                .or(() -> clienteRepository.findByEmail(email))
+                .orElseGet(Cliente::new);
+
+        cliente.setGoogleId(googleId);
+        cliente.setEmail(email);
+        if (cliente.getNombreRazonSocial() == null) {
+            cliente.setNombreRazonSocial(nombre != null ? nombre : email);
+        }
+
+        Cliente guardado = clienteRepository.save(cliente);
+        String token = jwtService.generarToken(guardado);
+
+        return new ClienteLoginResponse(token, guardado.getNumeroDocumento(), guardado.getNombreRazonSocial(), guardado.getEmail());
+    }
+
+    private GoogleIdToken.Payload verificarTokenGoogle(String idTokenString) {
+        try {
+            GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(
+                    new NetHttpTransport(), GsonFactory.getDefaultInstance())
+                    .setAudience(Collections.singletonList(googleClientId))
+                    .build();
+
+            GoogleIdToken idToken = verifier.verify(idTokenString);
+            if (idToken == null) {
+                throw new BadCredentialsException("Token de Google inválido");
+            }
+            return idToken.getPayload();
+        } catch (GeneralSecurityException | IOException e) {
+            throw new BadCredentialsException("No se pudo verificar el token de Google");
+        }
     }
 }

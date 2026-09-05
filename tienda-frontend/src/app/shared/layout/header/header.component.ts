@@ -9,6 +9,7 @@ import { MenuLateralService } from '../../../core/services/menu-lateral.service'
 import { CatalogoFiltroService } from '../../../core/services/catalogo-filtro.service';
 import { CatalogoService } from '../../../core/services/catalogo.service';
 import { Producto } from '../../../core/models/catalogo.models';
+import { ClienteAuthService } from '../../../core/services/cliente-auth.service';
 
 // Importaciones de PrimeNG 17
 import { IconFieldModule } from 'primeng/iconfield';
@@ -36,6 +37,8 @@ const CLAVE_BUSQUEDAS_RECIENTES = 'fastshop_busquedas_recientes';
 })
 export class HeaderComponent implements OnInit, OnDestroy {
 
+  menuCuentaAbierto = false;
+
   textoBusqueda = '';
   panelAbierto = false;
   buscando = false;
@@ -55,8 +58,52 @@ export class HeaderComponent implements OnInit, OnDestroy {
     public menu: MenuLateralService,
     public filtro: CatalogoFiltroService,
     private catalogoService: CatalogoService,
-    private router: Router
+    private router: Router,
+    public clienteAuth: ClienteAuthService
   ) {}
+
+    get primerNombre(): string {
+    const nombre = this.clienteAuth.cliente()?.nombreRazonSocial ?? '';
+    return nombre.trim().split(' ')[0] || 'Cliente';
+  }
+
+get inicialesCliente(): string {
+  const nombre = this.clienteAuth.cliente()?.nombreRazonSocial?.trim() ?? '';
+  if (!nombre) return '?';
+
+  const partes = nombre.split(/\s+/).filter(Boolean);
+  if (partes.length === 0) return '?';
+  if (partes.length === 1) return partes[0][0].toUpperCase();
+
+  const inicialNombre = partes[0][0];
+  const indiceApellido = partes.length >= 3 ? partes.length - 2 : partes.length - 1;
+  const inicialApellido = partes[indiceApellido][0];
+
+  return (inicialNombre + inicialApellido).toUpperCase();
+}
+
+  alternarMenuCuenta(): void {
+    this.menuCuentaAbierto = !this.menuCuentaAbierto;
+  }
+
+  cerrarMenuCuenta(): void {
+    this.menuCuentaAbierto = false;
+  }
+
+  cerrarSesion(): void {
+    this.cerrarMenuCuenta();
+    this.clienteAuth.cerrarSesion();
+    this.router.navigateByUrl('/');
+  }
+
+  @HostListener('document:click', ['$event'])
+  alHacerClicFuera(evento: MouseEvent): void {
+    if (!this.menuCuentaAbierto) return;
+    const contenedor = document.getElementById('menu-cuenta-contenedor');
+    if (contenedor && !contenedor.contains(evento.target as Node)) {
+      this.menuCuentaAbierto = false;
+    }
+  }
 
   ngOnInit(): void {
     this.textoBusqueda = this.filtro.texto();
@@ -279,4 +326,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
     } catch {
     }
   }
+
+  
 }

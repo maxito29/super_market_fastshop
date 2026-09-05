@@ -437,3 +437,26 @@ $curva-suave: cubic-bezier(0.16, 1, 0.3, 1);
     transition: none !important;
   }
 }
+
+.boton-google-envoltorio {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 18px;
+
+  > div { width: 100% !important; }
+}
+
+.separador-o {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 20px;
+  font-size: 11.5px;
+  color: var(--tienda-tinta-suave);
+
+  span {
+    flex: 1;
+    height: 1px;
+    background: var(--tienda-borde);
+  }
+}

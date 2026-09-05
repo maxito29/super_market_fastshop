@@ -6,7 +6,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
 }
 
 .vitrina-titulo {
@@ -25,6 +25,7 @@
   font-size: 13px;
   color: var(--tienda-verde-700);
   background: var(--tienda-verde-100);
+  transition: transform 0.25s ease;
 }
 
 .vitrina.acento-tomate .vitrina-icono {
@@ -33,7 +34,9 @@
 }
 
 .vitrina-titulo h2 {
+  font-family: var(--tienda-fuente-titulo);
   font-size: 18px;
+  font-weight: 700;
   color: var(--tienda-verde-900);
 }
 
@@ -46,22 +49,19 @@
   color: var(--tienda-verde-700);
   text-decoration: none;
   transition: gap 0.2s ease;
+
+  .pi {
+    font-size: 10px;
+    transition: transform 0.2s ease;
+  }
+
+  &:hover {
+    gap: 9px;
+    .pi { transform: translateX(2px); }
+  }
 }
 
-.vitrina-vertodo .pi {
-  font-size: 10px;
-  transition: transform 0.2s ease;
-}
-
-.vitrina-vertodo:hover {
-  gap: 9px;
-}
-
-.vitrina-vertodo:hover .pi {
-  transform: translateX(2px);
-}
-
-/* Fila con scroll horizontal, igual criterio de fade que el marquee */
+/* ---------- Carrusel: ahora vive DENTRO de .contenedor (ver HTML) ---------- */
 .vitrina-carrusel {
   position: relative;
 }
@@ -73,105 +73,248 @@
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
   scroll-behavior: smooth;
-}
+  transition: mask-image 0.2s ease, -webkit-mask-image 0.2s ease;
 
-.vitrina-scroll::-webkit-scrollbar {
-  display: none;
+  &::-webkit-scrollbar { display: none; }
+
+  /* Difuminado en los bordes: solo aparece cuando hay más contenido para ese lado */
+  &.tiene-fade-izq.tiene-fade-der {
+    mask-image: linear-gradient(to right, transparent 0, #000 32px, #000 calc(100% - 32px), transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 32px, #000 calc(100% - 32px), transparent 100%);
+  }
+  &.tiene-fade-izq:not(.tiene-fade-der) {
+    mask-image: linear-gradient(to right, transparent 0, #000 32px, #000 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 32px, #000 100%);
+  }
+  &.tiene-fade-der:not(.tiene-fade-izq) {
+    mask-image: linear-gradient(to right, #000 0, #000 calc(100% - 32px), transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, #000 0, #000 calc(100% - 32px), transparent 100%);
+  }
 }
 
 .vitrina-pista {
   display: flex;
-  gap: 16px;
-  padding-bottom: 6px;
+  gap: 18px;
+  padding: 4px 4px 10px;
 }
 
+/* ---------- Tarjeta ---------- */
 .vitrina-tarjeta {
+  position: relative;
   flex: 0 0 auto;
-  width: 168px;
+  width: 190px;
   scroll-snap-align: start;
   display: flex;
   flex-direction: column;
-  text-decoration: none;
-  color: inherit;
   border: 1px solid var(--tienda-borde);
-  border-radius: 16px;
+  border-radius: var(--tienda-radio-lg);
   background: var(--tienda-superficie);
   overflow: hidden;
-  transition: box-shadow 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
+  transition: box-shadow 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+              border-color 0.3s ease;
   opacity: 0;
   transform: translateY(10px);
   animation: apareceVitrina 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+
+  /* anillo de brillo suave que aparece con el hover */
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: 0 0 0 0 rgba(46, 139, 99, 0);
+    transition: box-shadow 0.3s ease;
+    pointer-events: none;
+  }
+
+  &:hover {
+    box-shadow: 0 22px 36px -18px rgba(22, 60, 44, 0.42);
+    transform: translateY(-6px);
+    border-color: var(--tienda-verde-500);
+
+    &::after {
+      box-shadow: 0 0 0 3px rgba(46, 139, 99, 0.15);
+    }
+  }
+
+  &.agotado {
+    .vitrina-imagen img { filter: grayscale(0.6) opacity(0.6); }
+    &:hover {
+      transform: none;
+      box-shadow: none;
+      border-color: var(--tienda-borde);
+      &::after { box-shadow: none; }
+    }
+  }
 }
 
 @keyframes apareceVitrina {
   to { opacity: 1; transform: translateY(0); }
 }
 
-.vitrina-tarjeta:hover {
-  box-shadow: 0 16px 30px -16px rgba(22, 60, 44, 0.35);
-  transform: translateY(-4px);
-  border-color: var(--tienda-verde-500);
+.vitrina-tarjeta-link {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+  flex: 1;
 }
 
+/* ---------- Imagen + badge de categoría ---------- */
 .vitrina-imagen {
-  height: 128px;
-  padding: 14px;
+  position: relative;
+  height: 140px;
+  padding: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: radial-gradient(120% 100% at 50% 15%, #fdfdfb 0%, var(--tienda-verde-100) 100%);
+  overflow: hidden;
+
+  img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 8px 10px rgba(22, 60, 44, 0.14));
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  &.sin-imagen .pi {
+    font-size: 32px;
+    color: var(--tienda-verde-500);
+  }
 }
 
-.vitrina-imagen img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-  filter: drop-shadow(0 8px 10px rgba(22, 60, 44, 0.14));
-  transition: transform 0.3s ease;
+.vitrina-tarjeta:not(.agotado):hover .vitrina-imagen img {
+  transform: scale(1.09) rotate(-1.5deg);
 }
 
-.vitrina-tarjeta:hover .vitrina-imagen img {
-  transform: scale(1.06);
+.vitrina-categoria {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 1;
+  background: rgba(22, 60, 44, 0.85);
+  backdrop-filter: blur(2px);
+  color: #fff;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 4px 8px;
+  border-radius: 7px;
+  transition: transform 0.25s ease;
 }
 
-.vitrina-imagen.sin-imagen .pi {
-  font-size: 30px;
-  color: var(--tienda-verde-500);
+.vitrina-tarjeta:hover .vitrina-categoria {
+  transform: translateY(-1px);
+}
+
+.vitrina.acento-tomate .vitrina-categoria {
+  background: rgba(214, 71, 44, 0.9);
+}
+
+/* ---------- Info ---------- */
+.vitrina-info {
+  padding: 12px 14px 4px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 .vitrina-nombre {
-  padding: 10px 12px 0;
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 600;
+  line-height: 1.35;
   color: var(--tienda-tinta);
-  margin: 0;
+  margin: 0 0 6px;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  min-height: 32px;
+  min-height: 35px;
+}
+
+.vitrina-stock {
+  font-size: 10.5px;
+  color: var(--tienda-tinta-suave);
+  margin-bottom: 10px;
+}
+
+.vitrina-stock-baja {
+  color: var(--tienda-tomate-600);
+  font-weight: 700;
+}
+
+.vitrina-stock-agotado {
+  color: var(--tienda-tinta-suave);
+  font-weight: 600;
 }
 
 .vitrina-precio {
-  margin: 8px 12px 12px;
   align-self: flex-start;
-  font-size: 12px;
-  padding: 4px 10px 4px 13px;
+  font-size: 13px;
+  transition: transform 0.25s ease;
+}
+
+.vitrina-tarjeta:not(.agotado):hover .vitrina-precio {
+  transform: scale(1.04);
+}
+
+/* ---------- Botón Agregar ---------- */
+.vitrina-boton-agregar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  margin: 10px 14px 14px;
+  padding: 9px 0;
+  border: none;
+  border-radius: 999px;
+  background: var(--tienda-verde-700);
+  color: #fff;
+  font-family: var(--tienda-fuente-texto);
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+  box-shadow: 0 8px 16px -8px rgba(22, 60, 44, 0.5);
+
+  .pi { font-size: 11px; transition: transform 0.2s ease; }
+
+  &:hover:not(:disabled) {
+    background: var(--tienda-verde-900);
+    transform: translateY(-2px);
+    .pi { transform: scale(1.15); }
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0) scale(0.96);
+  }
+
+  &:disabled {
+    background: var(--tienda-borde);
+    color: var(--tienda-tinta-suave);
+    cursor: not-allowed;
+    box-shadow: none;
+  }
 }
 
 @media (max-width: 720px) {
-  .vitrina-tarjeta { width: 140px; }
-  .vitrina-imagen { height: 108px; }
+  .vitrina-tarjeta { width: 150px; }
+  .vitrina-imagen { height: 112px; }
+  .vitrina-flecha { display: none; }
 }
 
-/* ---------- Flechas de navegación (fondo blanco, a diferencia del hero) ---------- */
+/* ---------- Flechas de navegación ---------- */
 .vitrina-flecha {
   position: absolute;
-  top: 40%;
+  top: 45%;
   transform: translateY(-50%);
   z-index: 2;
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   border: 1px solid var(--tienda-borde);
   background: var(--tienda-superficie);
@@ -180,40 +323,36 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8px 18px -8px rgba(22, 60, 44, 0.3);
-  transition: background 0.15s ease, transform 0.15s ease, box-shadow 0.2s ease;
+  box-shadow: 0 10px 22px -10px rgba(22, 60, 44, 0.35);
+  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
   opacity: 0;
   animation: apareceFlecha 0.3s ease forwards;
+
+  &:hover {
+    background: var(--tienda-verde-700);
+    color: #fff;
+    transform: translateY(-50%) scale(1.12);
+    box-shadow: 0 14px 26px -12px rgba(22, 60, 44, 0.5);
+  }
+
+  &:active {
+    transform: translateY(-50%) scale(0.92);
+  }
 }
 
 @keyframes apareceFlecha {
   to { opacity: 1; }
 }
 
-.vitrina-flecha:hover {
-  background: var(--tienda-verde-700);
-  color: #fff;
-  transform: translateY(-50%) scale(1.08);
-  box-shadow: 0 12px 22px -10px rgba(22, 60, 44, 0.45);
-}
-
-.vitrina-flecha:active {
-  transform: translateY(-50%) scale(0.94);
-}
-
-.vitrina-flecha-izq { left: -16px; }
-.vitrina-flecha-der { right: -16px; }
-
-@media (max-width: 720px) {
-  .vitrina-flecha { display: none; }
-}
+.vitrina-flecha-izq { left: -18px; }
+.vitrina-flecha-der { right: -18px; }
 
 /* ---------- Puntos de paginación ---------- */
 .vitrina-puntos {
   display: flex;
   justify-content: center;
   gap: 7px;
-  margin-top: 14px;
+  margin-top: 16px;
 }
 
 .vitrina-punto {
@@ -225,13 +364,11 @@
   cursor: pointer;
   padding: 0;
   transition: width 0.25s ease, background 0.2s ease;
-}
 
-.vitrina-punto:hover {
-  background: var(--tienda-verde-500);
-}
+  &:hover { background: var(--tienda-verde-500); }
 
-.vitrina-punto.activo {
-  width: 20px;
-  background: var(--tienda-verde-700);
+  &.activo {
+    width: 22px;
+    background: var(--tienda-verde-700);
+  }
 }
