@@ -1,8 +1,17 @@
-main {
-  display: block;
-  min-height: calc(100vh - 68px);
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
+main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
 
-
-
+main > router-outlet ~ * {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}

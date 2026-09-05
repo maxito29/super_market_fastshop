@@ -59,4 +59,12 @@ actualizarNombreLocal(nombreRazonSocial: string, numeroDocumento: string | null)
   this.clienteSignal.set(actualizado);
   localStorage.setItem(STORAGE_KEY, JSON.stringify(actualizado));
 }
+
+olvidePassword(email: string): Observable<{ mensaje: string }> {
+  return this.http.post<{ mensaje: string }>(`${API_URL}/cliente/olvide-password`, { email });
+}
+
+restablecerPassword(token: string, nuevaPassword: string): Observable<{ mensaje: string }> {
+  return this.http.post<{ mensaje: string }>(`${API_URL}/cliente/restablecer-password`, { token, nuevaPassword });
+}
 }

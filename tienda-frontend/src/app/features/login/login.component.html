@@ -2,9 +2,15 @@
 
   <!-- ============ Panel de marca ============ -->
   <aside class="panel-marca">
-    <div class="panel-marca-decoracion" aria-hidden="true">
-      <span class="circulo circulo-1"></span>
-      <span class="circulo circulo-2"></span>
+    <div class="iconos-flotantes" aria-hidden="true">
+      <span class="pi pi-apple icono-flotante icono-flotante-1"></span>
+      <span class="pi pi-shopping-bag icono-flotante icono-flotante-2"></span>
+      <span class="pi pi-heart-fill icono-flotante icono-flotante-3"></span>
+      <span class="pi pi-percentage icono-flotante icono-flotante-4"></span>
+    </div>
+
+    <div class="sello-calidad" aria-hidden="true">
+      <span>Fresco garantizado</span>
     </div>
 
     <div class="panel-marca-contenido">
@@ -29,114 +35,330 @@
   <div class="panel-formulario">
     <div class="formulario-envoltorio">
 
-      <div class="cabecera-form">
-        <h2>{{ modo === 'login' ? '¡Qué bueno verte de nuevo!' : 'Crea tu cuenta' }}</h2>
-        <p>{{ modo === 'login' ? 'Ingresa tus datos para continuar con tu pedido.' : 'Únete y empieza a ahorrar fresco.' }}</p>
-      </div>
+      <!-- ======== Login / Registro ======== -->
+      <ng-container *ngIf="modo === 'login' || modo === 'registro'">
+        <div class="cabecera-form">
+          <h2>{{ modo === 'login' ? '¡Qué bueno verte de nuevo!' : 'Crea tu cuenta' }}</h2>
+          <p>{{ modo === 'login' ? 'Ingresa tus datos para continuar con tu pedido.' : 'Únete y empieza a ahorrar fresco.' }}</p>
+        </div>
 
-      <!-- Tabs -->
-      <div class="tabs-modernas">
-        <button type="button" class="tab-btn" [class.tab-activo]="modo === 'login'" (click)="cambiarModo('login')">
-          Ingresar
-        </button>
-        <button type="button" class="tab-btn" [class.tab-activo]="modo === 'registro'" (click)="cambiarModo('registro')">
-          Crear cuenta
-        </button>
-        <span class="tab-indicador" [class.derecha]="modo === 'registro'"></span>
-      </div>
+        <div class="tabs-modernas">
+          <button type="button" class="tab-btn" [class.tab-activo]="modo === 'login'" (click)="cambiarModo('login')">
+            Ingresar
+          </button>
+          <button type="button" class="tab-btn" [class.tab-activo]="modo === 'registro'" (click)="cambiarModo('registro')">
+            Crear cuenta
+          </button>
+          <span class="tab-indicador" [class.derecha]="modo === 'registro'"></span>
+        </div>
 
-      <form (ngSubmit)="enviar()" class="formulario-auth">
+        <form (ngSubmit)="enviar()" class="formulario-auth">
 
-        <div class="fila-campos-grid">
           <div class="campo-contenedor">
-            <label class="etiqueta-formulario" for="tipoDocumento">Tipo de documento</label>
-            <select id="tipoDocumento" class="select-nativo-premium" [(ngModel)]="form.tipoDocumento" name="tipoDocumento">
-              <option *ngFor="let t of tiposDocumento" [value]="t.value">{{ t.label }}</option>
-            </select>
+            <label class="etiqueta-formulario">Tipo de documento</label>
+            <div class="segmentado-documento">
+              <span class="segmento-indicador" [style.transform]="'translateX(' + (indiceTipoDocumento() * 100) + '%)'"></span>
+              <button
+                *ngFor="let t of tiposDocumento"
+                type="button"
+                class="segmento-btn"
+                [class.segmento-activo]="form.tipoDocumento === t.value"
+                (click)="cambiarTipoDocumento(t.value)">
+                {{ t.label }}
+              </button>
+            </div>
           </div>
 
           <div class="campo-contenedor">
             <label class="etiqueta-formulario" for="numeroDocumento">Número de documento</label>
-            <input
-              id="numeroDocumento"
-              type="text"
-              [(ngModel)]="form.numeroDocumento"
-              name="numeroDocumento"
-              placeholder="00000000"
-              class="input-nativo-premium" />
-          </div>
-        </div>
-
-        <div *ngIf="modo === 'registro'" class="bloque-registro-animado">
-          <div class="campo-contenedor animacion-fade">
-            <label class="etiqueta-formulario" for="nombreRazonSocial">Nombre completo / Razón social</label>
-            <input
-              id="nombreRazonSocial"
-              type="text"
-              [(ngModel)]="form.nombreRazonSocial"
-              name="nombreRazonSocial"
-              placeholder="Ej. Juan Pérez"
-              class="input-nativo-premium" />
-          </div>
-
-          <div class="fila-campos-grid animacion-fade">
-            <div class="campo-contenedor">
-              <label class="etiqueta-formulario" for="telefono">Teléfono</label>
-              <input
-                id="telefono"
-                type="tel"
-                [(ngModel)]="form.telefono"
-                name="telefono"
-                placeholder="999888777"
-                class="input-nativo-premium" />
+            <div class="input-icono-envoltorio">
+              <span class="icono-campo pi pi-id-card" aria-hidden="true"></span>
+<input
+  id="numeroDocumento"
+  type="text"
+  [(ngModel)]="form.numeroDocumento"
+  name="numeroDocumento"
+  [attr.maxlength]="maxLongitudDocumento()"
+  [attr.inputmode]="tipoRequiereNumeros() ? 'numeric' : 'text'"
+  (input)="sanitizarNumeroDocumento($event)"
+  (blur)="documentoTocado = true"
+  placeholder="{{ placeholderDocumento() }}"
+  class="input-nativo-premium input-con-icono"
+  [class.input-invalido]="(documentoTocado && !documentoValido()) || (modo === 'login' && credencialesInvalidas)" />
             </div>
-            <div class="campo-contenedor">
-              <label class="etiqueta-formulario" for="email">Correo electrónico</label>
-              <input
-                id="email"
-                type="email"
-                [(ngModel)]="form.email"
-                name="email"
-                placeholder="ejemplo@correo.com"
-                class="input-nativo-premium" />
+            <span *ngIf="documentoTocado && errorNumeroDocumento() as msj" class="texto-error">{{ msj }}</span>
+          </div>
+
+          <div *ngIf="modo === 'registro'" class="bloque-registro-animado">
+            <div class="campo-contenedor animacion-fade">
+              <label class="etiqueta-formulario" for="nombreRazonSocial">Nombre completo / Razón social</label>
+              <div class="input-icono-envoltorio">
+                <span class="icono-campo pi pi-user" aria-hidden="true"></span>
+                <input
+                  id="nombreRazonSocial"
+                  type="text"
+                  [(ngModel)]="form.nombreRazonSocial"
+                  name="nombreRazonSocial"
+                  placeholder="Ej. Juan Pérez"
+                  class="input-nativo-premium input-con-icono" />
+              </div>
+            </div>
+
+            <div class="fila-campos-grid animacion-fade">
+              <div class="campo-contenedor">
+                <label class="etiqueta-formulario" for="telefono">Teléfono</label>
+                <div class="input-icono-envoltorio">
+                  <span class="icono-campo pi pi-phone" aria-hidden="true"></span>
+                  <input
+                    id="telefono"
+                    type="tel"
+                    [(ngModel)]="form.telefono"
+                    name="telefono"
+                    maxlength="9"
+                    placeholder="999888777"
+                    class="input-nativo-premium input-con-icono" />
+                </div>
+              </div>
+              <div class="campo-contenedor">
+                <label class="etiqueta-formulario" for="email">Correo electrónico</label>
+                <div class="input-icono-envoltorio">
+                  <span class="icono-campo pi pi-envelope" aria-hidden="true"></span>
+                  <input
+                    id="email"
+                    type="email"
+                    [(ngModel)]="form.email"
+                    name="email"
+                    (blur)="emailTocado = true"
+                    placeholder="ejemplo@correo.com"
+                    class="input-nativo-premium input-con-icono"
+                    [class.input-invalido]="emailTocado && !emailValido()" />
+                </div>
+                <span *ngIf="emailTocado && !emailValido()" class="texto-error">Correo inválido</span>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div class="campo-contenedor">
-          <label class="etiqueta-formulario" for="password">Contraseña</label>
-          <div class="password-envoltorio">
-            <input
-              id="password"
-              [type]="mostrarPassword ? 'text' : 'password'"
-              [(ngModel)]="form.password"
-              name="password"
-              placeholder="••••••••"
-              class="input-nativo-premium" />
-            <button type="button" class="password-toggle" (click)="alternarPassword()" [attr.aria-label]="mostrarPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'">
-              <span class="pi" [class.pi-eye]="!mostrarPassword" [class.pi-eye-slash]="mostrarPassword"></span>
+          <div class="campo-contenedor">
+            <label class="etiqueta-formulario" for="password">Contraseña</label>
+            <div class="password-envoltorio">
+              <span class="icono-campo pi pi-lock" aria-hidden="true"></span>
+<input
+  id="password"
+  [type]="mostrarPassword ? 'text' : 'password'"
+  [(ngModel)]="form.password"
+  name="password"
+  (input)="limpiarErrorCredenciales()"
+  placeholder="••••••••"
+  class="input-nativo-premium input-con-icono"
+  [class.input-invalido]="modo === 'login' && credencialesInvalidas" />
+              <button type="button" class="password-toggle" (click)="alternarPassword()" [attr.aria-label]="mostrarPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'">
+                <span class="pi" [class.pi-eye]="!mostrarPassword" [class.pi-eye-slash]="mostrarPassword"></span>
+              </button>
+            </div>
+
+            <span *ngIf="modo === 'login' && credencialesInvalidas" class="texto-error">{{ mensajeErrorCredenciales }}</span>
+
+            <div *ngIf="modo === 'registro' && form.password" class="medidor-fuerza">
+              <div class="barras-fuerza">
+                <span *ngFor="let i of [0,1,2,3]" [class.activa]="fuerzaPassword() > i" [ngClass]="'nivel-' + fuerzaPassword()"></span>
+              </div>
+              <span class="etiqueta-fuerza" [ngClass]="'nivel-' + fuerzaPassword()">{{ etiquetaFuerza() }}</span>
+            </div>
+          </div>
+
+          <div *ngIf="modo === 'registro'" class="campo-contenedor animacion-fade">
+            <label class="etiqueta-formulario" for="confirmarPasswordRegistro">Confirmar contraseña</label>
+            <div class="password-envoltorio">
+              <span class="icono-campo pi pi-lock" aria-hidden="true"></span>
+              <input
+                id="confirmarPasswordRegistro"
+                [type]="mostrarConfirmarPasswordRegistro ? 'text' : 'password'"
+                [(ngModel)]="form.confirmarPassword"
+                name="confirmarPasswordRegistro"
+                placeholder="Repite tu contraseña"
+                class="input-nativo-premium input-con-icono"
+                [class.input-invalido]="form.confirmarPassword && !confirmarPasswordValido()" />
+              <button type="button" class="password-toggle" (click)="mostrarConfirmarPasswordRegistro = !mostrarConfirmarPasswordRegistro">
+                <span class="pi" [class.pi-eye]="!mostrarConfirmarPasswordRegistro" [class.pi-eye-slash]="mostrarConfirmarPasswordRegistro"></span>
+              </button>
+            </div>
+            <span *ngIf="form.confirmarPassword && !confirmarPasswordValido()" class="texto-error">Las contraseñas no coinciden</span>
+          </div>
+          
+
+          <div class="fila-opciones-login" *ngIf="modo === 'login'">
+            <label class="fila-recordarme">
+              <input type="checkbox" [(ngModel)]="recordarme" name="recordarme" class="checkbox-nativo" />
+              <span>Recordarme</span>
+            </label>
+            <button type="button" class="enlace-olvide" (click)="irAOlvidePassword()">
+              ¿Olvidaste tu contraseña?
             </button>
           </div>
+
+          <label *ngIf="modo === 'registro'" class="fila-terminos animacion-fade">
+            <input type="checkbox" [(ngModel)]="form.aceptaTerminos" name="aceptaTerminos" class="checkbox-nativo" />
+            <span>Acepto los <a href="/terminos" target="_blank" rel="noopener">términos y condiciones</a> y la <a href="/privacidad" target="_blank" rel="noopener">política de privacidad</a></span>
+          </label>
+
+          <button
+            type="submit"
+            class="boton-submit-premium"
+            [class.boton-exito]="enviadoExitoso"
+            [disabled]="enviando || enviadoExitoso || !formularioValido()">
+            <span class="pi pi-spin pi-spinner" *ngIf="enviando"></span>
+            <span class="pi pi-check icono-exito" *ngIf="enviadoExitoso"></span>
+            <span *ngIf="!enviando && !enviadoExitoso">{{ modo === 'login' ? 'Iniciar Sesión' : 'Registrarme ahora' }}</span>
+          </button>
+        </form>
+
+        <br>
+
+        <div class="separador-o">
+          <span></span>
+          Iniciar con
+          <span></span>
         </div>
 
-        <button type="submit" class="boton-submit-premium" [disabled]="enviando">
-          <span class="pi pi-spin pi-spinner" *ngIf="enviando"></span>
-          {{ modo === 'login' ? 'Ingresar a mi cuenta' : 'Registrarme ahora' }}
+        <div id="boton-google" class="boton-google-envoltorio"></div>
+
+        <a routerLink="/" class="volver-catalogo">
+          <span class="pi pi-arrow-left"></span>
+          Volver al catálogo
+        </a>
+
+        <div class="fila-confianza">
+          <span><span class="pi pi-shield"></span> Compra 100% segura</span>
+          <span><span class="pi pi-verified"></span> Datos protegidos</span>
+        </div>
+      </ng-container>
+
+      <!-- ======== Olvidé mi contraseña: paso 1 (pedir correo) ======== -->
+      <ng-container *ngIf="modo === 'olvide'">
+        <div class="icono-recuperacion">
+          <span class="pi pi-envelope"></span>
+        </div>
+
+        <div class="cabecera-form cabecera-centrada">
+          <h2>Recupera tu contraseña</h2>
+          <p>Ingresa el correo de tu cuenta y te enviaremos un código de 6 caracteres.</p>
+        </div>
+
+        <form (ngSubmit)="enviarCodigoRecuperacion()" class="formulario-auth">
+          <div class="campo-contenedor">
+            <label class="etiqueta-formulario" for="emailRecuperacion">Correo electrónico</label>
+            <div class="input-icono-envoltorio">
+              <span class="icono-campo pi pi-envelope" aria-hidden="true"></span>
+              <input
+                id="emailRecuperacion"
+                type="email"
+                [(ngModel)]="formRecuperacion.email"
+                name="emailRecuperacion"
+                placeholder="ejemplo@correo.com"
+                class="input-nativo-premium input-con-icono"
+                required />
+            </div>
+          </div>
+
+          <button type="submit" class="boton-submit-premium" [disabled]="enviandoRecuperacion || !formRecuperacion.email.trim()">
+            <span class="pi pi-spin pi-spinner" *ngIf="enviandoRecuperacion"></span>
+            Enviar código
+          </button>
+        </form>
+
+        <button type="button" class="volver-login" (click)="volverALogin()">
+          <span class="pi pi-arrow-left"></span>
+          Volver a ingresar
         </button>
-      </form>
+      </ng-container>
 
-      <div id="boton-google" class="boton-google-envoltorio"></div>
+      <!-- ======== Olvidé mi contraseña: paso 2 (código + nueva contraseña) ======== -->
+      <ng-container *ngIf="modo === 'restablecer'">
+        <div class="icono-recuperacion">
+          <span class="pi pi-key"></span>
+        </div>
 
-<div class="separador-o">
-  <span></span>
-  o continúa con tu documento
-  <span></span>
-</div>
+        <div class="cabecera-form cabecera-centrada">
+          <h2>Ingresa el código</h2>
+          <p>Te enviamos un código a <strong>{{ formRecuperacion.email }}</strong>. Vence en 30 minutos.</p>
+        </div>
 
-      <a routerLink="/" class="volver-catalogo">
-        <span class="pi pi-arrow-left"></span>
-        Volver al catálogo
-      </a>
+        <form (ngSubmit)="confirmarNuevaPassword()" class="formulario-auth">
+          <div class="campo-contenedor">
+            <label class="etiqueta-formulario" for="codigo">Código de 6 caracteres</label>
+            <input
+              id="codigo"
+              type="text"
+              [(ngModel)]="formRecuperacion.codigo"
+              name="codigo"
+              placeholder="A1B2C3"
+              maxlength="6"
+              class="input-nativo-premium input-codigo"
+              required />
+          </div>
+
+          <div class="campo-contenedor">
+            <label class="etiqueta-formulario" for="nuevaPassword">Nueva contraseña</label>
+            <div class="password-envoltorio">
+              <input
+                id="nuevaPassword"
+                [type]="mostrarNuevaPassword ? 'text' : 'password'"
+                [(ngModel)]="formRecuperacion.nuevaPassword"
+                name="nuevaPassword"
+                placeholder="Mínimo 6 caracteres"
+                class="input-nativo-premium" />
+              <button type="button" class="password-toggle" (click)="alternarNuevaPassword()" [attr.aria-label]="mostrarNuevaPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'">
+                <span class="pi" [class.pi-eye]="!mostrarNuevaPassword" [class.pi-eye-slash]="mostrarNuevaPassword"></span>
+              </button>
+            </div>
+
+            <div *ngIf="formRecuperacion.nuevaPassword" class="medidor-fuerza">
+              <div class="barras-fuerza">
+                <span *ngFor="let i of [0,1,2,3]" [class.activa]="fuerzaPasswordRecuperacion() > i" [ngClass]="'nivel-' + fuerzaPasswordRecuperacion()"></span>
+              </div>
+              <span class="etiqueta-fuerza" [ngClass]="'nivel-' + fuerzaPasswordRecuperacion()">{{ etiquetaFuerzaRecuperacion() }}</span>
+            </div>
+          </div>
+
+          <div class="campo-contenedor">
+            <label class="etiqueta-formulario" for="confirmarPassword">Confirmar contraseña</label>
+            <div class="password-envoltorio">
+              <input
+                id="confirmarPassword"
+                [type]="mostrarConfirmarPassword ? 'text' : 'password'"
+                [(ngModel)]="formRecuperacion.confirmarPassword"
+                name="confirmarPassword"
+                placeholder="Repite tu nueva contraseña"
+                class="input-nativo-premium"
+                [class.input-invalido]="formRecuperacion.confirmarPassword && formRecuperacion.confirmarPassword !== formRecuperacion.nuevaPassword" />
+              <button type="button" class="password-toggle" (click)="alternarConfirmarPassword()" [attr.aria-label]="mostrarConfirmarPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'">
+                <span class="pi" [class.pi-eye]="!mostrarConfirmarPassword" [class.pi-eye-slash]="mostrarConfirmarPassword"></span>
+              </button>
+            </div>
+            <span *ngIf="formRecuperacion.confirmarPassword && formRecuperacion.confirmarPassword !== formRecuperacion.nuevaPassword" class="texto-error">Las contraseñas no coinciden</span>
+          </div>
+
+          <button
+            type="submit"
+            class="boton-submit-premium"
+            [class.boton-exito]="enviadoExitoso"
+            [disabled]="enviandoRecuperacion || enviadoExitoso">
+            <span class="pi pi-spin pi-spinner" *ngIf="enviandoRecuperacion"></span>
+            <span class="pi pi-check icono-exito" *ngIf="enviadoExitoso"></span>
+            <span *ngIf="!enviandoRecuperacion && !enviadoExitoso">Cambiar contraseña</span>
+          </button>
+        </form>
+
+        <button type="button" class="enlace-reenviar" [disabled]="segundosParaReenvio > 0" (click)="reenviarCodigo()">
+          {{ segundosParaReenvio > 0 ? '¿No te llegó? Reenviar en ' + segundosParaReenvio + 's' : '¿No te llegó? Reenviar código' }}
+        </button>
+
+        <button type="button" class="volver-login" (click)="volverALogin()">
+          <span class="pi pi-arrow-left"></span>
+          Volver a ingresar
+        </button>
+      </ng-container>
+
     </div>
   </div>
 </section>
