@@ -28,12 +28,22 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  max-width: 100%;
   background: var(--tienda-verde-100);
   color: var(--tienda-verde-900);
   font-weight: 700;
   font-size: 13.5px;
   padding: 8px 8px 8px 16px;
   border-radius: 999px;
+
+}
+
+/* Evita que un término de búsqueda largo desborde en pantallas angostas */
+.filtro-activo-texto {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
 }
 
 .quitar-filtro {
@@ -48,4 +58,28 @@
   color: #fff;
   cursor: pointer;
   font-size: 10px;
+  flex-shrink: 0;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .categoria-detalle-cabecera {
+    padding: 16px 0 20px;
+  }
+
+  .categoria-detalle-descripcion {
+    max-width: 100%;
+    font-size: 13.5px;
+  }
+
+  .filtro-activo {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
+
+@media (max-width: 420px) {
+  .grilla {
+    gap: 14px;
+  }
 }

@@ -3,7 +3,7 @@
   top: 0;
   left: 0;
   height: 100vh;
-  width: 280px;
+  width: min(280px, 85vw);
   background: var(--tienda-superficie);
   border-right: 1px solid var(--tienda-borde);
   box-shadow: 8px 0 24px -12px rgba(22, 60, 44, 0.25);

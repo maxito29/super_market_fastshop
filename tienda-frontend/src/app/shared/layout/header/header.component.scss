@@ -581,10 +581,57 @@
   border: 2px solid var(--tienda-superficie);
 }
 
+/* Botón de lupa que abre el buscador en pantallas ≤900px (ver bloque responsive) */
+.boton-buscar-movil {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: var(--tienda-verde-100);
+  color: var(--tienda-verde-900);
+  font-size: 16px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: var(--tienda-verde-500);
+    color: #fff;
+  }
+}
+
+/* Botón "×" para salir del modo búsqueda móvil (ver bloque responsive) */
+.boton-cerrar-busqueda-movil {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border: none;
+  border-radius: 50%;
+  background: none;
+  color: var(--tienda-tinta-suave);
+  font-size: 15px;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--tienda-verde-100);
+    color: var(--tienda-verde-900);
+  }
+}
+
 /* Responsive */
 @media (max-width: 900px) {
   .bloque-busqueda {
     display: none;
+  }
+
+  .boton-buscar-movil {
+    display: flex;
   }
 
   .texto-accion {
@@ -598,6 +645,36 @@
 
   .marca-nombre {
     font-size: 17px;
+  }
+
+  /* Modo búsqueda móvil: el buscador reemplaza el resto del header
+     en vez de quedarse invisible. Se activa con busquedaMovilAbierta. */
+  .barra.busqueda-movil-activa {
+    .bloque-izquierdo,
+    .bloque-derecho {
+      display: none;
+    }
+
+    .bloque-busqueda {
+      display: block;
+      flex: 1;
+      max-width: none;
+      margin: 0;
+
+      .buscador-form {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+
+        .p-iconfield {
+          flex: 1;
+        }
+      }
+    }
+
+    .boton-cerrar-busqueda-movil {
+      display: flex;
+    }
   }
 }
 

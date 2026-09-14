@@ -1,5 +1,5 @@
 <header class="encabezado">
-  <div class="contenedor barra">
+  <div class="contenedor barra" [class.busqueda-movil-activa]="busquedaMovilAbierta">
     
 <div class="bloque-izquierdo">
   <button
@@ -37,6 +37,7 @@
             (click)="textoBusqueda ? limpiarBusqueda() : null">
           </p-inputIcon>
           <input
+            #inputBusqueda
             type="text"
             pInputText
             name="busquedaProducto"
@@ -48,6 +49,13 @@
             (ngModelChange)="alEscribirBusqueda($event)"
             (focus)="abrirPanel()" />
         </p-iconField>
+        <button
+          type="button"
+          class="boton-cerrar-busqueda-movil"
+          aria-label="Cerrar búsqueda"
+          (click)="cerrarBusquedaMovil()">
+          <span class="pi pi-times"></span>
+        </button>
       </form>
       <div class="panel-busqueda" *ngIf="panelAbierto">
         <div class="panel-vacio" *ngIf="!textoBusqueda.trim()">
@@ -130,6 +138,13 @@
     <div class="buscador-overlay" *ngIf="panelAbierto" (click)="cerrarPanel()"></div>
 
     <div class="bloque-derecho">
+      <button
+        type="button"
+        class="boton-buscar-movil"
+        aria-label="Buscar productos"
+        (click)="abrirBusquedaMovil()">
+        <span class="pi pi-search"></span>
+      </button>
  <nav class="nav-tienda">
   <a routerLink="/mi-pedido" routerLinkActive="activo" class="enlace-usuario">
     <span class="pi pi-box icono-accion"></span>

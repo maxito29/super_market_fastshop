@@ -56,3 +56,18 @@
 .acciones ::ng-deep .p-button {
   width: 100%;
 }
+
+/* Responsive */
+@media (max-width: 480px) {
+  .pagina {
+    padding: 32px 16px;
+  }
+
+  .tarjeta {
+    padding: 32px 22px;
+  }
+
+  .tarjeta h1 {
+    font-size: 21px;
+  }
+}

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { Subject } from 'rxjs';
@@ -37,10 +37,15 @@ const CLAVE_BUSQUEDAS_RECIENTES = 'fastshop_busquedas_recientes';
 })
 export class HeaderComponent implements OnInit, OnDestroy {
 
+  @ViewChild('inputBusqueda') private inputBusqueda?: ElementRef<HTMLInputElement>;
+
   menuCuentaAbierto = false;
 
   textoBusqueda = '';
   panelAbierto = false;
+  // Controla, solo en pantallas ≤900px, si el buscador reemplaza al resto
+  // del header (logo/menú/nav) en vez de quedar oculto.
+  busquedaMovilAbierta = false;
   buscando = false;
   resultados: Producto[] = [];
   totalResultados = 0;
@@ -144,9 +149,20 @@ get inicialesCliente(): string {
 
   cerrarPanel(): void {
     this.panelAbierto = false;
+    this.busquedaMovilAbierta = false;
     this.textoBusqueda = '';
     this.resultados = [];
     this.totalResultados = 0;
+  }
+
+  abrirBusquedaMovil(): void {
+    this.busquedaMovilAbierta = true;
+    this.abrirPanel();
+    setTimeout(() => this.inputBusqueda?.nativeElement.focus());
+  }
+
+  cerrarBusquedaMovil(): void {
+    this.cerrarPanel();
   }
 
   alEscribirBusqueda(texto: string): void {

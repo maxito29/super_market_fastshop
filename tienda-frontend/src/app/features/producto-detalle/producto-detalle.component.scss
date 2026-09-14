@@ -117,6 +117,43 @@
     grid-template-columns: 1fr;
     gap: 24px;
   }
+
+  .producto-detalle-imagen {
+    max-width: 420px;
+    width: 100%;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .producto-detalle {
+    padding: 4px 0 40px;
+  }
+
+  .producto-detalle-precio {
+    font-size: 20px;
+    margin-bottom: 18px;
+  }
+
+  .producto-detalle-acciones {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .stepper {
+    align-self: center;
+  }
+
+  .producto-detalle-boton {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .producto-detalle-proveedores .opcion-info {
+    flex-wrap: wrap;
+    row-gap: 4px;
+  }
 }
 
 /* ---------- Estado de carga (skeleton) ---------- */
@@ -162,5 +199,11 @@
   .detalle-cargando {
     grid-template-columns: 1fr;
     gap: 24px;
+  }
+
+  .skeleton-detalle-imagen {
+    max-width: 420px;
+    width: 100%;
+    margin: 0 auto;
   }
 }

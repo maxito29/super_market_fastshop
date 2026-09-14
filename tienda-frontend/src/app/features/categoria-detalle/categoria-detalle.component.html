@@ -11,7 +11,7 @@
     <p class="categoria-detalle-descripcion" *ngIf="categoria()?.descripcion && !textoBusqueda()">{{ categoria()?.descripcion }}</p>
     <div class="categoria-detalle-filtro" *ngIf="textoBusqueda()">
       <span class="filtro-activo">
-        Resultados para "{{ textoBusqueda() }}"
+        <span class="filtro-activo-texto">Resultados para "{{ textoBusqueda() }}"</span>
         <button class="quitar-filtro" (click)="quitarFiltroTexto()" aria-label="Quitar búsqueda">
           <span class="pi pi-times"></span>
         </button>
@@ -21,6 +21,11 @@
   </header>
 
   <section class="contenedor cuerpo" id="catalogo-resultados">
+    <div class="grilla" *ngIf="cargandoProductos(); else contenidoTpl">
+      <div class="tarjeta-skeleton" *ngFor="let s of placeholdersSkeleton"></div>
+    </div>
+
+    <ng-template #contenidoTpl>
     <div class="grilla" *ngIf="productos().length > 0; else vacioTpl">
       <article
         class="tarjeta-producto"
@@ -54,6 +59,7 @@
           <p class="vacio-texto">Vuelve más tarde o revisa otra categoría.</p>
         </ng-template>
       </div>
+    </ng-template>
     </ng-template>
   </section>
 

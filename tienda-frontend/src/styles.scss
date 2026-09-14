@@ -387,6 +387,48 @@ a {
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* ---------- Skeleton de carga para tarjetas de producto ---------- */
+.tarjeta-skeleton {
+  display: flex;
+  flex-direction: column;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid var(--tienda-borde);
+  background: var(--tienda-superficie);
+}
+
+.tarjeta-skeleton::before {
+  content: '';
+  display: block;
+  height: 200px;
+  background: linear-gradient(90deg, var(--tienda-verde-100) 25%, #f0f5f1 37%, var(--tienda-verde-100) 63%);
+  background-size: 400% 100%;
+  animation: brilloSkeleton 1.4s ease infinite;
+}
+
+.tarjeta-skeleton::after {
+  content: '';
+  display: block;
+  margin: 16px;
+  height: 76px;
+  border-radius: 8px;
+  background: linear-gradient(90deg, var(--tienda-verde-100) 25%, #f0f5f1 37%, var(--tienda-verde-100) 63%);
+  background-size: 400% 100%;
+  animation: brilloSkeleton 1.4s ease infinite;
+}
+
+@keyframes brilloSkeleton {
+  0% { background-position: 100% 50%; }
+  100% { background-position: 0 50%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tarjeta-skeleton::before,
+  .tarjeta-skeleton::after {
+    animation: none !important;
+  }
+}
+
 /* ---------- Botones y stepper compartidos ---------- */
 .boton-primario {
   display: inline-flex;
@@ -463,12 +505,20 @@ a {
   padding: 16px 0 4px;
   font-size: 12.5px;
   color: var(--tienda-tinta-suave);
+  overflow: hidden;
 }
 
-.migas a { color: var(--tienda-tinta-suave); text-decoration: none; }
+.migas a { color: var(--tienda-tinta-suave); text-decoration: none; flex-shrink: 0; }
 .migas a:hover { color: var(--tienda-verde-700); text-decoration: underline; }
-.migas .pi { font-size: 9px; }
-.migas-actual { color: var(--tienda-tinta); font-weight: 600; }
+.migas .pi { font-size: 9px; flex-shrink: 0; }
+.migas-actual {
+  color: var(--tienda-tinta);
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
 
 
 /* ======================================================

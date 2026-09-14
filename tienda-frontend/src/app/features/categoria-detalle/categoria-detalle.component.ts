@@ -36,12 +36,16 @@ export class CategoriaDetalleComponent {
     )
   );
 
+  // undefined = cargando · array = ya llegó la respuesta (puede estar vacío).
   private productosCategoria = toSignal(
     this.categoriaId$.pipe(
       switchMap(id => this.catalogoService.listarProductosPorCategoria(id).pipe(catchError(() => of([]))))
-    ),
-    { initialValue: [] }
+    )
   );
+
+  cargandoProductos = computed(() => this.productosCategoria() === undefined);
+
+  readonly placeholdersSkeleton = Array.from({ length: 8 });
 
   constructor() {
     effect(() => {
@@ -56,7 +60,7 @@ export class CategoriaDetalleComponent {
 
   productos = computed(() => {
     const texto = this.textoBusqueda().toLowerCase();
-    const lista = this.productosCategoria();
+    const lista = this.productosCategoria() ?? [];
     if (!texto) {
       return lista;
     }
