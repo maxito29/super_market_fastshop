@@ -109,106 +109,77 @@ super_market_fastshop/
 
 #### Inicio / Catálogo
 
-![Tienda Fastshop]
+<img width="1366" alt="Página de inicio de Fastshop" src="https://github.com/user-attachments/assets/e5f29f45-ed58-4907-97f4-0b4bf6922835" />
 
-<img width="1366" height="725" alt="image" src="https://github.com/user-attachments/assets/e5f29f45-ed58-4907-97f4-0b4bf6922835" />
-
-<img width="1363" height="621" alt="image" src="https://github.com/user-attachments/assets/abbcfd4b-9f61-414d-9a2c-22b5fab19e7d" />
-
-
+<img width="1363" alt="Vista principal de la tienda Fastshop" src="https://github.com/user-attachments/assets/abbcfd4b-9f61-414d-9a2c-22b5fab19e7d" />
 
 #### Catálogo de productos
 
-![Catálogo de productos]
+<img width="1362" alt="Catálogo de productos de Fastshop" src="https://github.com/user-attachments/assets/71306a5f-ce67-47ad-90b1-271b603c8bc4" />
 
-<img width="1362" height="609" alt="image" src="https://github.com/user-attachments/assets/71306a5f-ce67-47ad-90b1-271b603c8bc4" />
+<img width="1366" alt="Listado de productos" src="https://github.com/user-attachments/assets/12646e84-ca5f-4fb0-9ce5-2460015955e0" />
 
-<img width="1366" height="593" alt="image" src="https://github.com/user-attachments/assets/12646e84-ca5f-4fb0-9ce5-2460015955e0" />
+<img width="1365" alt="Productos por categoría" src="https://github.com/user-attachments/assets/7dfca886-e294-4c52-8080-bf0ac7f8bcca" />
 
-<img width="1365" height="604" alt="image" src="https://github.com/user-attachments/assets/7dfca886-e294-4c52-8080-bf0ac7f8bcca" />
+<img width="1365" alt="Detalle del catálogo de productos" src="https://github.com/user-attachments/assets/1dd196dd-c6e1-4695-a4d2-f6ad47078681" />
 
-<img width="1365" height="604" alt="image" src="https://github.com/user-attachments/assets/1dd196dd-c6e1-4695-a4d2-f6ad47078681" />
+#### 🛒 Carrito de compras
 
+<img width="1366" alt="Carrito de compras" src="https://github.com/user-attachments/assets/87cca70d-52a1-4850-bcf7-36b8ae3c18e9" />
 
-#### Carrito de compras
+<img width="1366" alt="Productos agregados al carrito" src="https://github.com/user-attachments/assets/6b314ff1-f490-4d15-8d97-f2c1015b6a40" />
 
-![Carrito de compras]
+<img width="1366" alt="Resumen del carrito de compras" src="https://github.com/user-attachments/assets/c9986811-514e-4558-b010-3e7851d23dfd" />
 
-<img width="1366" height="604" alt="image" src="https://github.com/user-attachments/assets/87cca70d-52a1-4850-bcf7-36b8ae3c18e9" />
+#### 💳 Checkout y dirección
 
-<img width="1366" height="604" alt="image" src="https://github.com/user-attachments/assets/6b314ff1-f490-4d15-8d97-f2c1015b6a40" />
+<img width="1366" alt="Proceso de checkout" src="https://github.com/user-attachments/assets/2b79d24d-6ce9-413b-9327-b63adf24a265" />
 
-<img width="1366" height="601" alt="image" src="https://github.com/user-attachments/assets/c9986811-514e-4558-b010-3e7851d23dfd" />
+<img width="1365" alt="Datos de entrega y pago" src="https://github.com/user-attachments/assets/69e17904-2b41-4975-8ccf-e2a472a4549f" />
 
+<img width="1366" alt="Confirmación de datos del pedido" src="https://github.com/user-attachments/assets/f550810c-8bb9-4008-8b3e-821eb09659fb" />
 
+#### 🗺️ Selección de dirección mediante Google Maps
 
-#### Checkout y dirección
+<img width="1366" alt="Selección de dirección mediante Google Maps" src="https://github.com/user-attachments/assets/2ce44d3f-4e68-4ee7-966a-1b960b842355" />
 
-![Checkout]
+#### 🔐 Inicio de sesión con Google
 
-<img width="1366" height="603" alt="image" src="https://github.com/user-attachments/assets/2b79d24d-6ce9-413b-9327-b63adf24a265" />
+<img width="1362" alt="Inicio de sesión con Google" src="https://github.com/user-attachments/assets/4540dc43-85bc-49d5-9d37-6de3ca6814e8" />
 
-<img width="1365" height="605" alt="image" src="https://github.com/user-attachments/assets/69e17904-2b41-4975-8ccf-e2a472a4549f" />
-
-<img width="1366" height="597" alt="image" src="https://github.com/user-attachments/assets/f550810c-8bb9-4008-8b3e-821eb09659fb" />
-
-#### Selección de dirección mediante Google Maps
-
-![Google Maps]
-
-<img width="1366" height="604" alt="image" src="https://github.com/user-attachments/assets/2ce44d3f-4e68-4ee7-966a-1b960b842355" />
-
-
-#### Inicio de sesión con Google
-
-![Google Login]
-
-<img width="1362" height="617" alt="image" src="https://github.com/user-attachments/assets/4540dc43-85bc-49d5-9d37-6de3ca6814e8" />
-
-<img width="1366" height="604" alt="image" src="https://github.com/user-attachments/assets/b242f923-8a50-4596-857b-6b3d0bf6bae8" />
+<img width="1366" alt="Autenticación mediante cuenta de Google" src="https://github.com/user-attachments/assets/b242f923-8a50-4596-857b-6b3d0bf6bae8" />
 
 ---
 
 ### 🛠 Panel administrativo
 
-#### Dashboard
+#### 📊 Dashboard
 
-![Dashboard administrativo]
+<img width="1366" alt="Dashboard administrativo" src="https://github.com/user-attachments/assets/6ad14b87-753b-4a60-b8be-1a16b592fee7" />
 
-<img width="1366" height="601" alt="image" src="https://github.com/user-attachments/assets/6ad14b87-753b-4a60-b8be-1a16b592fee7" />
+<img width="1366" alt="Métricas del dashboard administrativo" src="https://github.com/user-attachments/assets/117968fe-0039-4a13-a630-e316a7be890c" />
 
-<img width="1366" height="608" alt="image" src="https://github.com/user-attachments/assets/117968fe-0039-4a13-a630-e316a7be890c" />
+<img width="1366" alt="Gráficos del dashboard administrativo" src="https://github.com/user-attachments/assets/a1f8cbc4-e164-43e2-8b01-280f69aad236" />
 
-<img width="1366" height="609" alt="image" src="https://github.com/user-attachments/assets/a1f8cbc4-e164-43e2-8b01-280f69aad236" />
+#### 📦 Gestión de productos
 
-#### Gestión de productos
+<img width="1366" alt="Gestión de productos" src="https://github.com/user-attachments/assets/d4015628-c490-40dd-9c9c-7b5271415b73" />
 
-![Gestión de productos]
+#### 🛍️ Gestión de pedidos
 
-<img width="1366" height="609" alt="image" src="https://github.com/user-attachments/assets/d4015628-c490-40dd-9c9c-7b5271415b73" />
+<img width="1366" alt="Gestión de pedidos" src="https://github.com/user-attachments/assets/79ea044c-536a-43b3-9034-12204def5a7b" />
 
+#### 📦 Panel Picker
 
-#### Gestión de pedidos
+<img width="100%" alt="Panel de preparación de pedidos para Picker" src="screenshots/picker.png" />
 
-![Gestión de pedidos]
+#### 🚚 Panel Repartidor
 
-<img width="1366" height="607" alt="image" src="https://github.com/user-attachments/assets/79ea044c-536a-43b3-9034-12204def5a7b" />
+<img width="100%" alt="Panel de gestión de entregas para Repartidor" src="screenshots/repartidor.png" />
 
+#### 🤖 Asistente IA
 
-#### Panel Picker
-
-![Panel Picker](screenshots/picker.png)
-
-#### Panel Repartidor
-
-![Panel Repartidor](screenshots/repartidor.png)
-
-#### Asistente IA
-
-![Asistente IA]
-
-<img width="1099" height="531" alt="image" src="https://github.com/user-attachments/assets/0e13e57a-14b3-4c40-aa80-2a4feb0c2904" />
-
+<img width="1099" alt="Asistente virtual con IA mediante Groq" src="https://github.com/user-attachments/assets/0e13e57a-14b3-4c40-aa80-2a4feb0c2904" />
 
 ---
 
